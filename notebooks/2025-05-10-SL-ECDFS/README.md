@@ -7,18 +7,19 @@
 
 
 ## SL01_LSSTComCamDeepCoadds.ipynb
-- show deep coadds where the SL are located
+- show the whole deep coadds in the 6 bands (u,g,r,i,z,y) where the SL are located.
 
 
 ## SL02_SearchForObjetcsCutouts.ipynb
-- show cutout from Deep Coadds around SL 
-
+- show cutout from Deep Coadds in the 6 bands (u,g,r,i,z,y) around SL 
+- View cutouts GEMS SL in ECDFS from Deep Coadds in the 6 bands (u,g,r,i,z,y) from LSSTComCam
+- And save them in a fits file including their image, variance plane, mask and WCS. Moreover the psf is save in another file.
 
 ## SL03_SearchForObjectInTables.ipynb
-- Find the closest Rubin object in Object table 
+- Find the closest Rubin object in Object table --> Not sure it works, why ?
 
 ## SL04_LSSTComCamOneTargetDiaObjectsAndCutouts.ipynb
-- find position of DIA objects in cutouts
+- Compare SL position with DIA object position
 
 
 ## SL05_ManyLightCurvesOneTargetLSSTComCamDiaSourcesForcedPhoto.ipynb
