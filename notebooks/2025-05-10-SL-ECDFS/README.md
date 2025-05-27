@@ -29,6 +29,11 @@
 - Light curves using only DIA sources ==> Not enough DIA source in the SL position
 
 ## SL07_ManyLightCurvesOneTargetLSSTComCamDRPSourcesPSFprof.ipynb
-- Forced Photometry Object from DRP analysis
+- Forced Photometry Object from DRP analysis with PSF fluxes
 
 ## SL08_ManyLightCurvesOneTargetLSSTComCamDRPSourcesSersicprof.ipynb
+- Forced Photometry Object from DRP analysis with other fluxes
+
+## SL09_LuptonColoredCutouts.ipynb
+- Colored images wit make_lupton
+
