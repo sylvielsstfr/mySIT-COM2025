@@ -3,6 +3,7 @@
 - author : Sylvie Dagoret-Campagne
 - affiliation : IJCLab.in2p3.fr
 - creation date : 2025-05-27
+- last update : 2025-05-28
 
 
 
@@ -29,10 +30,11 @@
 - Light curves using only DIA sources ==> Not enough DIA source in the SL position
 
 ## SL07_ManyLightCurvesOneTargetLSSTComCamDRPSourcesPSFprof.ipynb
-- Forced Photometry Object from DRP analysis with PSF fluxes
+- Light curves from forcedSourceTable (Forced Photometry Object from DRP analysis) with PSF fluxes.
+- Lighght curves are also colored by airmass and azimuth extraction from visit and sky background level.
 
 ## SL08_ManyLightCurvesOneTargetLSSTComCamDRPSourcesSersicprof.ipynb
-- Forced Photometry Object from DRP analysis with other fluxes
+- Light curves from forcedSourceTable (Forced Photometry Object from DRP analysis) with other fluxes than PSF fluxes : However those flux are not available
 
 ## SL09_LuptonColoredCutouts.ipynb
 - Colored images wit make_lupton
