@@ -10,8 +10,7 @@
 - **01_FindObservationsInButlerRegistry.ipynb** : Extract from butler registry the series of visiits including the information that comes with it.
   	       
 - **02_FindObservationsInButlerRegistryInTractPatch.ipynb** : As above but allocate tract and patch at each visit.
-
-    
+ 
 - **03_histosforvisits.ipynb** : Make plots from the visits to find the most visited tract and patches.
 
 - **04_DeepCoaddFromSelectedTractPatch.ipynb** : Show the DeepCoadd of the most visited tract and patch.
