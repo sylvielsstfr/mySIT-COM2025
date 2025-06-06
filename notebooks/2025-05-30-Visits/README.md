@@ -4,7 +4,7 @@
 - affiliation : IJCLab/IN2P3/CNRS
 - member : DESC, rubin-inkind
 - creation date : 2025-06-01
-
+- last update : 2025-06-06 : psf and Ap fluxes
 ## notebooks
 
 - **01_FindObservationsInButlerRegistry.ipynb** : Extract from butler registry the series of visiits including the information that comes with it.
@@ -15,4 +15,9 @@
 
 - **04_DeepCoaddFromSelectedTractPatch.ipynb** : Show the DeepCoadd of the most visited tract and patch.
 
-- **05_SourcesFromVisits.ipynb** : Making Light curves from objects found in the DeepCoadds (**04_DeepCoaddFromSelectedTractPatch.ipynb**) 
+- **05_SourcesFromVisits.ipynb** : Making Light curves from objects found in the DeepCoadds (**04_DeepCoaddFromSelectedTractPatch.ipynb**)
+
+
+- **06_SourcesFromVisitsMultiBands_psfMag.ipynb** : Light curves on psfFlux
+
+- **07_SourcesFromVisitsMultiBands_apMag.ipynb** : Light curves on psfFlux, calibFlux and all Ap fluxes. Generate the resolution file for the next notebook.
