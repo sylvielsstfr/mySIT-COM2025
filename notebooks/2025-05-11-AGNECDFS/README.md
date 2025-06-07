@@ -3,6 +3,7 @@
 - author : Sylvie Dagoret-Campagne
 - affiliation : IJCLab/IN2P3/CNRS
 - creation date : 2025-05-12
+- last update : 2025-06-07
 
 ## Associate AGN with one object in DIA object and show the cutout and Show one AGN only
 
@@ -19,3 +20,8 @@
 
 ## Associate AGN with  DIA sources for all  AGN and plot light curves
 - **AGN04_ManyLightCurvesManyTargetLSSTComCamSources.ipynb**: creation date 2025-05-11
+
+
+## Light curves
+- **AGN07_LooponAGN_ManyLightCurvesLSSTComCamDRPSourcesPSFprof.ipynb**:
+  creation date : 2025-06-07
