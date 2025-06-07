@@ -3,9 +3,11 @@
 - author : Sylvie Dagoret-Campagne
 - affiliation : IJCLab.in2p3.fr
 - creation date : 2025-05-27
-- last update : 2025-05-28
+- last update : 2025-06-07
 
 
+## SL00_StrongLensSkymapInTractPatch.ipynb
+- Location of SL in Tract
 
 ## SL01_LSSTComCamDeepCoadds.ipynb
 - show the whole deep coadds in the 6 bands (u,g,r,i,z,y) where the SL are located.
@@ -32,9 +34,19 @@
 ## SL07_ManyLightCurvesOneTargetLSSTComCamDRPSourcesPSFprof.ipynb
 - Light curves from forcedSourceTable (Forced Photometry Object from DRP analysis) with PSF fluxes.
 - Lighght curves are also colored by airmass and azimuth extraction from visit and sky background level.
+- 
+## SL07b_ManyLightCurvesOneTargetLSSTComCamDRPSourcesPSFprof.ipynb
+- Light curves from **mergedforcedSourceTable** (Forced Photometry Object from DRP analysis) with PSF fluxes.
+- Lighght curves are also colored by airmass and azimuth extraction from visit and sky background level.
+- Deprecated because **mergedforcedSourceTable** does not bring anything more than **SL07_ManyLightCurvesOneTargetLSSTComCamDRPSourcesPSFprof.ipynb**
+
+
+## SL07c_LooponSL_ManyLightCurvesOneTargetLSSTComCamDRPSourcesPSFprof.ipynb:
+- Loop on SL to show all light curves (does what **SL07_ManyLightCurvesOneTargetLSSTComCamDRPSourcesPSFprof.ipynb** does)
 
 ## SL08_ManyLightCurvesOneTargetLSSTComCamDRPSourcesSersicprof.ipynb
 - Light curves from forcedSourceTable (Forced Photometry Object from DRP analysis) with other fluxes than PSF fluxes : However those flux are not available
+- - Deprecated because no other profile are available for the moments
 
 ## SL09_LuptonColoredCutouts.ipynb
 - Colored images wit make_lupton
