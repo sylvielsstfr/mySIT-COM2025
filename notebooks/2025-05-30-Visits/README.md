@@ -21,3 +21,5 @@
 - **06_SourcesFromVisitsMultiBands_psfMag.ipynb** : Light curves on psfFlux
 
 - **07_SourcesFromVisitsMultiBands_apMag.ipynb** : Light curves on psfFlux, calibFlux and all Ap fluxes. Generate the resolution file for the next notebook.
+
+- **07b_CheckFluxesCalibrations.ipynb** : Check the calibration of aperture fluxes and which is the best radius for the aperture flux for stars.
