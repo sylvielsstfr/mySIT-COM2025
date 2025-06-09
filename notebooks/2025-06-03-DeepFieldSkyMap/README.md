@@ -8,8 +8,6 @@
 
 - **02_Observations-2025-07_09-LMCSMCMWBulge.ipynb** : Plot Galactic Center, LMC, SMC position in sky
 
+- **03_Observations-2025-07_09-GalacticPlane.ipynb** : Plot some positions inside the galactic planes
 
-modified:   01_Observations-2025-07_09-DeepFields.ipynb
-	modified:   02_Observations-2025-07_09-LMCSMCMWBulge.ipynb
-	new file:   03_Observations-2025-07_09-GalacticPlane.ipynb
-	new file:   04_Observations-2025-07_09-GalacticPlaneEcliptic.ipynb 
+- **04_Observations-2025-07_09-GalacticPlaneEcliptic.ipynb** :  Plot some positions inside the galactic planes and Ecliptic
