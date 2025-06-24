@@ -1,4 +1,25 @@
 # README.md
 
+- author : Sylvie Dagoret-Campagne
+- date : 2025-06-24
+
+## View Rubin Cutouts
+- **LSSTCam11_ViewCutouts.ipynb**
+
+## View Rubin Cutouts and make Lupton and many color differences
+- **LSSTCam12_ViewCutouts-andMakeLupton.ipynb**
+
+## View Rubin Cutouts and many color differences
+- **LSSTCam13_ViewCutouts-andColorDifferences.ipynb**
+
 ## Compare rubin images with HST images for SL
-- **SL01_CompareCutoutGEMSHSTRubin.ipynb** 
+- **SL01_CompareCutoutGEMSHSTRubin.ipynb**
+
+## Get psf from Deep Coadds
+- **SL02_Rubin-LSSTComCam_deepcoaddPSF.ipynb**
+
+## Compare Colors and Luption for GEMs and Rubin
+- **SL03_CompareCutoutGEMSHSTRubinLuptonDiff.ipynb**
+
+##  Compare Colors and Luption for GEMs and Rubin in a llop
+- **SL04_LoopCompareCutoutGEMSHSTRubinLuptonDiff.ipynb**
