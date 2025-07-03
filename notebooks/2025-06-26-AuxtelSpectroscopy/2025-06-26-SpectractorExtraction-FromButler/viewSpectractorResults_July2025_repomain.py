@@ -17,6 +17,7 @@ import pandas as pd
 from tqdm import tqdm
 from astropy.io import fits
 import getCalspec
+import os
 
 
 # In[ ]:
