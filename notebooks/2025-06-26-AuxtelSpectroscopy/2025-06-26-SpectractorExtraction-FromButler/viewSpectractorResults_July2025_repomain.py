@@ -44,12 +44,14 @@ for c in sorted(registry.queryCollections()):
 
 # Find collection in Butler /repo/embargo
 #my_collection = ['u/dagoret/auxtel_run_20250625a']
-my_collection = ['u/dagoret/auxtel_run_20250702b']
+#my_collection = ['u/dagoret/auxtel_run_20250702b']
+my_collection = ['u/dagoret/auxtel_run_20250702a']
 
 
 # save extraction
 #file_save = "auxtel_atmosphere_20250625a_v1.npy"
-file_save = "auxtel_atmosphere_20250702b_repomain_v1.npy"
+#file_save = "auxtel_atmosphere_20250702b_repomain_v1.npy"
+file_save = "auxtel_atmosphere_20250702a_repomain_v1.npy"
 
 
 
