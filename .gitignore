@@ -5,3 +5,4 @@
 *.fits
 *.pickle
 *.xlsx
+*.ipynb_checkpoints*
