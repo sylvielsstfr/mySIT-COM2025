@@ -1,0 +1,8 @@
+*.png
+*.csv
+*.jpeg
+*.npy
+*.fits
+*.pickle
+*.xlsx
+*.ipynb_checkpoints*
