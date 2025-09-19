@@ -1,4 +1,4 @@
-# input configuration
+# input file configuration
 
 version_results = "v2"
 legendtag = {"v1" : "v3.1.0","v2":"v3.1.0"}
