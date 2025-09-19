@@ -1,3 +1,16 @@
+# input configuration
+
+version_results = "v2"
+legendtag = {"v1" : "v3.1.0","v2":"v3.1.0"}
+
+atmfilenamesdict = {"v1":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_atmosphere_20250912a_repomain_v1.npy",
+                    "v2":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_20250917_w_2025_25_spectractorv31_holoallfilt_a_repomain_v1.npy",}
+
+
+atmfilename = atmfilenamesdict[version_results]
+tag = legendtag[version_results] 
+
+
 # Selection parameters for cuts
 DCCDMINFIG = 185.0;
 DCCDMAXFIG = 190.0;
