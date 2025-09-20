@@ -1,10 +1,11 @@
 # input file configuration
 
-version_results = "v2"
-legendtag = {"v1" : "v3.1.0","v2":"v3.1.0"}
+version_results = "v3"
+legendtag = {"v1" : "v3.1.0","v2":"v3.1.0", "v3":"v3.1.0"}
 
 atmfilenamesdict = {"v1":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_atmosphere_20250912a_repomain_v1.npy",
-                    "v2":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_20250917_w_2025_25_spectractorv31_holoallfilt_a_repomain_v1.npy",}
+                    "v2":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_20250917_w_2025_25_spectractorv31_holoallfilt_a_repomain_v1.npy",
+                   "v3":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_20250917_w_2025_25_spectractorv31_holoallfilt_a_repomain_v1_merged.npy",}
 
 
 atmfilename = atmfilenamesdict[version_results]
