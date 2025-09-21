@@ -1,8 +1,8 @@
 # input file configuration
 
 
-version_run = "run_v3"
-legendtag = {"run_v1" : "v3.1.0","run_v2":"v3.1.0","run_v3":"v3.2.0", "run_v4":"v3.2.0"}
+version_run = "run_v5"
+legendtag = {"run_v1" : "v3.1.0","run_v2":"v3.1.0","run_v3":"v3.2.0", "run_v4":"v3.2.0","run_v5":"v3.2.0"}
 
 butlerusercollectiondict = {
     # /repo/main
@@ -25,4 +25,5 @@ extractedfilesdict = {
     "run_v2": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_20250917_w_2025_25_spectractorv31_holoallfilt_a_repomain_v1.npy",
     # /repo/embargo, gain
     "run_v4":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20250920_w_2025_36_spectractorv32_embargo_gains_holoallfilt_b_v1.npy",
+    "run_v5":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_holoallfilt_a_v1.npy",
 }
