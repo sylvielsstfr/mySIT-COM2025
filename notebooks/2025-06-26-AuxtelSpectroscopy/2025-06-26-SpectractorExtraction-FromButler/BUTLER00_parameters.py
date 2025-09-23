@@ -1,7 +1,7 @@
 # input file configuration
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
-version_run = "run_v6"
+version_run = "run_v5"
 # Configuration for the butler repo associated to the version_run
 FLAG_REPO_EMBARGO = False
 
@@ -49,6 +49,10 @@ mergedextractedfilesdict = {
     "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1_merged.npy",
 }
 
+mergedtofindmissings = {
+    "run_v5":"../2025-06-26-SpectractorExtraction-FromButler/data/missing_merged/exposurelist_and_auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_holoallfilt_a_v1_merged.npy",
+    "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/missing_merged/exposurelist_and_auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1_merged.npy",
+}
 
 def DumpConfig():
     """

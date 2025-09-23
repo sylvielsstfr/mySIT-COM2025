@@ -18,9 +18,11 @@ atmfilenamesdict_old = {"v1":"../2025-06-26-SpectractorExtraction-FromButler/dat
 version_run = "run_v5"
 # Configuration for the butler repo associated to the version_run
 FLAG_REPO_EMBARGO = False
+
+#('empty~holo4_003','BG40~holo4_003','FELH0600~holo4_003','SDSSr~holo4_003','BG40_65mm_1~holo4_003','OG550_65mm_1~holo4_003') 
 FLAG_PWVFILTERS = True
 #OZ_FILTER_LIST = ["BG40_65mm_1",]
-PWV_FILTER_LIST = ["empty","OG550_65mm_1"]
+PWV_FILTER_LIST = ["empty","OG550_65mm_1","SDSSr"]
 
 # Associate the tag to the Spectractor runparameters (to be used in plots)
 legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)"}
@@ -89,7 +91,7 @@ DCCDMINFIG = 185.0;
 DCCDMAXFIG = 190.0;
 DCCDMINCUT = 186.7;
 DCCDMAXCUT = 188.0;
-CHI2CUT = 300.;
+CHI2CUT = 350.;
 EXPTIMECUT = 20.0;    
 PWVMINCUT = 0.;
 PWVMAXCUT = 20.;
