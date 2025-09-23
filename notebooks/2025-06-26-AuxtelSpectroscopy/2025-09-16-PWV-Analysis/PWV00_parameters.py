@@ -1,3 +1,7 @@
+# File to centralize config parameters, path and selection files and selection functions
+# author : Sylvie Dagoret-Campagne
+# affiliation : IJCLab/IN2P3/CNRS
+# Creation date : 2025-09-20
 # input file configuration
 
 
@@ -14,6 +18,9 @@ atmfilenamesdict_old = {"v1":"../2025-06-26-SpectractorExtraction-FromButler/dat
 version_run = "run_v5"
 # Configuration for the butler repo associated to the version_run
 FLAG_REPO_EMBARGO = False
+FLAG_PWVFILTERS = True
+#OZ_FILTER_LIST = ["BG40_65mm_1",]
+PWV_FILTER_LIST = ["empty","OG550_65mm_1"]
 
 # Associate the tag to the Spectractor runparameters (to be used in plots)
 legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)"}
