@@ -13,7 +13,17 @@ atmfilenamesdict_old = {"v1":"../2025-06-26-SpectractorExtraction-FromButler/dat
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
 version_run = "run_v5"
 # Configuration for the butler repo associated to the version_run
-FLAG_REPO_EMBARGO = True
+
+map_run_butler_embargo = { 
+                            "run_v1": False,
+                            "run_v2": False,
+                            "run_v3": True,
+                            "run_v4": True,
+                            "run_v5": True,
+                            "run_v6": False,
+                         }
+
+FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
 
 
 if FLAG_REPO_EMBARGO:
