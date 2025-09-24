@@ -3,7 +3,17 @@
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
 version_run = "run_v4"
 # Configuration for the butler repo associated to the version_run
-FLAG_REPO_EMBARGO = True
+
+map_run_butler_embargo = { 
+                            "run_v1": False,
+                            "run_v2": False,
+                            "run_v3": True,
+                            "run_v4": True,
+                            "run_v5": True,
+                            "run_v6": False,
+                         }
+
+FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
 
 # Associate the tag to the Spectractor runparameters (to be used in plots)
 legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)"}
