@@ -132,6 +132,15 @@ def getSelectionCutWithPolar(df_spec, chi2max=CHI2CUT, pwvmin=PWVMINCUT, pwvmax=
     return cut
 
 
+# Take into account Photometric Repeatability
+FLAG_CORRECTFOR_PWV_REPEAT = True
+FLAG_CORRECTFOR_PWV_REPEAT_RATIO = False
+
+SIGMA_PWV_REPEAT = 0.25
+FACTORERR_PWV_REPEAT = 10.
+
+
+
 # Merra2 pathname
 
 filename_m2 = "../2025-09-16-SpectroMerra2/MerradataMerged/Merge_inst1_2d_asm_Nx_M2I1NXASM-2021-2025.csv"
