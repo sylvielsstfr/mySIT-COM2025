@@ -1,6 +1,7 @@
 # README.md
 
-- creation : 2021-09-21
+- creation : 2025-09-21
+- last update : 2025-09-26
 
 ## Tools
 
@@ -19,6 +20,10 @@
 - **MERGE_pectractorResults_ExposuresList.ipynb**: merge Spectractor Results and Exposure list.
 
 
+
+## Work to find missing Exposures
+- 1) run **MERGE_ExposureList_SpectractorResults-FindMissing.ipyng*** to produce the list of exposure in butler associated with existing or not results in spectractor
+- 2) run **CHECK_SpectractionEfficiency.ipynb** to generate barplot and csv file to provide the list of  missings and not missing (OK) results. 
 
 ## Data
 - **BUTLER00_parameters.py** contain path to files
