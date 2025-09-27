@@ -17,7 +17,7 @@ atmfilenamesdict_old = {"v1":"../2025-06-26-SpectractorExtraction-FromButler/dat
 # input file configuration
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
-version_run = "run_v5"
+version_run = "run_v6"
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
@@ -133,7 +133,13 @@ def getSelectionCutWithPolar(df_spec, chi2max=CHI2CUT, pwvmin=PWVMINCUT, pwvmax=
     (df_spec['EXPTIME'] > EXPTIMECUT ) &   (df_spec["TARGET"] == "HD185975")
     return cut
 
-    
+
+# Take into account Photometric Repeatability
+FLAG_CORRECTFOR_OZ_REPEAT = True
+FLAG_CORRECTFOR_OZ_REPEAT_RATIO = False
+
+SIGMA_OZ_REPEAT = 25.44
+FACTORERR_OZ_REPEAT = 10.
 
 
 # Merra2 pathname
