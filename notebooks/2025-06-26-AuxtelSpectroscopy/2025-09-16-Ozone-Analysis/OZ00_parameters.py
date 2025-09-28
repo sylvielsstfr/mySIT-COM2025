@@ -17,7 +17,7 @@ atmfilenamesdict_old = {"v1":"../2025-06-26-SpectractorExtraction-FromButler/dat
 # input file configuration
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
-version_run = "run_v6"
+version_run = "run_v4"
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
@@ -35,6 +35,7 @@ FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
 #('empty~holo4_003','©~holo4_003','FELH0600~holo4_003','SDSSr~holo4_003','BG40_65mm_1~holo4_003','OG550_65mm_1~holo4_003')
 FLAG_OZFILTERS = True
 OZ_FILTER_LIST = ["empty","BG40", "BG40_65mm_1",]
+OZREPEAT_FILTER_LIST = ["empty"]
 
 
 # Associate the tag to the Spectractor runparameters (to be used in plots)
