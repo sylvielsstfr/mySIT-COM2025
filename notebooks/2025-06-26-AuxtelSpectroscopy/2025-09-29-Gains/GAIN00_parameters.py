@@ -1,22 +1,15 @@
 # File to centralize config parameters, path and selection files and selection functions
 # author : Sylvie Dagoret-Campagne
 # affiliation : IJCLab/IN2P3/CNRS
-# Creation date : 2025-09-20
-# last update : 2025-09-26
-# input file configuration
+# Creation date : 2025-09-29
+# last update : 2025-09-30
 
 
-version_results_old = "v3"
-legendtag_old = {"v1" : "v3.1.0","v2":"v3.1.0", "v3":"v3.1.0"}
-
-atmfilenamesdict_old = {"v1":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_atmosphere_20250912a_repomain_v1.npy",
-                    "v2":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_20250917_w_2025_25_spectractorv31_holoallfilt_a_repomain_v1.npy",
-                    "v3":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_20250917_w_2025_25_spectractorv31_holoallfilt_a_repomain_v1_merged.npy",}
 
 # input file configuration
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
-version_run = "run_v5"
+version_run = "run_v6"
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 

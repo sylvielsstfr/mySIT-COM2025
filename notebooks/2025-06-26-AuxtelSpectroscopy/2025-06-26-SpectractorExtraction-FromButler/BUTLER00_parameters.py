@@ -1,7 +1,7 @@
 # input file configuration
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
-version_run = "run_v4"
+version_run = "run_v5"
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
@@ -11,12 +11,13 @@ map_run_butler_embargo = {
                             "run_v4": True,
                             "run_v5": True,
                             "run_v6": False,
+                            "run_v7": True,
                          }
 
 FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
 
 # Associate the tag to the Spectractor runparameters (to be used in plots)
-legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)"}
+legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)","run_v7":"v3_2_0_repo_main_w_2025_38_gain--v3_2_0_repo_embargo_w_2025_36_ptc"}
 
 # List of user collection in butler  where the results of spectractor run are
 butlerusercollectiondict = {
@@ -32,6 +33,8 @@ butlerusercollectiondict = {
     "run_v5":"u/dagoret/auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_holoallfilt_a",
     # /repo/main, gains
     "run_v6":"u/dagoret/auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a",
+    # run_v6 + run_v5 : /repo/main, gains and /repo/embargo
+    "run_7": "u/dagoret/auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_u/dagoret/auxtel_run_20250921_w_2025_38_spectractorv32_main_gains",
 }
 
 
@@ -45,6 +48,8 @@ extractedfilesdict = {
     "run_v5":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_holoallfilt_a_v1.npy",
     # /repo/main
     "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1.npy",
+     # run_v6 + run_v5 : /repo/main, gains and /repo/embargo
+    "run_7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy" 
 }
 
 
@@ -57,6 +62,8 @@ mergedextractedfilesdict = {
     "run_v5":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_holoallfilt_a_v1_merged.npy",
     # /repo/main
     "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1_merged.npy",
+    # run_v6 + run_v5 : /repo/main, gains and /repo/embargo
+    "run_7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy"
 }
 
 mergedtofindmissings = {
@@ -64,6 +71,7 @@ mergedtofindmissings = {
     "run_v5":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_holoallfilt_a_v1.npy",
     "run_v5":"../2025-06-26-SpectractorExtraction-FromButler/data/missing_merged/exposurelist_and_auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_holoallfilt_a_v1_merged.npy",
     "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/missing_merged/exposurelist_and_auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1_merged.npy",
+    "run_7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy"
 }
 
 def DumpConfig():
