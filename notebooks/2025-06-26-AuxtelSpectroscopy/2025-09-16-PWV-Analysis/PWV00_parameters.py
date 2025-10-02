@@ -34,6 +34,7 @@ FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
 FLAG_PWVFILTERS = True
 #OZ_FILTER_LIST = ["BG40_65mm_1",]
 PWV_FILTER_LIST = ["empty","OG550_65mm_1","SDSSr","FELH0600"]
+PWV_FILTEROG550_LIST = ["OG550_65mm_1"]
 
 # Associate the tag to the Spectractor runparameters (to be used in plots)
 legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)","run_v7":"v3_2_0_repo_main_w_2025_38_gain--v3_2_0_repo_embargo_w_2025_36_ptc"}
