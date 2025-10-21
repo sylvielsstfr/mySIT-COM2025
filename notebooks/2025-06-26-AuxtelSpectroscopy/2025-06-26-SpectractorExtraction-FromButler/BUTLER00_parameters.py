@@ -71,8 +71,8 @@ mergedextractedfilesdict = {
     "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1_merged.npy",
     # run_v6 + run_v5 : /repo/main, gains and /repo/embargo
     "run_v7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy",
-    "run_v8": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_main_data2025_ptc_holoallfilt_a_merged.npy",
-    "run_v9":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b_merged.npy"
+    "run_v8": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_main_data2025_ptc_holoallfilt_a_v1_merged.npy",
+    "run_v9":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b_v1_merged.npy"
 }
 
 mergedtofindmissings = {
