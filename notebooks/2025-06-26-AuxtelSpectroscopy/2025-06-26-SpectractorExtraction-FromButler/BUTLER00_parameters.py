@@ -1,7 +1,7 @@
 # input file configuration
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
-version_run = "run_v9"
+version_run = "run_v8"
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
@@ -38,8 +38,9 @@ butlerusercollectiondict = {
     "run_v6":"u/dagoret/auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a",
     # run_v6 + run_v5 : /repo/main, gains and /repo/embargo
     "run_7": "u/dagoret/auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_u/dagoret/auxtel_run_20250921_w_2025_38_spectractorv32_main_gains",
-    # run_8 : reprocess all data from 2025
+    # run_8 : oct 2025 : reprocess all data from 2025 which are in /repo/main now
     "run_v8": "u/dagoret/auxtel_run_20251018_w_2025_42_spectractorv32_main_data2025_ptc_holoallfilt_a",
+    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
     "run_v9" : "u/dagoret/auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b",
 }
 
@@ -56,7 +57,9 @@ extractedfilesdict = {
     "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1.npy",
      # run_v6 + run_v5 : /repo/main, gains and /repo/embargo
     "run_7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy", 
+    # run_8 : oct 2025 : reprocess all data from 2025 which are in /repo/main now
     "run_v8": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_main_data2025_ptc_holoallfilt_a_v1.npy",
+    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
     "run_v9": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b_v1.npy"
 }
 
@@ -71,7 +74,9 @@ mergedextractedfilesdict = {
     "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1_merged.npy",
     # run_v6 + run_v5 : /repo/main, gains and /repo/embargo
     "run_v7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy",
+    # run_8 : oct 2025 : reprocess all data from 2025 which are in /repo/main now
     "run_v8": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_main_data2025_ptc_holoallfilt_a_v1_merged.npy",
+    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
     "run_v9":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b_v1_merged.npy"
 }
 
