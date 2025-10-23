@@ -1,7 +1,7 @@
 # input file configuration
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
-version_run = "run_v8"
+version_run = "run_v10"
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
@@ -14,13 +14,14 @@ map_run_butler_embargo = {
                             "run_v7": True,
                             "run_v8": False,
                             "run_v9": False, 
+                            "run_v10": False
                          }
 
 FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
 
 # Associate the tag to the Spectractor runparameters (to be used in plots)
 legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)","run_v7":"v3_2_0_repo_main_w_2025_38_gain-v3_2_0_repo_embargo_w_2025_36_ptc",
-"run_v8": "v3_2_0_repo_main_w_2025_42_ptc", "run_v9" : "v3_2_0_repo_main_w_2025_42_gains"}
+"run_v8": "v3_2_0_repo_main_w_2025_42_ptc", "run_v9" : "v3_2_0_repo_main_w_2025_42_gains","run_v10" : "v3_2_0_repo_main_w_2025_42_gains"}
 
 # List of user collection in butler  where the results of spectractor run are
 butlerusercollectiondict = {
@@ -40,8 +41,10 @@ butlerusercollectiondict = {
     "run_7": "u/dagoret/auxtel_run_20250921_w_2025_36_spectractorv32_embargo_ptc_u/dagoret/auxtel_run_20250921_w_2025_38_spectractorv32_main_gains",
     # run_8 : oct 2025 : reprocess all data from 2025 which are in /repo/main now
     "run_v8": "u/dagoret/auxtel_run_20251018_w_2025_42_spectractorv32_main_data2025_ptc_holoallfilt_a",
-    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
+    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now but missing BG40 in 2025
     "run_v9" : "u/dagoret/auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b",
+    # run_v10 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now with  BG40 in 2025
+    "run_v10" : "u/dagoret/auxtel_run_20251022_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_a",
 }
 
 
@@ -59,8 +62,10 @@ extractedfilesdict = {
     "run_7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy", 
     # run_8 : oct 2025 : reprocess all data from 2025 which are in /repo/main now
     "run_v8": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_main_data2025_ptc_holoallfilt_a_v1.npy",
-    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
-    "run_v9": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b_v1.npy"
+    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now but BG40 missing
+    "run_v9": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b_v1.npy",
+    # run_v10 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
+    "run_v10": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251022_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_a_v1.npy",
 }
 
 # path of output files Spectractor parameters Extracted from Butler and merged with exposure list from butler registry
@@ -76,8 +81,10 @@ mergedextractedfilesdict = {
     "run_v7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy",
     # run_8 : oct 2025 : reprocess all data from 2025 which are in /repo/main now
     "run_v8": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_main_data2025_ptc_holoallfilt_a_v1_merged.npy",
-    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
-    "run_v9":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b_v1_merged.npy"
+    # run_v9 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now BG40 missing in 2025
+    "run_v9":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251018_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_b_v1_merged.npy",
+    # run_v10 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
+    "run_v10":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251022_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_a_v1_merged.npy"
 }
 
 mergedtofindmissings = {
@@ -87,7 +94,8 @@ mergedtofindmissings = {
     "run_v6":"../2025-06-26-SpectractorExtraction-FromButler/data/missing_merged/exposurelist_and_auxtel_run_u_dagoret_auxtel_run_20250921_w_2025_38_spectractorv32_main_gains_holoallfilt_a_v1_merged.npy",
     "run_7":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_joined/auxtel_run_v3_2_0_repo_main_w_2025_38_gain-join-v3_2_0_repo_embargo_w_2025_36_ptc.npy",
     "run_v8": "None",
-    "run_v9": "None"
+    "run_v9": "None",
+    "run_v10": "None"
 }
 
 def DumpConfig():

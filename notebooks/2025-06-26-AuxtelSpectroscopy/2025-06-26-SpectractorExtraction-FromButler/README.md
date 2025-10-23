@@ -2,6 +2,7 @@
 
 - creation : 2025-09-21
 - last update : 2025-10-21 run_v9
+- last update : 2025-10-23 run_v10 
 
 ## Tools
 
@@ -11,7 +12,8 @@
 
 - **CHECK_ExposuresList.ipynb** : View the list of exposures file  extracted from butler
 
-## Extractor Of Spectractor Results
+## Extractor Of Spectractor Results:
+This is the first step to extract from Butler the atmospheric parameters and other quantities.
 
 - **EXTR_viewSpectractorResults_September2025_repomain.ipynb** : Extract Spectractor data from butler and write them in a *.npy file
 
