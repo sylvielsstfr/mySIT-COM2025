@@ -3,7 +3,7 @@
 - author : Sylvie Dagoret-Campagne
 - affiliation : IJCLab/IN2P3/CNRS
 - creation date 2024/12/05
-- last update : 2025-11-03
+- last update : 2025-11-04 : add accuracy calculation
 
 ## notebooks 
 
@@ -34,6 +34,10 @@ Compare extinction at different wavelengths with extinction in bands
 
 ### Find the resolution on PWV to achieve in order to comply to resolution in band Y
 - **LoopFindPWVResolutionfromMagResolution_LSSTfilters.ipynb**
+- **LoopFindPWVResolutionfromMagAccuracy_LSSTfilters.py**
+- **LoopFindPWVResolutionfromMagAccuracy_LSSTfilters.ipynb**
+
+
 
 ### Make plots
 - **PlotPWVResolutionfromMagResolution_FromLoop.ipynb**
