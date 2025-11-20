@@ -7,27 +7,30 @@
 
 ## notebooks
 
-### Attenuation in band for SED-flat extinction
 
-- ComputeMagAttenuationOZ_LSSTfilters.ipynb
-- ComputeMagAttenuationPWV_LSSTfilters.ipynb
 
 ### imported from getObsAtmo:
 
 Compare extinction at different wavelengths with extinction in bands
-
+May need ComputeMagAttenuation notebooks to pre-dcompute attenuation in bands for comparison with single wavelength attenuation
 - plot_transmvso2xairmass.ipynb
-- plot_transmvsozxairmass_chapuis.ipynb
-- plot_transmvsozxairmass_huggins.ipynb
-- plot_transmvspwvxairmass.ipynb
-- plot_transmvsrayleighxairmass.ipynb
+- creation 2024-11-24: **plot_transmvsozxairmass_chapuis.ipynb**
+- creation 2024-11-15: **plot_transmvsozxairmass_huggins.ipynb**
+- creation 2024-11-24: **plot_transmvspwvxairmass.ipynb**
+- creation 2024-11-24: **plot_transmvsrayleighxairmass.ipynb**
 - plot_transmvsrayleighxairmass_pyextinction.ipynb
 
-### Evaluate resolution in band for SED-flat extinction
+### Attenuation in band for SED-flat extinction using LSST Filters (rubin-sim)
 
-- ComputeMagResolutionOzone_LSSTfilters.ipynb
-- ComputeMagResolutionPWV_LSSTfilters.ipynb
-- ComputeMagResolutionPWV_LSSTfiltersFromMERRA2.ipynb
+The results are used in the above noteooks
+- created 2024-10-15: **ComputeMagAttenuationOZ_LSSTfilters.ipynb**
+- created 2024-12-04: **ComputeMagAttenuationPWV_LSSTfilters.ipynb**
+
+### Evaluate resolution in Rubin-LSST bands for SED-flat extinction
+It iuses the Rubin-Sim bands and rubin-sim 
+- creation 2024-10-15 :**ComputeMagResolutionOzone_LSSTfilters.ipynb**
+- creation 2024-10-15 :**ComputeMagResolutionPWV_LSSTfilters.ipynb**
+- creation 2025-10-28 :**ComputeMagResolutionPWV_LSSTfiltersFromMERRA2.ipynb** : uses MERRA2 dispersion
 
 ### Find the resolution on PWV to achieve in order to comply to resolution in band Y
 
