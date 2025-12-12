@@ -2,7 +2,8 @@
 
 - creation : 2025-09-21
 - last update : 2025-10-21 run_v9
-- last update : 2025-10-23 run_v10 
+- last update : 2025-10-23 run_v10
+- last update : 2025-12-12 run v12
 
 ## Tools
 
@@ -16,6 +17,14 @@
 This is the first step to extract from Butler the atmospheric parameters and other quantities.
 
 - **EXTR_viewSpectractorResults_September2025_repomain.ipynb** : Extract Spectractor data from butler and write them in a *.npy file
+
+- EXTR_viewSpectractorResults_December2025_repomain.ipynb : Extraction, old method
+- **EXTR_viewSpectractorResults_December2025_repomain-new.ipynb** : Extraction (working 2025-12-12) with v12 (Spectractor test_ccdgains)
+
+
+- **EXTR_viewSpectractorResults_December2025_repomain-new.py** : Extraction with scripts to be tested
+- **EXTR_viewSpectractorResults_December2025_repomain.py**     : Extraction with scripts to be tested
+- **EXTR_viewSpectractorResults_September2025_repomain.py**  : Extraction with scripts to be tested
 
 ## Post processing
 

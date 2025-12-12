@@ -52,10 +52,6 @@ try:
 except Exception:
     dafButler = None
 
-# matplotlib settings for headless operation (no GUI)
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 
 # Optional extra module used in the notebook:
 try:
@@ -63,6 +59,10 @@ try:
 except Exception:
     getCalspec = None
 
+# Matplotlib headless mode (no UI)
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 def configure_logging(verbose: bool = False) -> None:
     """Set logging to INFO or DEBUG depending on the verbose flag."""
@@ -355,10 +355,10 @@ def main():
     # Build and save the final rec / dataframe
     rec, df = concatenate_results_and_save(results, records, out_file, dry_run=args.dry_run)
 
-    if args.plot:
-        plot_dir = args.plot_dir
-        plot_summary(rec, df, outdir=plot_dir)
-        logging.info("Plots saved to %s", plot_dir)
+    #if args.plot:
+    #    plot_dir = args.plot_dir
+    #    plot_summary(rec, df, outdir=plot_dir)
+    #    logging.info("Plots saved to %s", plot_dir)
 
     logging.info("Done.")
 
