@@ -17,7 +17,6 @@ map_run_butler_embargo = {
                             "run_v10": False,
                             "run_v11": False,
                             "run_v12": False,
-    
                          }
 
 FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
@@ -26,7 +25,7 @@ FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
 legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)","run_v7":"v3_2_0_repo_main_w_2025_38_gain-v3_2_0_repo_embargo_w_2025_36_ptc",
 "run_v8": "v3_2_0_repo_main_w_2025_42_ptc", "run_v9" : "v3_2_0_repo_main_w_2025_42_gains","run_v10" : "v3_2_0_repo_main_w_2025_42_gains",
 "run_v11" : "v3_2_0_repo_main_w_2025_42_ptc",
-"run_v12" : "spectractorv321testccdgains_all_main_2025data_ptc",            
+"run_v12" : "spectractorv321testccdgains_all_main_2025data_ptc",        
 }
 
 
