@@ -4,6 +4,7 @@
 # Creation date : 2025-09-20
 # last update : 2025-09-30 : run_v7
 # last update : 2025-10-25 : run_v11
+# last update : 2025-12-14 : run_v12
 # input file configuration
 
 from astropy.time import Time
@@ -16,7 +17,8 @@ import astropy.units as u
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
 #version_run = "run_v7"
-version_run = "run_v11"
+#version_run = "run_v11" # before v12
+version_run = "run_v12" # data 2025
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
@@ -31,6 +33,7 @@ map_run_butler_embargo = {
                             "run_v9": False, 
                             "run_v10": False,
                             "run_v11": False,
+                            "run_v12": False,
                          }
 
 FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
@@ -43,7 +46,8 @@ PWV_FILTER_LIST = ["empty","OG550_65mm_1","SDSSr","FELH0600"]
 PWV_FILTEROG550_LIST = ["OG550_65mm_1"]
 
 # Associate the tag to the Spectractor runparameters (to be used in plots)
-legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)","run_v7":"v3_2_0_repo_main_w_2025_38_gain--v3_2_0_repo_embargo_w_2025_36_ptc","run_v8": "v3_2_0_repo_main_w_2025_42_ptc", "run_v9" : "v3_2_0_repo_main_w_2025_42_gains","run_v10" : "v3_2_0_repo_main_w_2025_42_gains","run_v11" : "v3_2_0_repo_main_w_2025_42_ptc"}
+legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)","run_v7":"v3_2_0_repo_main_w_2025_38_gain--v3_2_0_repo_embargo_w_2025_36_ptc","run_v8": "v3_2_0_repo_main_w_2025_42_ptc", "run_v9" : "v3_2_0_repo_main_w_2025_42_gains","run_v10" : "v3_2_0_repo_main_w_2025_42_gains","run_v11" : "v3_2_0_repo_main_w_2025_42_ptc",
+"run_v12" : "spectractorv321testccdgains_all_main_2025data_ptc", }
 
 # List of user collection in butler  where the results of spectractor run are
 butlerusercollectiondict = {
@@ -68,6 +72,7 @@ butlerusercollectiondict = {
     # run_v10 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now with  BG40 in 2025
     "run_v10" : "u/dagoret/auxtel_run_20251022_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_a",
     "run_v11" : "u/dagoret/auxtel_run_20251023_w_2025_42_spectractorv32_all_main_2025data_ptc_holoallfilt_a",
+    "run_v12" : "u/dagoret/auxtel_run_20251210_w_2025_49_spectractorv321testccdgains_all_main_2025data_ptc_holoallfilt_a"
 }
 
 
@@ -91,6 +96,8 @@ extractedfilesdict = {
     "run_v10": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251022_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_a_v1.npy",
     # run v11 : Oct 23 2025
     "run_v11" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251023_w_2025_42_spectractorv32_all_main_2025data_ptc_holoallfilt_a_v1.npy",
+    # run v12 : Dec 12 2025
+    "run_v12" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251210_w_2025_49_spectractorv321testccdgains_all_main_2025data_ptc_holoallfilt_a_v1.npy",
 }
 
 
@@ -112,6 +119,7 @@ mergedextractedfilesdict = {
     # run_v10 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now
     "run_v10":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251022_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_a_v1_merged.npy",
     "run_v11" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251023_w_2025_42_spectractorv32_all_main_2025data_ptc_holoallfilt_a_v1_merged.npy",
+    "run_v12" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251210_w_2025_49_spectractorv321testccdgains_all_main_2025data_ptc_holoallfilt_a_v1_merged.npy",
 }
 
 
