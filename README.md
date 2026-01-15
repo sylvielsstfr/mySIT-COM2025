@@ -18,6 +18,17 @@ you whether or not you'd like to display it!
 For more information about the project template see the 
 [documentation](https://lincc-ppt.readthedocs.io/en/latest/).
 
+
+## To install plot function used in notebooks do:
+
+At `usdf` do in top directory (same level as pyproject.toml) :
+
+```
+>> pip install --user -e .
+```
+
+
+
 ## Dev Guide - Getting Started
 
 Before installing any dependencies or writing code, it's a great idea to create a
@@ -26,7 +37,7 @@ environments. If you have conda installed locally, you can run the following to
 create and activate a new environment.
 
 ```
->> conda create -n <env_name> python=3.11
+>> conda create -n <env_name> python=3.12
 >> conda activate <env_name>
 ```
 
