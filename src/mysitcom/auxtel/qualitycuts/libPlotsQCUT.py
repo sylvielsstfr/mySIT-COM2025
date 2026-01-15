@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.dates as mdates
+import matplotlib.colors as mcolors
 from matplotlib.dates import DateFormatter
 from pandas.api.types import is_datetime64_any_dtype
 import pandas as pd
@@ -706,6 +707,349 @@ def plot_dccd_chi2_vs_time_by_filter(
 
     fig.tight_layout()
     return fig, axs
+
+
+#----------------------
+
+#----------------------
+
+def stripplot_target_vs_time(
+    df,
+    time_col="Time",
+    target_col="TARGET",
+    seq_col="seq_num",
+    ax=None,
+    tag="",
+    size=10,
+    alpha=1.0,
+    edgecolor="black",
+    linewidth=0.1,
+    jitter=True,
+    palette=None
+):
+    """
+    Stripplot de TARGET vs Time avec couleurs distinctes par TARGET.
+    Peut recevoir un axe externe ax.
+    """
+
+    data = df.copy()
+    data["TARGET_seq"] = data[target_col].astype(str) + "_" + data[seq_col].astype(str)
+
+    # Création dynamique de la palette si non fournie
+    targets = data[target_col].unique()
+    n_targets = len(targets)
+
+    if palette is None:
+        # Générer n couleurs distinctes
+        cmap = plt.get_cmap("tab20")  # tab20 contient 20 couleurs
+        if n_targets > 20:
+            cmap = plt.get_cmap("hsv")  # HSV permet de générer n couleurs très distinctes
+        palette = {t: mcolors.to_hex(cmap(i / n_targets)) for i, t in enumerate(targets)}
+
+    # Création de la figure si ax non fourni
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(20, 12))
+    else:
+        fig = ax.figure
+
+    sns.stripplot(
+        data=data,
+        x=time_col,
+        y=target_col,
+        hue=target_col,
+        palette=palette,
+        size=size,
+        jitter=jitter,
+        alpha=alpha,
+        edgecolor=edgecolor,
+        linewidth=linewidth,
+        ax=ax
+    )
+
+    ax.set_title(f"Auxtel Holo observations wrt date and target {tag}")
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Target")
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+    ax.grid(True)
+    ax.legend(title="Target", bbox_to_anchor=(1.01, 1), loc="upper left", ncol=1)
+
+    fig.tight_layout()
+    return fig, ax
+
+
+#------------------------------------------
+
+#-------------------------------------------
+
+def plot_dccd_chi2_vs_time_by_target_filter(
+    df,
+    filter_col="FILTER",
+    filter_select=None,
+    time_col="Time",
+    target_col="TARGET",
+    dccd_col="D_CCD [mm]",
+    chi2_col="CHI2_FIT",
+
+    # bornes / seuils
+    dccd_min_fig=None,   
+    dccd_max_fig=None,  
+    dccd_min_cut=None,
+    dccd_max_cut=None,
+    chi2_min_fig=None,   
+    chi2_max_fig=None,   
+    chi2_cut=None,
+    
+
+    # style
+    marker="+",
+    lw=5,
+    alpha=0.5,
+    date_format="%y-%m-%d",
+    suptitle=None,
+
+    # affichage
+    per_target=False,  # si True, une paire de plot par TARGET
+    axs=None,
+    figsize=(18, 8),
+    tag=None,
+):
+    """
+    Plot DCCD vs time et CHI2 vs time pour un filtre donné, avec couleur par TARGET.
+    - per_target=False: toutes les TARGET sur une seule paire de plots
+    - per_target=True: une paire de plots par TARGET (axes empilés verticalement)
+    """
+
+    data = df.copy()
+
+    # ----------------------------
+    # Filtrer le dataframe si filter_select fourni
+    # ----------------------------
+    if filter_select is not None:
+        data = data[data[filter_col] == filter_select]
+
+    targets = data[target_col].unique()
+    n_targets = len(targets)
+
+    # ----------------------------
+    # Palette dynamique TARGET
+    # ----------------------------
+    if n_targets <= 20:
+        cmap = plt.get_cmap("tab20")
+    else:
+        cmap = plt.get_cmap("hsv")
+    target_palette = {t: mcolors.to_hex(cmap(i / n_targets)) for i, t in enumerate(targets)}
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Cas per_target = False (tout sur une paire de plots)
+    # ----------------------------
+    if not per_target:
+        if axs is None:
+            fig, axs = plt.subplots(1, 2, figsize=(figsize[0], figsize[1]),constrained_layout=True)
+        else:
+            fig = axs[0].figure
+        ax_dccd, ax_chi2 = axs
+
+        # DCCD vs Time
+        for t in targets:
+            sub = data[data[target_col] == t]
+            ax_dccd.scatter(
+                sub[time_col],
+                sub[dccd_col],
+                color=target_palette[t],
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=t
+            )
+            
+        if dccd_min_cut is not None:
+            ax_dccd.axhline(dccd_min_cut, ls="-.", c="k")
+        if dccd_max_cut is not None:
+            ax_dccd.axhline(dccd_max_cut, ls="-.", c="k")
+
+
+        ylim_min = dccd_min_fig if dccd_min_fig is not None else dccd_min_cut
+        ylim_max = dccd_max_fig if dccd_max_fig is not None else dccd_max_cut
+        if ylim_min is not None and ylim_max is not None:
+            ax_dccd.set_ylim(ylim_min, ylim_max)
+
+    
+        ax_dccd.set_ylabel("D_CCD [mm]")
+        ax_dccd.set_xlabel("Time")
+        ax_dccd.set_title(f"DCCD vs Time – Filter: {filter_select}")
+        ax_dccd.xaxis.set_major_formatter(date_form)
+        ax_dccd.grid(True, alpha=0.3)
+        plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
+
+        # CHI2 vs Time
+        for t in targets:
+            sub = data[data[target_col] == t]
+            ax_chi2.scatter(
+                sub[time_col],
+                sub[chi2_col],
+                color=target_palette[t],
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=t
+            )
+        ax_chi2.set_yscale("log")
+        if chi2_cut is not None:
+            ax_chi2.axhline(chi2_cut, ls="-.", c="k")
+
+
+        ylim_min = chi2_min_fig if chi2_min_fig is not None else 1.
+        ylim_max = chi2_max_fig if chi2_max_fig is not None else chi2_cut
+        if ylim_min is not None and ylim_max is not None:
+            ax_chi2.set_ylim(ylim_min, ylim_max)
+
+            
+        ax_chi2.set_ylabel("CHI2_FIT")
+        ax_chi2.set_xlabel("Time")
+        ax_chi2.set_title(f"CHI2 vs Time – Filter: {filter_select}")
+        ax_chi2.xaxis.set_major_formatter(date_form)
+        ax_chi2.grid(True, alpha=0.3)
+        plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
+
+        # légende unique à gauche
+        handles = [plt.Line2D([0], [0], marker=marker, color=target_palette[t], linestyle="", markersize=8) for t in targets]
+        fig.legend(handles, targets, title="TARGET", loc="center left", bbox_to_anchor=(1.01, 0.55), ncol=2)
+
+        if suptitle:
+            if tag is not None:
+                suptitle += " " 
+                suptitle += tag
+            fig.suptitle(suptitle,fontsize=16)
+        #fig.tight_layout(rect=[0.05, 0, 1, 1])  # espace pour légende
+
+    # ----------------------------
+    # Cas per_target = True (une paire de plot par TARGET)
+    # ----------------------------
+    else:
+        n_panels = n_targets
+        if axs is None:
+            fig, axs = plt.subplots(n_panels, 2, figsize=(figsize[0], figsize[1]*n_panels),constrained_layout=True)
+            if n_panels == 1:
+                axs = [axs]
+        else:
+            fig = axs[0].figure
+
+        for i, t in enumerate(targets):
+            ax_dccd, ax_chi2 = axs[i]
+
+            sub = data[data[target_col] == t]
+
+            # DCCD
+            ax_dccd.scatter(
+                sub[time_col],
+                sub[dccd_col],
+                color=target_palette[t],
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=t
+            )
+            if dccd_min_fig is not None and dccd_max_fig is not None:
+                ax_dccd.set_ylim(dccd_min_fig, dccd_max_fig)
+            if dccd_min_cut is not None:
+                ax_dccd.axhline(dccd_min_cut, ls="-.", c="k")
+            if dccd_max_cut is not None:
+                ax_dccd.axhline(dccd_max_cut, ls="-.", c="k")
+
+
+                
+            ax_dccd.set_ylabel("D_CCD [mm]")
+            ax_dccd.set_xlabel("Time")
+            ax_dccd.set_title(f"{t} – DCCD vs Time – Filter: {filter_select}")
+            ax_dccd.xaxis.set_major_formatter(date_form)
+            ax_dccd.grid(True, alpha=0.3)
+            plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
+
+            # CHI2
+            ax_chi2.scatter(
+                sub[time_col],
+                sub[chi2_col],
+                color=target_palette[t],
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=t
+            )
+
+
+            
+            ax_chi2.set_yscale("log")
+            if chi2_cut is not None:
+                ax_chi2.axhline(chi2_cut, ls="-.", c="k")
+
+            if chi2_min_fig is not None and chi2_max_fig is not None:
+                ax_chi2.set_ylim(chi2_min_fig, chi2_max_fig)
+                
+            ax_chi2.set_ylabel("CHI2_FIT")
+            ax_chi2.set_xlabel("Time")
+            ax_chi2.set_title(f"{t} – CHI2 vs Time – Filter: {filter_select}")
+            ax_chi2.xaxis.set_major_formatter(date_form)
+            ax_chi2.grid(True, alpha=0.3)
+            plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
+
+        if suptitle:
+            fig.suptitle(suptitle,fontsize=16)
+        #fig.tight_layout()
+
+
+    # pour avoir les legendes  
+    # supprimer les légendes locales
+    #for ax in axs.flat():
+    #    leg = ax.get_legend()
+    #    if leg is not None:
+    #        leg.remove()
+
+    # légende globale
+    #handles, labels = axs[0].get_legend_handles_labels()
+
+    #fig.legend(
+    #    handles,
+    #    labels,
+    #    loc="center left",
+    #    bbox_to_anchor=(1.01, 0.55),
+    #    title="Target"
+    #)
+
+    return fig, axs
+
+
+
+#------------------------------------------
+#
+#--------------------------------------------------
+def summarize_dccd_chi2(df, target_col="TARGET", filter_col="FILTER",
+                        dccd_col="D_CCD [mm]", chi2_col="CHI2_FIT"):
+    """
+    Summarize DCCD and CHI2 for each TARGET and FILTER.
+
+    Returns a pandas DataFrame with:
+        TARGET | FILTER | mean_DCCD | sigma_DCCD | mean_CHI2 | sigma_CHI2
+    """
+    summary = (
+        df
+        .groupby([target_col, filter_col])
+        .agg(
+            mean_DCCD = (dccd_col, "mean"),
+            sigma_DCCD = (dccd_col, "std"),
+            mean_CHI2 = (chi2_col, "mean"),
+            sigma_CHI2 = (chi2_col, "std")
+        )
+        .reset_index()
+    )
+    
+    return summary
+
+
+
+
+
 
 
 
