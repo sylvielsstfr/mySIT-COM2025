@@ -1,6 +1,6 @@
 """Plot functions for QCUT functions."""
 
-# install with "pip install --user -e . " 
+# install with "pip install --user -e . "
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -109,7 +109,7 @@ def scatter_datetime(
 
 
 
-    
+
     # ----------------------------
     # SCATTER
     # ----------------------------
@@ -149,7 +149,7 @@ def scatter_datetime(
         ax.xaxis.set_major_formatter(mdates.DateFormatter(date_format))
 
 
-        
+
 
     # ----------------------------
     # LABELS
@@ -385,7 +385,7 @@ def bar_counts_by_night(
 
 
     colors = [get_filter_color(f) for f in counts.columns]
-    
+
     # ----------------------------
     # PLOT
     # ----------------------------
@@ -527,7 +527,7 @@ def plot_dccd_chi2_vs_time(
             label=f  # pour la légende
         )
     ax1.legend(title=filter_col, ncol=len(data[filter_col].unique()))
-    
+
 
     if dccd_min_fig is not None and dccd_max_fig is not None:
         ax1.set_ylim(dccd_min_fig, dccd_max_fig)
@@ -573,7 +573,7 @@ def plot_dccd_chi2_vs_time(
             alpha=alpha,
             label=f
         )
-        
+
     ax2.legend(title=filter_col, ncol=len(data[filter_col].unique()))
 
     ax2.set_yscale("log")
@@ -643,8 +643,8 @@ def plot_dccd_chi2_vs_time_by_filter(
       - CHI2 vs time
     """
 
-   
-    
+
+
     filters = df[filter_col].unique()
     n = len(filters)
 
@@ -793,14 +793,14 @@ def plot_dccd_chi2_vs_time_by_target_filter(
     chi2_col="CHI2_FIT",
 
     # bornes / seuils
-    dccd_min_fig=None,   
-    dccd_max_fig=None,  
+    dccd_min_fig=None,
+    dccd_max_fig=None,
     dccd_min_cut=None,
     dccd_max_cut=None,
-    chi2_min_fig=None,   
-    chi2_max_fig=None,   
+    chi2_min_fig=None,
+    chi2_max_fig=None,
     chi2_cut=None,
-    
+
 
     # style
     marker="+",
@@ -811,6 +811,7 @@ def plot_dccd_chi2_vs_time_by_target_filter(
 
     # affichage
     per_target=False,  # si True, une paire de plot par TARGET
+    force_global_time_xlim=True,
     axs=None,
     figsize=(18, 8),
     tag=None,
@@ -828,6 +829,13 @@ def plot_dccd_chi2_vs_time_by_target_filter(
     # ----------------------------
     if filter_select is not None:
         data = data[data[filter_col] == filter_select]
+
+
+    # ----------------------------
+    # Range temporel global (pour xlim)
+    # ----------------------------
+    time_min = data[time_col].min()
+    time_max = data[time_col].max()
 
     targets = data[target_col].unique()
     n_targets = len(targets)
@@ -865,7 +873,7 @@ def plot_dccd_chi2_vs_time_by_target_filter(
                 alpha=alpha,
                 label=t
             )
-            
+
         if dccd_min_cut is not None:
             ax_dccd.axhline(dccd_min_cut, ls="-.", c="k")
         if dccd_max_cut is not None:
@@ -877,7 +885,7 @@ def plot_dccd_chi2_vs_time_by_target_filter(
         if ylim_min is not None and ylim_max is not None:
             ax_dccd.set_ylim(ylim_min, ylim_max)
 
-    
+
         ax_dccd.set_ylabel("D_CCD [mm]")
         ax_dccd.set_xlabel("Time")
         ax_dccd.set_title(f"DCCD vs Time – Filter: {filter_select}")
@@ -907,7 +915,7 @@ def plot_dccd_chi2_vs_time_by_target_filter(
         if ylim_min is not None and ylim_max is not None:
             ax_chi2.set_ylim(ylim_min, ylim_max)
 
-            
+
         ax_chi2.set_ylabel("CHI2_FIT")
         ax_chi2.set_xlabel("Time")
         ax_chi2.set_title(f"CHI2 vs Time – Filter: {filter_select}")
@@ -921,7 +929,7 @@ def plot_dccd_chi2_vs_time_by_target_filter(
 
         if suptitle:
             if tag is not None:
-                suptitle += " " 
+                suptitle += " "
                 suptitle += tag
             fig.suptitle(suptitle,fontsize=16)
         #fig.tight_layout(rect=[0.05, 0, 1, 1])  # espace pour légende
@@ -953,6 +961,8 @@ def plot_dccd_chi2_vs_time_by_target_filter(
                 alpha=alpha,
                 label=t
             )
+            if force_global_time_xlim:
+                ax_dccd.set_xlim(time_min, time_max)
             if dccd_min_fig is not None and dccd_max_fig is not None:
                 ax_dccd.set_ylim(dccd_min_fig, dccd_max_fig)
             if dccd_min_cut is not None:
@@ -961,7 +971,7 @@ def plot_dccd_chi2_vs_time_by_target_filter(
                 ax_dccd.axhline(dccd_max_cut, ls="-.", c="k")
 
 
-                
+
             ax_dccd.set_ylabel("D_CCD [mm]")
             ax_dccd.set_xlabel("Time")
             ax_dccd.set_title(f"{t} – DCCD vs Time – Filter: {filter_select}")
@@ -981,14 +991,18 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             )
 
 
-            
+
             ax_chi2.set_yscale("log")
             if chi2_cut is not None:
                 ax_chi2.axhline(chi2_cut, ls="-.", c="k")
 
             if chi2_min_fig is not None and chi2_max_fig is not None:
                 ax_chi2.set_ylim(chi2_min_fig, chi2_max_fig)
-                
+
+
+            if force_global_time_xlim:
+                ax_chi2.set_xlim(time_min, time_max)
+
             ax_chi2.set_ylabel("CHI2_FIT")
             ax_chi2.set_xlabel("Time")
             ax_chi2.set_title(f"{t} – CHI2 vs Time – Filter: {filter_select}")
@@ -1001,7 +1015,7 @@ def plot_dccd_chi2_vs_time_by_target_filter(
         #fig.tight_layout()
 
 
-    # pour avoir les legendes  
+    # pour avoir les legendes
     # supprimer les légendes locales
     #for ax in axs.flat():
     #    leg = ax.get_legend()
@@ -1049,7 +1063,7 @@ def plot_dccd_chi2_histo_by_target_filter(
 
     # style
     lw=4,
-  
+
     suptitle=None,
 
     # affichage
@@ -1058,7 +1072,7 @@ def plot_dccd_chi2_histo_by_target_filter(
     figsize=(18, 8),
     tag=None,
 
-  
+
 ):
     """
     Histogrammes DCCD et CHI2 pour un filtre donné.
@@ -1077,7 +1091,7 @@ def plot_dccd_chi2_histo_by_target_filter(
     targets = np.sort(data[target_col].unique())
     n_targets = len(targets)
 
-    
+
 
     # ----------------------------
     # Palette dynamique TARGET
@@ -1276,14 +1290,14 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
     chi2_col="CHI2_FIT",
 
     # bornes / seuils
-    dccd_min_fig=None,   
-    dccd_max_fig=None,  
+    dccd_min_fig=None,
+    dccd_max_fig=None,
     dccd_min_cut=None,
     dccd_max_cut=None,
-    chi2_min_fig=None,   
-    chi2_max_fig=None,   
+    chi2_min_fig=None,
+    chi2_max_fig=None,
     chi2_cut=None,
-    
+
 
     # style
     marker="+",
@@ -1294,6 +1308,7 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
 
     # affichage
     per_target=False,  # si True, une paire de plot par TARGET
+    force_global_time_xlim=True,
     axs=None,
     figsize=(18, 8),
     tag=None,
@@ -1309,6 +1324,8 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
 
 
     data = df.copy()
+
+
 
     # ----------------------------
     # Palette TARGET (external)
@@ -1339,6 +1356,14 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
     if filter_select is not None:
         data = data[data[filter_col] == filter_select]
 
+
+
+    # ----------------------------
+    # Range temporel global (pour xlim)
+    # ----------------------------
+    time_min = data[time_col].min()
+    time_max = data[time_col].max()
+
     targets = data[target_col].unique()
     n_targets = len(targets)
 
@@ -1351,6 +1376,7 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             cmap = plt.get_cmap("tab20")
         else:
             cmap = plt.get_cmap("hsv")
+
         target_palette = {t: mcolors.to_hex(cmap(i / n_targets)) for i, t in enumerate(targets)}
 
     date_form = DateFormatter(date_format)
@@ -1377,7 +1403,7 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
                 alpha=alpha,
                 label=t
             )
-            
+
         if dccd_min_cut is not None:
             ax_dccd.axhline(dccd_min_cut, ls="-.", c="k")
         if dccd_max_cut is not None:
@@ -1389,7 +1415,7 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
         if ylim_min is not None and ylim_max is not None:
             ax_dccd.set_ylim(ylim_min, ylim_max)
 
-    
+
         ax_dccd.set_ylabel("D_CCD [mm]")
         ax_dccd.set_xlabel("Time")
         ax_dccd.set_title(f"DCCD vs Time – Filter: {filter_select}")
@@ -1419,7 +1445,7 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
         if ylim_min is not None and ylim_max is not None:
             ax_chi2.set_ylim(ylim_min, ylim_max)
 
-            
+
         ax_chi2.set_ylabel("CHI2_FIT")
         ax_chi2.set_xlabel("Time")
         ax_chi2.set_title(f"CHI2 vs Time – Filter: {filter_select}")
@@ -1433,7 +1459,7 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
 
         if suptitle:
             if tag is not None:
-                suptitle += " " 
+                suptitle += " "
                 suptitle += tag
             fig.suptitle(suptitle,fontsize=16)
         #fig.tight_layout(rect=[0.05, 0, 1, 1])  # espace pour légende
@@ -1459,12 +1485,16 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             ax_dccd.scatter(
                 sub[time_col],
                 sub[dccd_col],
-                color=target_palette[t],
+                color=effective_palette[t],
                 marker=marker,
                 lw=lw,
                 alpha=alpha,
                 label=t
             )
+
+            if force_global_time_xlim:
+                ax_dccd.set_xlim(time_min, time_max)
+
             if dccd_min_fig is not None and dccd_max_fig is not None:
                 ax_dccd.set_ylim(dccd_min_fig, dccd_max_fig)
             if dccd_min_cut is not None:
@@ -1473,7 +1503,7 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
                 ax_dccd.axhline(dccd_max_cut, ls="-.", c="k")
 
 
-                
+
             ax_dccd.set_ylabel("D_CCD [mm]")
             ax_dccd.set_xlabel("Time")
             ax_dccd.set_title(f"{t} – DCCD vs Time – Filter: {filter_select}")
@@ -1485,20 +1515,23 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             ax_chi2.scatter(
                 sub[time_col],
                 sub[chi2_col],
-                color=target_palette[t],
+                color=effective_palette[t],
                 marker=marker,
                 lw=lw,
                 alpha=alpha,
                 label=t
             )
-          
+
+            if force_global_time_xlim:
+                ax_chi2.set_xlim(time_min, time_max)
+
             ax_chi2.set_yscale("log")
             if chi2_cut is not None:
                 ax_chi2.axhline(chi2_cut, ls="-.", c="k")
 
             if chi2_min_fig is not None and chi2_max_fig is not None:
                 ax_chi2.set_ylim(chi2_min_fig, chi2_max_fig)
-                
+
             ax_chi2.set_ylabel("CHI2_FIT")
             ax_chi2.set_xlabel("Time")
             ax_chi2.set_title(f"{t} – CHI2 vs Time – Filter: {filter_select}")
@@ -1511,7 +1544,7 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
         #fig.tight_layout()
 
 
-    # pour avoir les legendes  
+    # pour avoir les legendes
     # supprimer les légendes locales
     #for ax in axs.flat():
     #    leg = ax.get_legend()
