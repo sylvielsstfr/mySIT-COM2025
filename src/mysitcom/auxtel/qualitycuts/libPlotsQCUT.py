@@ -1541,6 +1541,256 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
     dccd_col="D_CCD [mm]",
     chi2_col="CHI2_FIT",
 
+    # bornes / seuils
+    dccd_min_fig=None,
+    dccd_max_fig=None,
+    dccd_min_cut=None,
+    dccd_max_cut=None,
+    chi2_min_fig=None,
+    chi2_max_fig=None,
+    chi2_cut=None,
+
+    # histogramme
+    bins_dccd=100,
+    bins_chi2=100,
+    density=False,
+
+    # style
+    lw=4,
+
+    suptitle=None,
+
+    # affichage
+    per_target=False,
+    axs=None,
+    figsize=(18, 8),
+    tag=None,
+
+# colors
+    target_palette=None,   # dict: TARGET -> color
+
+):
+    """
+    Histogrammes DCCD et CHI2 pour un filtre donné.
+    - per_target=False : tous les TARGET superposés sur une paire de plots
+    - per_target=True  : une paire de plots par TARGET
+    """
+
+    data = df.copy()
+
+    # ----------------------------
+    # Filter data ccorording the requested filter
+    # ----------------------------
+    if filter_select is not None:
+        data = data[data[filter_col] == filter_select]
+
+    targets = np.sort(data[target_col].unique())
+    n_targets = len(targets)
+
+
+    # ----------------------------
+    # If no palette is provided a color palette is generated otherwise
+    # use  the one provided but check for missing targets
+    # ----------------------------
+    if target_palette is None:
+        if n_targets <= 20:
+            cmap = plt.get_cmap("tab20")
+        else:
+            cmap = plt.get_cmap("hsv")
+        target_palette = {t: mcolors.to_hex(cmap(i / n_targets)) for i, t in enumerate(targets)}
+    else:
+        # so here the target palette exist but de fefault color is attributed for missing targets
+        missing = set(targets) - set(target_palette.keys())
+        if missing:
+            print(f"Missing colors for targets → defaulting to black: {missing}")
+
+        effective_palette = {t: target_palette.get(t, DEFAULT_TARGET_COLOR) for t in targets}
+        target_palette = effective_palette
+    # ----------------------------
+    # Définition des bins communs
+    # ----------------------------
+    dccd_vals = data[dccd_col].dropna()
+    chi2_vals = data[chi2_col].dropna()
+
+    dccd_bins = np.linspace(
+        dccd_vals.min() if dccd_min_fig is None else dccd_min_fig,
+        dccd_vals.max() if dccd_max_fig is None else dccd_max_fig,
+        bins_dccd,
+    )
+
+    chi2_bins = np.logspace(
+        np.log10(chi2_vals[chi2_vals > 0].min()),
+        np.log10(chi2_vals.max()),
+        bins_chi2,
+    )
+
+    # ============================================================
+    # Cas per_target = False
+    # ============================================================
+    if not per_target:
+        if axs is None:
+            fig, axs = plt.subplots(1, 2, figsize=figsize, constrained_layout=True)
+        else:
+            fig = axs[0].figure
+
+        ax_dccd, ax_chi2 = axs
+
+        # --- DCCD histogrammes
+        for t in targets:
+            sub = data[data[target_col] == t]
+            ax_dccd.hist(
+                sub[dccd_col].dropna(),
+                bins=dccd_bins,
+                histtype="step",
+                lw=lw,
+                density=density,
+                color=target_palette[t],
+                label=t,
+            )
+
+        if dccd_min_cut is not None:
+            ax_dccd.axvline(dccd_min_cut, ls="-.", c="k")
+        if dccd_max_cut is not None:
+            ax_dccd.axvline(dccd_max_cut, ls="-.", c="k")
+
+        if dccd_min_fig is not None and dccd_max_fig is not None:
+            ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
+
+        ax_dccd.set_xlabel("D_CCD [mm]")
+        ax_dccd.set_ylabel("Density" if density else "Counts")
+        ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
+        ax_dccd.grid(True, alpha=0.3)
+
+        # --- CHI2 histogrammes
+        for t in targets:
+            sub = data[data[target_col] == t]
+            ax_chi2.hist(
+                sub[chi2_col].dropna(),
+                bins=chi2_bins,
+                histtype="step",
+                lw=lw,
+                density=density,
+                color=target_palette[t],
+                label=t,
+            )
+
+        ax_chi2.set_xscale("log")
+
+        if chi2_cut is not None:
+            ax_chi2.axvline(chi2_cut, ls="-.", c="k")
+
+        if chi2_min_fig is not None and chi2_max_fig is not None:
+            ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
+
+        ax_chi2.set_xlabel("CHI2_FIT")
+        ax_chi2.set_ylabel("Density" if density else "Counts")
+        ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
+        ax_chi2.grid(True, alpha=0.3)
+
+        # --- légende globale
+        handles = [
+            plt.Line2D([0], [0], color=target_palette[t], lw=lw)
+            for t in targets
+        ]
+
+        fig.legend(
+            handles,
+            targets,
+            title="TARGET",
+            loc="center left",
+            bbox_to_anchor=(1.01, 0.55),
+            ncol=2,
+        )
+
+        if suptitle:
+            if tag is not None:
+                suptitle = f"{suptitle} {tag}"
+            fig.suptitle(suptitle, fontsize=16)
+
+    # ============================================================
+    # Cas per_target = True
+    # ============================================================
+    else:
+        n_panels = n_targets
+
+        if axs is None:
+            fig, axs = plt.subplots(
+                n_panels, 2,
+                figsize=(figsize[0], figsize[1] * n_panels),
+                constrained_layout=True,
+            )
+            if n_panels == 1:
+                axs = [axs]
+        else:
+            fig = axs[0].figure
+
+        for i, t in enumerate(targets):
+            ax_dccd, ax_chi2 = axs[i]
+            sub = data[data[target_col] == t]
+
+            # --- DCCD
+            ax_dccd.hist(
+                sub[dccd_col].dropna(),
+                bins=dccd_bins,
+                histtype="step",
+                lw=lw,
+                density=density,
+                color=target_palette[t],
+            )
+
+            if dccd_min_cut is not None:
+                ax_dccd.axvline(dccd_min_cut, ls="-.", c="k")
+            if dccd_max_cut is not None:
+                ax_dccd.axvline(dccd_max_cut, ls="-.", c="k")
+
+            if dccd_min_fig is not None and dccd_max_fig is not None:
+                ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
+
+            ax_dccd.set_title(f"{t} – DCCD – Filter: {filter_select}")
+            ax_dccd.set_xlabel("D_CCD [mm]")
+            ax_dccd.set_ylabel("Density" if density else "Counts")
+            ax_dccd.grid(True, alpha=0.3)
+
+            # --- CHI2
+            ax_chi2.hist(
+                sub[chi2_col].dropna(),
+                bins=chi2_bins,
+                histtype="step",
+                lw=lw,
+                density=density,
+                color=target_palette[t],
+            )
+
+            ax_chi2.set_xscale("log")
+
+            if chi2_cut is not None:
+                ax_chi2.axvline(chi2_cut, ls="-.", c="k")
+
+            if chi2_min_fig is not None and chi2_max_fig is not None:
+                ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
+
+            ax_chi2.set_title(f"{t} – CHI2 – Filter: {filter_select}")
+            ax_chi2.set_xlabel("CHI2_FIT")
+            ax_chi2.set_ylabel("Density" if density else "Counts")
+            ax_chi2.grid(True, alpha=0.3)
+
+        if suptitle:
+            fig.suptitle(suptitle, fontsize=16)
+
+    return fig, axs
+
+
+#------------------------
+
+#------------------------
+def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
+    df,
+    filter_col="FILTER",
+    filter_select=None,
+    target_col="TARGET",
+    dccd_col="D_CCD [mm]",
+    chi2_col="CHI2_FIT",
+
     # histogram control
     bins_dccd=100,
     bins_chi2=100,
