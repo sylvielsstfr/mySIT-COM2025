@@ -28,7 +28,7 @@ This is the first step to extract from Butler the atmospheric parameters and oth
 
 ## Post processing
 
-- **MERGE_pectractorResults_ExposuresList.ipynb**: merge Spectractor Results and Exposure list.
+- **MERGE_SpectractorResults_ExposuresList.ipynb**: merge Spectractor Results and Exposure list.
 
 
 

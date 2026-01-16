@@ -1,7 +1,7 @@
 # input file configuration
 
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
-version_run = "run_v12"
+version_run = "run2026_v01"
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
@@ -17,6 +17,7 @@ map_run_butler_embargo = {
                             "run_v10": False,
                             "run_v11": False,
                             "run_v12": False,
+                            "run2026_v01": False,
                          }
 
 FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
@@ -25,7 +26,8 @@ FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
 legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3.1.0 (/repo/main, w_2025_25,all-filts,gain)","run_v3":"v3.2.0 (/repo/embargo, w_2025_36,gain),", "run_v4":"v3.2.0 (/repo/embargo,w_2025_36,gain)","run_v5":"v3.2.0  (/repo/embargo,w_2025_36,ptc)","run_v6":"v3.2.0  (/repo/main,w_2025_38,gain)","run_v7":"v3_2_0_repo_main_w_2025_38_gain-v3_2_0_repo_embargo_w_2025_36_ptc",
 "run_v8": "v3_2_0_repo_main_w_2025_42_ptc", "run_v9" : "v3_2_0_repo_main_w_2025_42_gains","run_v10" : "v3_2_0_repo_main_w_2025_42_gains",
 "run_v11" : "v3_2_0_repo_main_w_2025_42_ptc",
-"run_v12" : "spectractorv321testccdgains_all_main_2025data_ptc",        
+"run_v12" : "spectractorv321testccdgains_all_main_2025data_ptc",
+"run2026_v01" : "v3.2.1 (/repo/main, w_2026_01,ptc)",
 }
 
 
@@ -53,7 +55,9 @@ butlerusercollectiondict = {
     # run_v10 : oct 2025 : reprocess all data from 2022-2025 which are in /repo/main now with  BG40 in 2025
     "run_v10" : "u/dagoret/auxtel_run_20251022_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_a",
     "run_v11" : "u/dagoret/auxtel_run_20251023_w_2025_42_spectractorv32_all_main_2025data_ptc_holoallfilt_a",
-    "run_v12" : "u/dagoret/auxtel_run_20251210_w_2025_49_spectractorv321testccdgains_all_main_2025data_ptc_holoallfilt_a"
+    "run_v12" : "u/dagoret/auxtel_run_20251210_w_2025_49_spectractorv321testccdgains_all_main_2025data_ptc_holoallfilt_a",
+    "run2026_v01":"u/jneveu/auxtel_atmosphere_202311_v3.2.1_fixA2fixA1_RobustFit_newThroughputs/20260102T180833Z",
+    
 }
 
 
@@ -79,6 +83,8 @@ extractedfilesdict = {
     "run_v11" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251023_w_2025_42_spectractorv32_all_main_2025data_ptc_holoallfilt_a_v1.npy",
     # run v12 : Dec 12 2025
     "run_v12" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251210_w_2025_49_spectractorv321testccdgains_all_main_2025data_ptc_holoallfilt_a_v1.npy",
+    # /repo/main
+    "run2026_v01": "../../../../../fromjeremy/holo_202601/auxtel_atmosphere_202311_v3.2.1_fixA2fixA1_RobustFit_newThroughputs.parquet.gz",
 }
 
 # path of output files Spectractor parameters Extracted from Butler and merged with exposure list from butler registry
@@ -100,7 +106,7 @@ mergedextractedfilesdict = {
     "run_v10":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251022_w_2025_42_spectractorv32_all_main_data_gains_holoallfilt_a_v1_merged.npy",
     "run_v11" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251023_w_2025_42_spectractorv32_all_main_2025data_ptc_holoallfilt_a_v1_merged.npy",
     "run_v12" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_run_u_dagoret_auxtel_run_20251210_w_2025_49_spectractorv321testccdgains_all_main_2025data_ptc_holoallfilt_a_v1_merged.npy",
-    
+    "run2026_v01":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_202311_v3.2.1_fixA2fixA1_RobustFit_newThroughputs_merged.parquet.gz"
 }
 
 mergedtofindmissings = {
@@ -114,6 +120,7 @@ mergedtofindmissings = {
     "run_v10": "None",
     "run_v11": "None",
     "run_v12": "None",
+    "run2026_v01" : "None",
 }
 
 def DumpConfig():

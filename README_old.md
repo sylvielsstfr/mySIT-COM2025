@@ -1,2 +1,0 @@
-# mySIT-COM2025
-mySIT-COM2025
