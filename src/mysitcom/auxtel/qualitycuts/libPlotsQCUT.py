@@ -2065,6 +2065,7 @@ def summarize_dccd_chi2(df, target_col="TARGET", filter_col="FILTER",
         df
         .groupby([target_col, filter_col])
         .agg(
+            N=("CHI2_FIT", "size"), 
             mean_DCCD = (dccd_col, "mean"),
             sigma_DCCD = (dccd_col, "std"),
             mean_CHI2 = (chi2_col, "mean"),
