@@ -27,6 +27,15 @@ At `usdf` do in top directory (same level as pyproject.toml) :
 >> pip install --user -e .
 ```
 
+We need dependencies on the following packages that must be installed by hand from github:
+
+| package name | path                                         |  task                    |  installation command |
+|--------------|----------------------------------------------|--------------------------|-----------------------|
+| atmospec     | https://github.com/lsst/atmospec             | lsst pipeline interface  |                       |   
+| Spectractor  | https://github.com/LSSTDESC/Spectractor      | star spectra extraction  |                       |
+| getObsAtmo   | https://github.com/LSSTDESC/getObsAtmo       | atmospheric simulation   | pip install --user .  |
+| rubinsimphot | https://github.com/sylvielsstfr/rubinsimphot | photometric calculations | pip install --user .  |
+| gaiaspec     | https://github.com/corentinravoux/gaiaspec   | SED from gaia stars      | pip install --user .  |
 
 
 ## Dev Guide - Getting Started
