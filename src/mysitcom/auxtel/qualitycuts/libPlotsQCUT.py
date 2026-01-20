@@ -2078,6 +2078,109 @@ def summarize_dccd_chi2(df, target_col="TARGET", filter_col="FILTER",
 #------------------------------------------------------------------
 # What induces bad chi2
 #-------------------------------------------------------------------
+
+def plot_param_histogram_grid(
+    df,
+    params,
+    filter_col,
+    filter_order=None,          # list of filters in desired column order
+    param_ranges=None,          # dict: {param: (xmin, xmax)}
+    bins=50,                    # int or dict {param: bins}
+    stacked=True,
+    density=False,
+    logy=False,
+    alpha=0.7,
+    figsize=(4, 2.5),
+):
+    """
+    Plot a grid of histograms:
+      rows    -> parameters
+      columns -> filters
+    """
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    # ----------------------------
+    # Filter ordering
+    # ----------------------------
+    if filter_order is None:
+        filters = list(df[filter_col].unique())
+    else:
+        filters = filter_order
+
+    n_params = len(params)
+    n_filters = len(filters)
+
+    fig, axs = plt.subplots(
+        n_params,
+        n_filters,
+        figsize=(figsize[0] * n_filters, figsize[1] * n_params),
+        squeeze=False,
+        sharey=False,
+    )
+
+    # ----------------------------
+    # Loop
+    # ----------------------------
+    for i, param in enumerate(params):
+
+        # --- bin handling per parameter
+        nbins = bins[param] if isinstance(bins, dict) else bins
+
+        if param_ranges and param in param_ranges:
+            xmin, xmax = param_ranges[param]
+        else:
+            xmin, xmax = df[param].min(), df[param].max()
+
+        bin_edges = np.linspace(xmin, xmax, nbins + 1)
+
+        for j, f in enumerate(filters):
+
+            ax = axs[i, j]
+
+            sub = df[df[filter_col] == f][param].dropna()
+
+            ax.hist(
+                sub,
+                bins=bin_edges,
+                stacked=stacked,
+                density=density,
+                alpha=alpha,
+                color=get_filter_color(f),
+            )
+
+            ax.set_xlim(xmin, xmax)
+
+            if logy:
+                ax.set_yscale("log")
+
+            ax.grid(True, alpha=0.3)
+
+            # ----------------------------
+            # Labels
+            # ----------------------------
+            ax.set_xlabel(param)
+
+            if j == 0:
+                ax.set_ylabel("Count" if not density else "Density")
+
+            # ----------------------------
+            # Column titles
+            # ----------------------------
+            if i == 0:
+                ax.set_title(str(f))
+
+    fig.tight_layout()
+    return fig, axs
+
+
+
+
+
+#----------------------------------------------------------------
+#
+#------------------------------------------------------------
 def plot_params_and_chi2_vs_time(
     df,
     time_col,
@@ -2272,8 +2375,8 @@ def plot_param_chi2_correlation_grid(
     param_ranges=None,        # dict: {param: (xmin, xmax)}
     chi2_range=None,          # (ymin, ymax)
     marker=".",
-    alpha=0.3,
-    figsize=(4, 3),
+    alpha=0.2,
+    figsize=(4, 4),
 ):
     """
     Plot correlation between parameters and CHI2_FIT.

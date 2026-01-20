@@ -5,6 +5,7 @@ plot_dccd_chi2_histo_by_target_filter,\
 plot_dccd_chi2_vs_time_by_target_filter_colorsedtype,\
 plot_dccd_chi2_histo_by_target_filter_colorsedtype,\
 summarize_dccd_chi2,\
+plot_param_histogram_grid,\
 plot_params_and_chi2_vs_time,\
 plot_param_chi2_correlation_grid
 __all__ = ["get_filter_color",
@@ -19,6 +20,7 @@ __all__ = ["get_filter_color",
            "plot_dccd_chi2_vs_time_by_target_filter_colorsedtype",
            "plot_dccd_chi2_histo_by_target_filter_colorsedtype",
            "summarize_dccd_chi2",
+           "plot_param_histogram_grid",
            "plot_params_and_chi2_vs_time",
            "plot_param_chi2_correlation_grid",
           ]
