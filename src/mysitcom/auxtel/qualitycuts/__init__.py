@@ -4,7 +4,8 @@ stripplot_target_vs_time,plot_dccd_chi2_vs_time_by_target_filter,\
 plot_dccd_chi2_histo_by_target_filter,\
 plot_dccd_chi2_vs_time_by_target_filter_colorsedtype,\
 plot_dccd_chi2_histo_by_target_filter_colorsedtype,\
-summarize_dccd_chi2
+summarize_dccd_chi2,\
+plot_params_and_chi2_vs_time
 __all__ = ["get_filter_color",
            "scatter_datetime",
            "strip_datetime",
@@ -16,4 +17,6 @@ __all__ = ["get_filter_color",
            "plot_dccd_chi2_histo_by_target_filter",
            "plot_dccd_chi2_vs_time_by_target_filter_colorsedtype",
            "plot_dccd_chi2_histo_by_target_filter_colorsedtype",
-           "summarize_dccd_chi2"]
+           "summarize_dccd_chi2",
+           "plot_params_and_chi2_vs_time"
+          ]

@@ -2075,4 +2075,184 @@ def summarize_dccd_chi2(df, target_col="TARGET", filter_col="FILTER",
     )
     return summary
 
+#------------------------------------------------------------------
+# What induces bad chi2
+#-------------------------------------------------------------------
+def plot_params_and_chi2_vs_time(
+    df,
+    time_col,
+    filter_col,
+    chi2_col,
+    params,                      # list of parameter column names
 
+    # display
+    marker="+",
+    lw=5,
+    alpha=0.5,
+
+    # datetime
+    date_format="%y-%m-%d",
+
+    # scaling
+    chi2_log=True,
+
+    # optional bounds
+    param_ylim=None,              # dict: {param: (ymin, ymax)}
+    chi2_cut=None,
+
+    #colors of params   
+    param_colors=None,             # dict: {param: color}
+
+    # titles
+    panel_titles=None,            # dict: {param: title}
+    suptitle=None,
+
+    # axes handling
+    axs=None,
+    figsize=(18, 4),
+):
+    """
+    Plot an arbitrary list of parameters vs time, each compared with CHI2_FIT
+    using a twin y-axis.
+
+    Parameters
+    ----------
+    params : list of str
+        List of dataframe column names to plot vs time.
+    param_ylim : dict, optional
+        {param: (ymin, ymax)} for left axes.
+    panel_titles : dict, optional
+        {param: title} for panel titles.
+    axs : list of matplotlib.axes.Axes, optional
+        External axes (length must match len(params)).
+    """
+
+
+    data = df.copy()
+
+    # ----------------------------
+    # Datetime handling
+    # ----------------------------
+    if is_datetime64_any_dtype(data[time_col]):
+        try:
+            data[time_col] = data[time_col].dt.tz_convert(None)
+        except TypeError:
+            pass
+
+    n_panels = len(params)
+
+    # ----------------------------
+    # Axes creation
+    # ----------------------------
+    if axs is None:
+        fig, axs = plt.subplots(
+            n_panels, 1,
+            figsize=(figsize[0], figsize[1] * n_panels),
+            sharex=False,
+            constrained_layout=True,
+        )
+        if n_panels == 1:
+            axs = [axs]
+    else:
+        fig = axs[0].figure
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Loop over parameters
+    # ----------------------------
+    for ax, param in zip(axs, params):
+
+
+        param_color = (
+            param_colors.get(param, "tab:purple")
+                if param_colors else "tab:purple"
+            )
+
+        ax_r = ax.twinx()
+
+        # No loop on external parameter 
+        h_param = ax.plot(
+            data[time_col],
+            data[param],
+            linestyle="None",
+            marker=marker,
+            color=param_color,
+            alpha=alpha,
+            label=param,          
+            )
+
+        # Right axis: CHI2
+        # loop on filters
+        for f in data[filter_col].unique():
+            sub = data[data[filter_col] == f]
+            h_chi2 = ax_r.plot(
+            sub[time_col],
+            sub[chi2_col],
+            ".",
+            alpha=0.25,
+            color=get_filter_color(f)
+            )
+            
+        ax_r.set_yscale("log")
+
+        handles = h_param 
+        labels = [h.get_label() for h in handles]
+
+        ax.legend(
+                handles,
+                labels,
+                loc="upper right",
+                frameon=True,
+        )
+
+        
+        # ----------------------------
+        # Axis formatting
+        # ----------------------------
+        ax.set_ylabel(param)
+
+        if param_ylim and param in param_ylim:
+            ax.set_ylim(*param_ylim[param])
+
+        if chi2_log:
+            ax_r.set_yscale("log")
+
+        if chi2_cut is not None:
+            ax_r.axhline(chi2_cut, ls="-.", c="k", alpha=0.5)
+
+        ax_r.set_ylabel(chi2_col)
+
+        title = panel_titles.get(param, param) if panel_titles else param
+        ax.set_title(title)
+
+        ax.grid(True, alpha=0.3)
+
+        # Legend only once per panel (filters)
+        ax.legend(
+            title=filter_col,
+            ncol=len(data[filter_col].unique()),
+            loc="upper left"
+        )
+
+        ax.set_xlabel("time")
+        ax.xaxis.set_major_formatter(date_form)
+        plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+    # ----------------------------
+    # Shared x-axis
+    # ----------------------------
+    #axs[-1].set_xlabel("time")
+    #axs[-1].xaxis.set_major_formatter(date_form)
+    #plt.setp(axs[-1].get_xticklabels(), rotation=45, ha="right")
+
+    # ----------------------------
+    # Global title
+    # ----------------------------
+    if suptitle:
+        fig.suptitle(suptitle)
+
+    #if axs is None:
+    #    fig.tight_layout()
+
+    return fig, axs
