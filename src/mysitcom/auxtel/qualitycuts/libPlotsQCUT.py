@@ -2256,3 +2256,107 @@ def plot_params_and_chi2_vs_time(
     #    fig.tight_layout()
 
     return fig, axs
+
+
+
+#----------------------------
+# param vs chi2
+#----------------------------
+
+def plot_param_chi2_correlation_grid(
+    df,
+    params,
+    chi2_col,
+    filter_col,
+    filter_order=None,        # list of filters in desired column order
+    param_ranges=None,        # dict: {param: (xmin, xmax)}
+    chi2_range=None,          # (ymin, ymax)
+    marker=".",
+    alpha=0.3,
+    figsize=(4, 3),
+):
+    """
+    Plot correlation between parameters and CHI2_FIT.
+    
+    Rows: parameters
+    Columns: filters
+    """
+
+    import matplotlib.pyplot as plt
+
+    # ----------------------------
+    # Filter ordering
+    # ----------------------------
+    if filter_order is None:
+        filters = list(df[filter_col].unique())
+    else:
+        filters = filter_order
+
+    n_params = len(params)
+    n_filters = len(filters)
+
+    fig, axs = plt.subplots(
+        n_params,
+        n_filters,
+        figsize=(figsize[0] * n_filters, figsize[1] * n_params),
+        sharex=False,
+        sharey=False,
+        squeeze=False,
+    )
+
+    # ----------------------------
+    # Loop
+    # ----------------------------
+    for i, param in enumerate(params):
+        for j, f in enumerate(filters):
+
+            ax = axs[i, j]
+
+            sub = df[df[filter_col] == f]
+
+            ax.plot(
+                sub[param],
+                sub[chi2_col],
+                linestyle="None",
+                marker=marker,
+                alpha=alpha,
+                color=get_filter_color(f),
+            )
+
+            # ----------------------------
+            # Axis limits
+            # ----------------------------
+            if param_ranges and param in param_ranges:
+                ax.set_xlim(*param_ranges[param])
+
+            if chi2_range is not None:
+                ax.set_ylim(*chi2_range)
+
+            ax.grid(True, alpha=0.3)
+            ax.set_yscale("log")
+
+            # ----------------------------
+            # Labels
+            # ----------------------------
+            ax.set_xlabel(param)
+            #if i == n_params - 1:
+            #    ax.set_xlabel(param)
+            #else:
+            #    ax.set_xticklabels([])
+
+            if j == 0:
+                ax.set_ylabel(chi2_col)
+            else:
+                ax.set_yticklabels([])
+
+           
+            # ----------------------------
+            # Column titles
+            # ----------------------------
+            if i == 0:
+                ax.set_title(str(f))
+
+    fig.tight_layout()
+    return fig, axs
+
+
