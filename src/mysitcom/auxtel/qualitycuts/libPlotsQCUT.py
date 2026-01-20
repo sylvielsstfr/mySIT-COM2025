@@ -2463,3 +2463,216 @@ def plot_param_chi2_correlation_grid(
     return fig, axs
 
 
+#----------------------------------------------------------
+#
+#-------------------------------------------------------------
+def plot_param2_vs_param1_colored_by_time(
+    df,
+    time_col,
+    param1,
+    param2,
+    cmap="viridis",
+    marker=".",
+    alpha=0.6,
+    figsize=(8, 6),
+):
+    """
+    Plot param2 vs param1, colored by relative time since the first observation.
+
+    Color scale: (time - t0) in days.
+    """
+
+    
+    data = df[[time_col, param1, param2]].dropna()
+
+    # ----------------------------
+    # Datetime handling (robust)
+    # ----------------------------
+    if not is_datetime64_any_dtype(data[time_col]):
+        raise ValueError(f"{time_col} must be datetime64")
+
+    t0 = data[time_col].min()
+    time_days = (data[time_col] - t0).dt.total_seconds() / 86400.0
+
+    # ----------------------------
+    # Plot
+    # ----------------------------
+    fig, ax = plt.subplots(figsize=figsize)
+
+    sc = ax.scatter(
+        data[param1],
+        data[param2],
+        c=time_days,
+        cmap=cmap,
+        marker=marker,
+        alpha=alpha,
+        
+    )
+
+    ax.set_aspect("equal", adjustable="box")
+    
+    ax.set_xlabel(param1)
+    ax.set_ylabel(param2)
+    ax.grid(True, alpha=0.3)
+
+    cbar = fig.colorbar(sc, ax=ax)
+    cbar.set_label("Time since start [days]")
+
+    fig.tight_layout()
+    return fig, ax
+
+
+
+
+#----------------------------------------------------------
+#
+#-------------------------------------------------------------
+def plot_param_difference_vs_time(
+    df,
+    time_col,
+    param1,
+    param2,
+    marker=".",
+    alpha=0.6,
+    figsize=(18, 6),
+    zoomdiff = None
+):
+    """
+    Plot (param2 - param1) vs time.
+    """
+
+    import matplotlib.pyplot as plt
+    from pandas.api.types import is_datetime64_any_dtype
+
+    data = df[[time_col, param1, param2]].dropna()
+
+    if not is_datetime64_any_dtype(data[time_col]):
+        raise ValueError(f"{time_col} must be datetime64")
+
+    diff = data[param2] - data[param1]
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    ax.plot(
+        data[time_col],
+        diff,
+        linestyle="None",
+        marker=marker,
+        alpha=alpha,
+    )
+
+    ax.set_xlabel("Time")
+    ax.set_ylabel(f"{param2} − {param1}")
+    ax.grid(True, alpha=0.3)
+
+
+    if zoomdiff is not None:
+        ax.set_ylim(zoomdiff[0],zoomdiff[1]) 
+    
+    fig.autofmt_xdate()
+    fig.tight_layout()
+
+    return fig, ax
+
+#-----------------------------------------------
+#
+#------------------------------------------------
+def plot_param_difference_vs_time_colored_by_chi2(
+    df,
+    time_col,
+    param1,
+    param2,
+    chi2_col,
+    chi2_range,
+    cmap="viridis",
+    marker=".",
+    alpha=0.6,
+    figsize=(18, 8),
+    zoomdiff = None
+):
+    """
+    Plot (param2 - param1) vs time, colored by log10(chi2).
+
+    Parameters
+    ----------
+    chi2_range : tuple(float, float)
+        (chi2_min, chi2_max) used for color normalization (in linear chi2).
+    """
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from pandas.api.types import is_datetime64_any_dtype
+
+    # ----------------------------
+    # Select & clean data
+    # ----------------------------
+    data = df[[time_col, param1, param2, chi2_col]].dropna()
+
+    if not is_datetime64_any_dtype(data[time_col]):
+        raise ValueError(f"{time_col} must be datetime64")
+
+    # Keep strictly positive chi2 only (log scale)
+    data = data[data[chi2_col] > 0]
+
+    if data.empty:
+        raise ValueError("No valid data after chi2 > 0 selection")
+
+    # ----------------------------
+    # Quantities to plot
+    # ----------------------------
+    diff = data[param2] - data[param1]
+
+    log_chi2 = np.log10(data[chi2_col])
+
+    chi2_min, chi2_max = chi2_range
+    log_chi2_min = np.log10(chi2_min)
+    log_chi2_max = np.log10(chi2_max)
+
+    # ----------------------------
+    # Plot
+    # ----------------------------
+    fig, ax = plt.subplots(figsize=figsize)
+
+    sc = ax.scatter(
+        data[time_col],
+        diff,
+        c=log_chi2,
+        cmap=cmap,
+        vmin=log_chi2_min,
+        vmax=log_chi2_max,
+        marker=marker,
+        alpha=alpha,
+    )
+
+    ax.set_xlabel("Time")
+    ax.set_ylabel(f"{param2} − {param1}")
+    ax.grid(True, alpha=0.3)
+
+
+    if zoomdiff is not None:
+        ax.set_ylim(zoomdiff[0],zoomdiff[1]) 
+    
+    fig.autofmt_xdate()
+
+
+    
+    # ----------------------------
+    # Colorbar
+    # ----------------------------
+    #cbar = fig.colorbar(sc, ax=ax)
+
+    cbar = fig.colorbar(
+        sc,
+        ax=ax,
+        orientation="horizontal",
+        pad=0.2,          # distance from the axes
+        fraction=0.08,     # thickness relative to axes
+    )
+
+    
+    cbar.set_label(r"$\log_{10}(\chi^2)$")
+
+    fig.tight_layout()
+    return fig, ax
+
+
