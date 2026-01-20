@@ -2514,6 +2514,8 @@ def plot_param2_vs_param1_colored_by_time(
     ax.set_xlabel(param1)
     ax.set_ylabel(param2)
     ax.grid(True, alpha=0.3)
+    title = f"{param2} vs {param1}"
+    ax.set_title(title)
 
     cbar = fig.colorbar(sc, ax=ax)
     cbar.set_label("Time since start [days]")
@@ -2588,7 +2590,7 @@ def plot_param_difference_vs_time_colored_by_chi2(
     marker=".",
     alpha=0.6,
     figsize=(18, 8),
-    zoomdiff = None
+    zoomdiff = None,
 ):
     """
     Plot (param2 - param1) vs time, colored by log10(chi2).
@@ -2644,9 +2646,13 @@ def plot_param_difference_vs_time_colored_by_chi2(
         alpha=alpha,
     )
 
-    ax.set_xlabel("Time")
-    ax.set_ylabel(f"{param2} − {param1}")
+    xlabel = "Time"
+    ylabel = f"{param2} − {param1}"
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
     ax.grid(True, alpha=0.3)
+    title = f"{ylabel} vs {xlabel}"
+    ax.set_title(title)
 
 
     if zoomdiff is not None:
