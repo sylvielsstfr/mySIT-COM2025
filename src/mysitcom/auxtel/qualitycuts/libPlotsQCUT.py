@@ -2475,6 +2475,7 @@ def plot_param2_vs_param1_colored_by_time(
     marker=".",
     alpha=0.6,
     figsize=(8, 6),
+    aspect = "auto"
 ):
     """
     Plot param2 vs param1, colored by relative time since the first observation.
@@ -2509,7 +2510,7 @@ def plot_param2_vs_param1_colored_by_time(
         
     )
 
-    ax.set_aspect("equal", adjustable="box")
+    ax.set_aspect(aspect, adjustable="box")
     
     ax.set_xlabel(param1)
     ax.set_ylabel(param2)
@@ -2578,6 +2579,108 @@ def plot_param_difference_vs_time(
 
 #-----------------------------------------------
 #
+#------------------------------------------------
+def plot_single_param_vs_time_colored_by_chi2(
+    df,
+    time_col,
+    param,
+    chi2_col,
+    chi2_range,
+    cmap="viridis",
+    marker=".",
+    alpha=0.6,
+    figsize=(18, 8),
+    zoomrange = None,
+):
+    """
+    Plot param  vs time, colored by log10(chi2).
+
+    Parameters
+    ----------
+    chi2_range : tuple(float, float)
+        (chi2_min, chi2_max) used for color normalization (in linear chi2).
+    """
+
+    
+    # ----------------------------
+    # Select & clean data
+    # ----------------------------
+    data = df[[time_col, param, chi2_col]].dropna()
+
+    if not is_datetime64_any_dtype(data[time_col]):
+        raise ValueError(f"{time_col} must be datetime64")
+
+    # Keep strictly positive chi2 only (log scale)
+    data = data[data[chi2_col] > 0]
+
+    if data.empty:
+        raise ValueError("No valid data after chi2 > 0 selection")
+
+    # ----------------------------
+    # Quantities to plot
+    # ----------------------------
+    values = data[param] 
+
+    log_chi2 = np.log10(data[chi2_col])
+
+    chi2_min, chi2_max = chi2_range
+    log_chi2_min = np.log10(chi2_min)
+    log_chi2_max = np.log10(chi2_max)
+
+    # ----------------------------
+    # Plot
+    # ----------------------------
+    fig, ax = plt.subplots(figsize=figsize)
+
+    sc = ax.scatter(
+        data[time_col],
+        values,
+        c=log_chi2,
+        cmap=cmap,
+        vmin=log_chi2_min,
+        vmax=log_chi2_max,
+        marker=marker,
+        alpha=alpha,
+    )
+
+    xlabel = "Time"
+    ylabel = f"{param}"
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.3)
+    title = f"{ylabel} vs {xlabel}"
+    ax.set_title(title)
+
+
+    if zoomrange is not None:
+        ax.set_ylim(zoomrange[0],zoomrange[1]) 
+    
+    fig.autofmt_xdate()
+
+
+    
+    # ----------------------------
+    # Colorbar
+    # ----------------------------
+    #cbar = fig.colorbar(sc, ax=ax)
+
+    cbar = fig.colorbar(
+        sc,
+        ax=ax,
+        orientation="horizontal",
+        pad=0.2,          # distance from the axes
+        fraction=0.08,     # thickness relative to axes
+    )
+
+    
+    cbar.set_label(r"$\log_{10}(\chi^2)$")
+
+    fig.tight_layout()
+    return fig, ax
+
+#------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------
 #------------------------------------------------
 def plot_param_difference_vs_time_colored_by_chi2(
     df,
