@@ -14,11 +14,13 @@ plot_param_difference_vs_time,\
 plot_param_difference_vs_time_colored_by_chi2,\
 plot_single_param_vs_time_colored_by_chi2,\
 plot_single_param_vs_time,\
-plot_atmparam_vs_time,plot_atmparam_diff_vs_time
+plot_atmparam_vs_time,plot_atmparam_diff_vs_time,\
+plot_atmparam_diff_hist_per_filter
 
 __all__ = ["get_astronomical_midnight",
            "GetNightMidnightsDict",
            "GetNightBoundariesDict",
+           "plot_atmparam_diff_hist_per_filter",
            "get_filter_color",
            "scatter_datetime",
            "strip_datetime",

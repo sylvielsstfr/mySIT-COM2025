@@ -3178,4 +3178,133 @@ def plot_atmparam_diff_vs_time(
     return fig, ax
 
 
+#------------------------------------------------------------------------------------------------
+
+def plot_atmparam_diff_hist_per_filter(
+    df,
+    filter_col,
+    param1_col,
+    param2_col,
+    paramdiff_range,
+
+    # histogram control
+    bins=50,
+    density=True,
+    hist_alpha=0.4,
+
+    # x-axis limits
+    param_min_fig=None,
+    param_max_fig=None,
+
+    title_param=None,
+    suptitle=None,
+
+    axs=None,
+    figsize=(10, 6),
+):
+    """
+    Plot histograms of (param1 - param2) on the same panel, per filter.
+
+    For each filter, statistics are computed:
+        - mean
+        - standard deviation
+        - robust sigma from IQR
+    """
+
+    if title_param is None:
+        title_param = f"Histogram of {param1_col} − {param2_col}"
+
+    data = df.copy()
+
+    # ----------------------------
+    # Compute difference
+    # ----------------------------
+    data["_param_diff"] = data[param1_col] - data[param2_col]
+    data = data[[filter_col, "_param_diff"]].dropna()
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+    filters = data[filter_col].unique()
+
+    # Vertical placement for text
+    y_text = 0.95
+    dy = 0.2
+
+    # ----------------------------
+    # Plot per filter
+    # ----------------------------
+    for i, f in enumerate(filters):
+        sub = data[data[filter_col] == f]["_param_diff"].values
+        color = get_filter_color(f)
+
+        # Histogram
+        ax.hist(
+            sub,
+            bins=bins,
+            range=paramdiff_range,
+            density=density,
+            alpha=hist_alpha,
+            color=color,
+            label=f,
+        )
+
+        # ----------------------------
+        # Statistics
+        # ----------------------------
+        mean = np.mean(sub)
+        std = np.std(sub, ddof=1)
+
+        q25, q75 = np.percentile(sub, [25, 75])
+        std_iqr = (q75 - q25) / 1.349
+
+        text = (
+            f"{f}\n"
+            f"μ = {mean:.3g}\n"
+            f"σ = {std:.3g}\n"
+            f"σ(IQR) = {std_iqr:.3g}"
+        )
+
+        ax.text(
+            1.02,
+            y_text - i * dy,
+            text,
+            transform=ax.transAxes,
+            color=color,
+            fontsize=10,
+            verticalalignment="top",
+            ha="left",
+            bbox=dict(facecolor="white", alpha=0.6, edgecolor=color),
+        )
+
+    # ----------------------------
+    # Axes cosmetics
+    # ----------------------------
+    if param_min_fig is not None and param_max_fig is not None:
+        ax.set_xlim(param_min_fig, param_max_fig)
+
+    ax.set_xlabel(f"{param1_col} − {param2_col}")
+    ax.set_ylabel("Density" if density else "Counts")
+    ax.set_title(title_param)
+    ax.grid(True, alpha=0.3)
+
+    ax.legend(title=filter_col)
+
+    if suptitle:
+        fig.suptitle(suptitle)
+
+    #fig.tight_layout()
+    fig.tight_layout(rect=[0, 0, 0.8, 1])
+
+
+    return fig, ax
+
+
+
 
