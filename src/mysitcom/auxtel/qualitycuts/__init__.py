@@ -11,7 +11,8 @@ plot_param_chi2_correlation_grid,\
 plot_param2_vs_param1_colored_by_time,\
 plot_param_difference_vs_time,\
 plot_param_difference_vs_time_colored_by_chi2,\
-plot_single_param_vs_time_colored_by_chi2
+plot_single_param_vs_time_colored_by_chi2,\
+plot_single_param_vs_time
 __all__ = ["get_filter_color",
            "scatter_datetime",
            "strip_datetime",
@@ -31,4 +32,5 @@ __all__ = ["get_filter_color",
            "plot_param_difference_vs_time",
            "plot_param_difference_vs_time_colored_by_chi2",
            "plot_single_param_vs_time_colored_by_chi2",
+           "plot_single_param_vs_time",
           ]
