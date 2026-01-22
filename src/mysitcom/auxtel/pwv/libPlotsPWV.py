@@ -2873,17 +2873,18 @@ def plot_atmparam_vs_time(
     time_col,
     filter_col,
     param_col,
-    # seuils / bornes
+    param_err_col = None,
+    # thresholds / bounds
     param_min_fig=None,
     param_max_fig=None,
     param_min_cut=None,
     param_max_cut=None,
- 
 
-    # affichage
-    cmap="Set1",
+    title_param = None,
+
+    # display
     marker="+",
-    lw=5,
+    lw=1.5,
     alpha=0.5,
 
     # datetime
@@ -2893,7 +2894,7 @@ def plot_atmparam_vs_time(
     suptitle=None,
 
     # axes externes
-    axs=None,
+    axs = None,
     figsize=(18, 6),
 ):
     """
@@ -2905,7 +2906,10 @@ def plot_atmparam_vs_time(
         (ax1, ax2) créés à l'extérieur. Si None, la figure est créée ici.
     """
 
-    title_param=f"{param_col} vs time",
+    if title_param is None:
+        title_param=f"{param_col} vs time"
+
+    
     data = df.copy()
 
 
@@ -2928,22 +2932,50 @@ def plot_atmparam_vs_time(
     # ----------------------------
     # Axes
     # ----------------------------
-   
-    fig, ax = plt.subplots(1, 1, figsize=figsize)
+
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
    
 
-    for f in data[filter_col].unique():
+    # ----------------------------
+    # Plot per filter
+    # ----------------------------
+
+    filters = data[filter_col].unique()
+    
+    for f in filters:
         sub = data[data[filter_col] == f]
-        sc= ax.scatter(
-            sub[time_col],
-            sub[param_col],
-            color=get_filter_color(f),  # <- couleur fixe
-            marker=marker,
-            lw=lw,
-            alpha=alpha,
-            label=f  # pour la légende
-        )
-    ax.legend(title=filter_col, ncol=len(data[filter_col].unique()))
+
+        if param_err_col == None:
+            
+            sc= ax.scatter(
+                sub[time_col],
+                sub[param_col],
+                color=get_filter_color(f),  # <- couleur fixe
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=f  # pour la légende
+            )
+        else:
+            ax.errorbar(
+                sub[time_col],
+                sub[param_col],
+                yerr=sub[param_err_col],
+                fmt=marker,
+                color=get_filter_color(f),
+                elinewidth=lw,
+                capsize=0,
+                alpha=alpha,
+                label=f,
+            )
+
+
+    ax.legend(title=filter_col, ncol=len(filters))
+
 
 
     if param_min_fig is not None and param_max_fig is not None:
@@ -2954,6 +2986,11 @@ def plot_atmparam_vs_time(
     if param_max_cut is not None:
         ax.axhline(param_max_cut, ls="-.", c="k")
 
+    # ----------------------------
+    # Labels, grid
+    # ----------------------------
+
+    
     #handles, _ = sc1.legend_elements(prop="colors", alpha=alpha)
     #ax1.legend(
     #    handles,
@@ -2967,16 +3004,17 @@ def plot_atmparam_vs_time(
     ax.grid(True, alpha=0.3)
 
  
-
     # ----------------------------
-    # Axe temps commun
+    # Time axis
     # ----------------------------
+    
     ax.xaxis.set_major_formatter(date_form)
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
 
     # ----------------------------
-    # Titre global
+    # Global title
     # ----------------------------
+    
     if suptitle:
         fig.suptitle(suptitle)
 
@@ -2986,4 +3024,158 @@ def plot_atmparam_vs_time(
     return fig, ax
 
 #--------------------
+
+
+def plot_atmparam_diff_vs_time(
+    df,
+    time_col,
+    filter_col,
+    param1_col,
+    param2_col,
+    param1_err_col=None,
+    param2_err_col=None,
+
+    # thresholds / bounds
+    param_min_fig=None,
+    param_max_fig=None,
+    param_min_cut=None,
+    param_max_cut=None,
+
+    title_param=None,
+
+    # display
+    marker="+",
+    lw=1.5,
+    alpha=0.5,
+
+    # datetime
+    date_format="%y-%m-%d",
+
+    # titles
+    suptitle=None,
+
+    # external axes
+    axs=None,
+    figsize=(18, 6),
+):
+    """
+    Plot (param1 - param2) vs time with optional error propagation.
+
+    Error propagation:
+        sigma = sqrt(sigma1^2 + sigma2^2)
+        only if both error columns are provided.
+    """
+
+    if title_param is None:
+        title_param = f"{param1_col} − {param2_col} vs time"
+
+    data = df.copy()
+
+    # ----------------------------
+    # Datetime handling (robust)
+    # ----------------------------
+    if is_datetime64_any_dtype(data[time_col]):
+        try:
+            data[time_col] = data[time_col].dt.tz_convert(None)
+        except TypeError:
+            pass
+
+    # ----------------------------
+    # Compute difference
+    # ----------------------------
+    data["_param_diff"] = data[param1_col] - data[param2_col]
+
+    use_errors = (param1_err_col is not None) and (param2_err_col is not None)
+
+    if use_errors:
+        data["_param_diff_err"] = np.sqrt(
+            data[param1_err_col] ** 2 + data[param2_err_col] ** 2
+        )
+
+    # Drop NaNs
+    cols = [time_col, filter_col, "_param_diff"]
+    if use_errors:
+        cols.append("_param_diff_err")
+
+    data = data[cols].dropna()
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+    # ----------------------------
+    # Plot per filter
+    # ----------------------------
+    filters = data[filter_col].unique()
+
+    for f in filters:
+        sub = data[data[filter_col] == f]
+
+        if use_errors:
+            ax.errorbar(
+                sub[time_col],
+                sub["_param_diff"],
+                yerr=sub["_param_diff_err"],
+                fmt=marker,
+                color=get_filter_color(f),
+                elinewidth=lw,
+                capsize=0,
+                alpha=alpha,
+                label=f,
+            )
+        else:
+            ax.scatter(
+                sub[time_col],
+                sub["_param_diff"],
+                color=get_filter_color(f),
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=f,
+            )
+
+    ax.legend(title=filter_col, ncol=len(filters))
+
+    # ----------------------------
+    # Y-axis limits and cuts
+    # ----------------------------
+    if param_min_fig is not None and param_max_fig is not None:
+        ax.set_ylim(param_min_fig, param_max_fig)
+
+    if param_min_cut is not None:
+        ax.axhline(param_min_cut, ls="-.", c="k")
+    if param_max_cut is not None:
+        ax.axhline(param_max_cut, ls="-.", c="k")
+
+    # ----------------------------
+    # Labels, grid
+    # ----------------------------
+    ax.set_ylabel(f"{param1_col} − {param2_col}")
+    ax.set_title(title_param)
+    ax.grid(True, alpha=0.3)
+
+    # ----------------------------
+    # Time axis
+    # ----------------------------
+    ax.xaxis.set_major_formatter(date_form)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+    # ----------------------------
+    # Global title
+    # ----------------------------
+    if suptitle:
+        fig.suptitle(suptitle)
+
+    fig.tight_layout()
+
+    return fig, ax
+
+
 

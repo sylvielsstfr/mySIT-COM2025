@@ -65,7 +65,7 @@ def get_astronomical_midnight(location: EarthLocation, date, n_grid=1000):
 def GetNightMidnightsDict(df,nightobs_col = "nightObs"):
     """
     input:
-      df_spec the dataframe for spectroscopy summary results
+      df the dataframe for spectroscopy summary results
     output:
       the dict of midnights
     """
@@ -78,4 +78,25 @@ def GetNightMidnightsDict(df,nightobs_col = "nightObs"):
         midnight = get_astronomical_midnight(site_lsst, nightstr.date())
         d[nightobs] = midnight
         
+    return d
+
+
+#----------------------------------------------------------------
+def GetNightBoundariesDict(df,nightobs_col = "nightObs"):
+    """
+    input:
+      df the dataframe for spectroscopy summary results
+    output:
+      the dict of night boudaries
+    """
+    
+    Dt = pd.Timedelta(minutes=30)
+    d = {}
+    list_of_nightobs = df[nightobs_col].unique()
+    for nightobs in list_of_nightobs:
+        sel_flag = df[nightobs_col]== nightobs
+        df_night = df[sel_flag]
+        tmin = df_night["Time"].min()-Dt
+        tmax = df_night["Time"].max()+Dt
+        d[nightobs] = (tmin,tmax)
     return d
