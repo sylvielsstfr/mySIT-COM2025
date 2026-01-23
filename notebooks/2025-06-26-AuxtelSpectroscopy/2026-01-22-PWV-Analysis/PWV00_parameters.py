@@ -17,6 +17,7 @@ import astropy.units as u
 #version_run = "run_v7"
 #version_run = "run_v11" # before v12
 version_run = "run2026_v01" # data 2025
+#version_run = "run_v12"
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
