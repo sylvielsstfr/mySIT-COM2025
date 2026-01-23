@@ -106,7 +106,7 @@ def getSelectionCutforPWV(df,
     ( df[pwv_rum_col] > pwvmin ) & ( df[pwv_rum_col] < pwvmax ) & \
     ( df[d2ccd_col] > DCCDMINCUT ) & ( df[d2ccd_col] < DCCDMAXCUT ) & \
     ( df[exptime_col] > EXPTIMECUT ) 
-    return cut 
+    return df[cut] 
 
 
 # Take into account Photometric Repeatability
