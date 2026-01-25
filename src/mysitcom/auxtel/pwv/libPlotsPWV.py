@@ -1973,6 +1973,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
         ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
+
+
+
         # ---------- Global legend ----------
         handles = [
             plt.Line2D([0], [0], color=effective_palette[t], lw=lw)
@@ -2179,6 +2182,23 @@ def plot_param_histogram_grid(
             if i == 0:
                 ax.set_title(str(f))
 
+
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax.minorticks_on()
+            ax.tick_params(
+              axis="x",
+              which="both",
+              top=True,        # show ticks on top
+             bottom=True,     # keep bottom ticks
+            )
+            ax.tick_params(
+              axis="y",
+              which="both",
+              left=True,       # show ticks on left
+              right=True,     # optional: set True if you want right ticks too
+            )
     fig.tight_layout()
     return fig, axs
 
@@ -2350,6 +2370,24 @@ def plot_params_and_chi2_vs_time(
         ax.xaxis.set_major_formatter(date_form)
         plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+
+        ax.minorticks_on()
+
+        ax.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
     # ----------------------------
     # Shared x-axis
     # ----------------------------
@@ -2446,6 +2484,8 @@ def plot_param_chi2_correlation_grid(
             ax.grid(True, alpha=0.3)
             ax.set_yscale("log")
 
+            ax.minorticks_on()
+
             # ----------------------------
             # Labels
             # ----------------------------
@@ -2529,6 +2569,24 @@ def plot_param2_vs_param1_colored_by_time(
     cbar = fig.colorbar(sc, ax=ax)
     cbar.set_label("Time since start [days]")
 
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
+
     fig.tight_layout()
     return fig, ax
 
@@ -2582,6 +2640,24 @@ def plot_param_difference_vs_time(
     
     fig.autofmt_xdate()
     fig.tight_layout()
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
 
     return fig, ax
 
@@ -2687,6 +2763,24 @@ def plot_param_difference_vs_time_colored_by_chi2(
     
     cbar.set_label(r"$\log_{10}(\chi^2)$")
 
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
+
     fig.tight_layout()
     return fig, ax
 
@@ -2767,8 +2861,29 @@ def plot_single_param_vs_time_colored_by_chi2(
 
 
     if zoomrange is not None:
-        ax.set_ylim(zoomrange[0],zoomrange[1]) 
-    
+        ax.set_ylim(zoomrange[0],zoomrange[1])
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,
+        labelleft=True,
+        labelright=True, # # optional: set True if you want right ticks too
+    )
+
+
     fig.autofmt_xdate()
 
 
@@ -2859,6 +2974,26 @@ def plot_single_param_vs_time(
 
     if zoomrange is not None:
         ax.set_ylim(zoomrange)
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,
+        labelleft=True,
+        labelright=True, # o   # optional: set True if you want right ticks too
+    )
 
     fig.autofmt_xdate()
     fig.tight_layout()
@@ -3010,6 +3145,27 @@ def plot_atmparam_vs_time(
     
     ax.xaxis.set_major_formatter(date_form)
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,  
+        labelleft=True,
+        labelright=True, # o   # optional: set True if you want right ticks too
+    )
 
     # ----------------------------
     # Global title
@@ -3167,6 +3323,27 @@ def plot_atmparam_diff_vs_time(
     ax.xaxis.set_major_formatter(date_form)
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
 
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,    
+        labelleft=True,
+        labelright=True, # optional: set True if you want right ticks too
+    )
+
+
     # ----------------------------
     # Global title
     # ----------------------------
@@ -3294,6 +3471,24 @@ def plot_atmparam_hist_per_filter(
 
     ax.legend(title=filter_col)
 
+     # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
+
+  
     if suptitle:
         fig.suptitle(suptitle)
 
@@ -3418,6 +3613,24 @@ def plot_atmparam_diff_hist_per_filter(
     ax.grid(True, alpha=0.3)
 
     ax.legend(title=filter_col)
+
+  
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
 
     if suptitle:
         fig.suptitle(suptitle)
