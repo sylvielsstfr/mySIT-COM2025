@@ -549,6 +549,25 @@ def plot_dccd_chi2_vs_time(
     ax1.set_title(title_dccd)
     ax1.grid(True, alpha=0.3)
 
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax1.minorticks_on()
+
+    ax1.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax1.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
+
     # ============================
     # Panneau 2 : CHI2
     # ============================
@@ -593,6 +612,25 @@ def plot_dccd_chi2_vs_time(
     ax2.set_xlabel("time")
     ax2.set_title(title_chi2)
     ax2.grid(True, alpha=0.3)
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax2.minorticks_on()
+
+    ax2.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax2.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
 
     # ----------------------------
     # Axe temps commun
@@ -683,6 +721,23 @@ def plot_dccd_chi2_vs_time_by_filter(
         ax1.grid(True, alpha=0.3)
         plt.setp(ax1.get_xticklabels(), rotation=45, ha="right")
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax1.minorticks_on()
+
+        ax1.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax1.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
         # --- CHI2 ---
         ax2.scatter(
             subdf[time_col],
@@ -703,6 +758,24 @@ def plot_dccd_chi2_vs_time_by_filter(
         ax2.xaxis.set_major_formatter(date_form)
         ax2.grid(True, alpha=0.3)
         plt.setp(ax2.get_xticklabels(), rotation=45, ha="right")
+
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax2.minorticks_on()
+
+        ax2.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax2.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
 
     if suptitle:
         fig.suptitle(suptitle)
@@ -774,6 +847,25 @@ def stripplot_target_vs_time(
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
     ax.grid(True)
     ax.legend(title="Target", bbox_to_anchor=(1.01, 1), loc="upper left", ncol=1)
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
 
     fig.tight_layout()
     return fig, ax
@@ -893,6 +985,24 @@ def plot_dccd_chi2_vs_time_by_target_filter(
         ax_dccd.grid(True, alpha=0.3)
         plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_dccd.minorticks_on()
+
+        ax_dccd.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_dccd.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
+
         # CHI2 vs Time
         for t in targets:
             sub = data[data[target_col] == t]
@@ -923,6 +1033,23 @@ def plot_dccd_chi2_vs_time_by_target_filter(
         ax_chi2.grid(True, alpha=0.3)
         plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_chi2.minorticks_on()
+
+        ax_chi2.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_chi2.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
         # légende unique à gauche
         handles = [plt.Line2D([0], [0], marker=marker, color=target_palette[t], linestyle="", markersize=8) for t in targets]
         fig.legend(handles, targets, title="TARGET", loc="center left", bbox_to_anchor=(1.01, 0.55), ncol=2)
@@ -979,6 +1106,24 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             ax_dccd.grid(True, alpha=0.3)
             plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
 
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_dccd.minorticks_on()
+
+            ax_dccd.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_dccd.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
+
             # CHI2
             ax_chi2.scatter(
                 sub[time_col],
@@ -1009,8 +1154,25 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             ax_chi2.xaxis.set_major_formatter(date_form)
             ax_chi2.grid(True, alpha=0.3)
             plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
+    
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_chi2.minorticks_on()
 
-        if suptitle:
+            ax_chi2.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_chi2.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
+    if suptitle:
             fig.suptitle(suptitle,fontsize=16)
         #fig.tight_layout()
 
@@ -1158,6 +1320,23 @@ def plot_dccd_chi2_histo_by_target_filter(
         ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_chi2.minorticks_on()
+
+        ax_chi2.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_chi2.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
         # --- CHI2 histogrammes
         for t in targets:
             sub = data[data[target_col] == t]
@@ -1184,6 +1363,24 @@ def plot_dccd_chi2_histo_by_target_filter(
         ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
+
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_chi2.minorticks_on()
+
+        ax_chi2.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_chi2.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
         # --- légende globale
         handles = [
             plt.Line2D([0], [0], color=target_palette[t], lw=lw)
@@ -1248,6 +1445,29 @@ def plot_dccd_chi2_histo_by_target_filter(
             ax_dccd.set_ylabel("Density" if density else "Counts")
             ax_dccd.grid(True, alpha=0.3)
 
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_dccd.minorticks_on()
+
+            ax_dccd.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_dccd.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+             )
+            ax_dccd.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
             # --- CHI2
             ax_chi2.hist(
                 sub[chi2_col].dropna(),
@@ -1271,8 +1491,26 @@ def plot_dccd_chi2_histo_by_target_filter(
             ax_chi2.set_ylabel("Density" if density else "Counts")
             ax_chi2.grid(True, alpha=0.3)
 
-        if suptitle:
-            fig.suptitle(suptitle, fontsize=16)
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_chi2.minorticks_on()
+
+            ax_chi2.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_chi2.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
+
+    if suptitle:
+        fig.suptitle(suptitle, fontsize=16)
 
     return fig, axs
 
@@ -1423,6 +1661,23 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
         ax_dccd.grid(True, alpha=0.3)
         plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_dccd.minorticks_on()
+
+        ax_dccd.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_dccd.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
         # CHI2 vs Time
         for t in targets:
             sub = data[data[target_col] == t]
@@ -1453,6 +1708,23 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
         ax_chi2.grid(True, alpha=0.3)
         plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_chi2.minorticks_on()
+
+        ax_chi2.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_chi2.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
         # légende unique à gauche
         handles = [plt.Line2D([0], [0], marker=marker, color=effective_palette[t], linestyle="", markersize=8) for t in targets]
         fig.legend(handles, targets, title="TARGET", loc="center left", bbox_to_anchor=(1.01, 0.55), ncol=2)
@@ -1511,6 +1783,24 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             ax_dccd.grid(True, alpha=0.3)
             plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
 
+
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_dccd.minorticks_on()
+
+            ax_dccd.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_dccd.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
             # CHI2
             ax_chi2.scatter(
                 sub[time_col],
@@ -1538,7 +1828,23 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             ax_chi2.xaxis.set_major_formatter(date_form)
             ax_chi2.grid(True, alpha=0.3)
             plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_chi2.minorticks_on()
 
+            ax_chi2.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_chi2.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
         if suptitle:
             fig.suptitle(suptitle,fontsize=16)
         #fig.tight_layout()
@@ -1694,6 +2000,25 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
         ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
+
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_dccd.minorticks_on()
+
+        ax_dccd.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_chi2.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
+
         # --- CHI2 histogrammes
         for t in targets:
             sub = data[data[target_col] == t]
@@ -1720,6 +2045,23 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
         ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_chi2.minorticks_on()
+
+        ax_chi2.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_chi2.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
         # --- légende globale
         handles = [
             plt.Line2D([0], [0], color=target_palette[t], lw=lw)
@@ -1784,6 +2126,27 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
             ax_dccd.set_ylabel("Density" if density else "Counts")
             ax_dccd.grid(True, alpha=0.3)
 
+
+
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_dccd.minorticks_on()
+
+            ax_dccd.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_dccd.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
+
+
             # --- CHI2
             ax_chi2.hist(
                 sub[chi2_col].dropna(),
@@ -1806,6 +2169,25 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
             ax_chi2.set_xlabel("CHI2_FIT")
             ax_chi2.set_ylabel("Density" if density else "Counts")
             ax_chi2.grid(True, alpha=0.3)
+
+
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_chi2.minorticks_on()
+
+            ax_chi2.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_chi2.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
 
         if suptitle:
             fig.suptitle(suptitle, fontsize=16)
@@ -1937,6 +2319,24 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
         ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_dccd.minorticks_on()
+
+        ax_dccd.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+        )
+        ax_dccd.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+        )
+
         # ---------- CHI2 histogram ----------
         for t in targets:
             sub = data[data[target_col] == t]
@@ -1964,6 +2364,25 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
         ax_chi2.set_ylabel("Counts" if not density else "Density")
         ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
+
+
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax_chi2.minorticks_on()
+
+        ax_chi2.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+        )
+        ax_chi2.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,     # optional: set True if you want right ticks too
+        )
 
         # ---------- Global legend ----------
         handles = [
@@ -2025,6 +2444,24 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
             ax_dccd.set_ylabel("Counts" if not density else "Density")
             ax_dccd.grid(True, alpha=0.3)
 
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_dccd.minorticks_on()
+
+            ax_dccd.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_dccd.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
+
             # CHI2
             ax_chi2.hist(
                 sub[chi2_col],
@@ -2045,6 +2482,24 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
             ax_chi2.set_xlabel("CHI2_FIT")
             ax_chi2.set_ylabel("Counts" if not density else "Density")
             ax_chi2.grid(True, alpha=0.3)
+
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax_chi2.minorticks_on()
+
+            ax_chi2.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax_chi2.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
 
         if suptitle:
             fig.suptitle(suptitle, fontsize=16)
@@ -2151,6 +2606,24 @@ def plot_param_histogram_grid(
             )
 
             ax.set_xlim(xmin, xmax)
+
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax.minorticks_on()
+
+            ax.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
 
             if logy:
                 ax.set_yscale("log")
@@ -2342,6 +2815,25 @@ def plot_params_and_chi2_vs_time(
         ax.xaxis.set_major_formatter(date_form)
         plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
 
+
+        # ----------------------------
+        # Ticks on all sides
+        # ----------------------------
+        ax.minorticks_on()
+
+        ax.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+        )
+        ax.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+        )
+
     # ----------------------------
     # Shared x-axis
     # ----------------------------
@@ -2447,6 +2939,24 @@ def plot_param_chi2_correlation_grid(
             #else:
             #    ax.set_xticklabels([])
 
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax.minorticks_on()
+
+            ax.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
+
             if j == 0:
                 ax.set_ylabel(chi2_col)
             else:
@@ -2518,6 +3028,25 @@ def plot_param2_vs_param1_colored_by_time(
     title = f"{param2} vs {param1}"
     ax.set_title(title)
 
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
+
     cbar = fig.colorbar(sc, ax=ax)
     cbar.set_label("Time since start [days]")
 
@@ -2568,10 +3097,27 @@ def plot_param_difference_vs_time(
     ax.set_ylabel(f"{param2} − {param1}")
     ax.grid(True, alpha=0.3)
 
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
+
 
     if zoomdiff is not None:
-        ax.set_ylim(zoomdiff[0],zoomdiff[1]) 
-    
+        ax.set_ylim(zoomdiff[0],zoomdiff[1])
     fig.autofmt_xdate()
     fig.tight_layout()
 
@@ -2601,10 +3147,6 @@ def plot_param_difference_vs_time_colored_by_chi2(
     chi2_range : tuple(float, float)
         (chi2_min, chi2_max) used for color normalization (in linear chi2).
     """
-
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from pandas.api.types import is_datetime64_any_dtype
 
     # ----------------------------
     # Select & clean data
@@ -2655,14 +3197,29 @@ def plot_param_difference_vs_time_colored_by_chi2(
     title = f"{ylabel} vs {xlabel}"
     ax.set_title(title)
 
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
+
 
     if zoomdiff is not None:
-        ax.set_ylim(zoomdiff[0],zoomdiff[1]) 
-    
+        ax.set_ylim(zoomdiff[0],zoomdiff[1])
     fig.autofmt_xdate()
 
-
-    
     # ----------------------------
     # Colorbar
     # ----------------------------
@@ -2675,8 +3232,6 @@ def plot_param_difference_vs_time_colored_by_chi2(
         pad=0.2,          # distance from the axes
         fraction=0.08,     # thickness relative to axes
     )
-
-    
     cbar.set_label(r"$\log_{10}(\chi^2)$")
 
     fig.tight_layout()
@@ -2706,8 +3261,6 @@ def plot_single_param_vs_time_colored_by_chi2(
     chi2_range : tuple(float, float)
         (chi2_min, chi2_max) used for color normalization (in linear chi2).
     """
-
-    
     # ----------------------------
     # Select & clean data
     # ----------------------------
@@ -2756,6 +3309,24 @@ def plot_single_param_vs_time_colored_by_chi2(
     ax.grid(True, alpha=0.3)
     title = f"{ylabel} vs {xlabel}"
     ax.set_title(title)
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
 
 
     if zoomrange is not None:
@@ -2848,6 +3419,24 @@ def plot_single_param_vs_time(
     ax.set_ylabel(param)
     ax.set_title(f"{param} vs Time")
     ax.grid(True, alpha=0.3)
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,     # optional: set True if you want right ticks too
+    )
 
     if zoomrange is not None:
         ax.set_ylim(zoomrange)
