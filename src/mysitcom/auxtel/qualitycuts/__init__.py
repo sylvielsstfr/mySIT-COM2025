@@ -14,7 +14,10 @@ plot_param_difference_vs_time_colored_by_chi2,\
 plot_single_param_vs_time_colored_by_chi2,\
 plot_single_param_vs_time,\
 plot_chi2_norm_histo_by_target,\
-plot_chi2_norm_histo_onetarget
+plot_chi2_norm_histo_onetarget,\
+plot_chi2_nonorm_histo_by_target,\
+plot_chi2_nonorm_histo_onetarget,\
+normalize_column_data
 
 from .libStatistics import generate_chi2_samples,\
 generate_lognormal_samples,\
@@ -45,9 +48,12 @@ __all__ = ["get_filter_color",
            "plot_single_param_vs_time",
            "plot_chi2_norm_histo_by_target",
            "plot_chi2_norm_histo_onetarget",
+           "plot_chi2_nonorm_histo_by_target",
+           "plot_chi2_nonorm_histo_onetarget",
+           "normalize_column_data",
            "generate_chi2_samples",
            "generate_lognormal_samples",
            "ks_test_chi2_vs_lognormal",
            "plot_normalized_histogram",
-           "qq_plot_chi2_vs_lognormal"
+           "qq_plot_chi2_vs_lognormal",
           ]

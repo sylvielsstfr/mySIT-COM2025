@@ -1,4 +1,7 @@
 """Process data for Gradient Boosted Trees."""
+import numpy as np
+import pandas as pd
+
 def normalize_column_data(df,target_col,filter_col,feature_col,ext="norm"):
     """
     Docstring pour normalize_data 
@@ -14,10 +17,22 @@ def normalize_column_data(df,target_col,filter_col,feature_col,ext="norm"):
     the_targets = df[target_col].unique()
     feature_col_out =f"{feature_col}_{ext}"
 
+    all_df = []
+
     for f in the_filters:
         for t in the_targets:
             mask = (df[filter_col] == f) & (df[target_col] == t)
-            data = df.loc[mask, feature_col]
-            mean_data = data.mean()
-            df[feature_col_out] = df[feature_col]/mean_data
-    return df
+            #data = df.loc[mask, feature_col]
+            df_data = df[mask]
+            mean_data = df_data[feature_col].mean()
+            df_data[feature_col_out] = df_data[feature_col]/mean_data
+            all_df.append(df_data)
+
+    df_merge = pd.concat(all_df)
+    df_merge = df_merge.sort_values(by="id", ascending=True)
+
+    return df_merge
+
+
+
+

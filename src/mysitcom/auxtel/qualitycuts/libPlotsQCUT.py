@@ -3775,3 +3775,364 @@ def plot_chi2_norm_histo_onetarget(
         fig.suptitle(suptitle, fontsize=16)
 
     return fig, axs
+
+#---------------------------------------------------------------------
+def normalize_column_data(df,target_col,filter_col,feature_col,ext="norm"):
+    """
+    Docstring pour normalize_data 
+    :param df: Pandas dataframe
+    :param target_col: name of columns target in dataframe
+    :param filter_col: name of columns filter in dataframe
+    :param feature_col: name of columns feature in dataframe
+    :param ext: extension to add to new column name
+    :return: dataframe with new normalized feature column
+    """
+
+    the_filters = df[filter_col].unique()
+    the_targets = df[target_col].unique()
+    feature_col_out =f"{feature_col}_{ext}"
+
+    all_df = []
+
+    for f in the_filters:
+        for t in the_targets:
+            mask = (df[filter_col] == f) & (df[target_col] == t)
+            #data = df.loc[mask, feature_col]
+            df_data = df[mask]
+            mean_data = df_data[feature_col].mean()
+            df_data[feature_col_out] = df_data[feature_col]/mean_data
+            all_df.append(df_data)
+
+    df_merge = pd.concat(all_df)
+    df_merge = df_merge.sort_values(by="id", ascending=True)
+
+    return df_merge
+
+#-------------------------------------------------------------
+#-----------------------------------------
+def plot_chi2_nonorm_histo_by_target(
+    df,
+    filter_col="FILTER",
+    filter_select=None,
+    target_col="TARGET",
+    chi2_col="CHI2_FIT",
+
+    # bornes / seuils (sur chi2 normalisé)
+    chi2_min_fig=None,
+    chi2_max_fig=None,
+    chi2_cut=None,
+
+    # histogramme
+    bins_chi2=100,
+    density=False,
+
+    # style
+    lw=4,
+
+    suptitle=None,
+
+    # affichage
+    per_target=False,
+    axs=None,
+    figsize=(16, 10),
+    tag=None,
+
+    # colors
+    target_palette=None,   # dict: TARGET -> color
+):
+    """
+    Histogrammes de CHI2_FIT normalisé par la moyenne par TARGET :
+        chi2_norm = chi2 / <chi2>_TARGET
+
+    - per_target=False : tous les TARGET superposés
+    - per_target=True  : un histogramme par TARGET
+    """
+
+    data = df.copy()
+    chi2_col_out = chi2_col + "_nonorm"
+
+    # ----------------------------
+    # Filtrage par filtre
+    # ----------------------------
+    if filter_select is not None:
+        data = data[data[filter_col] == filter_select]
+
+    targets = np.sort(data[target_col].unique())
+    n_targets = len(targets)
+
+    # ----------------------------
+    # Palette de couleurs
+    # ----------------------------
+    if target_palette is None:
+        cmap = plt.get_cmap("tab20" if n_targets <= 20 else "hsv")
+        target_palette = {
+            t: mcolors.to_hex(cmap(i / n_targets))
+            for i, t in enumerate(targets)
+        }
+    else:
+        missing = set(targets) - set(target_palette.keys())
+        if missing:
+            print(f"Missing colors for targets → defaulting to black: {missing}")
+        target_palette = {
+            t: target_palette.get(t, "grey") for t in targets
+        }
+
+    # ----------------------------
+    # Normalisation par target
+    # ----------------------------
+    chi2_norm_all = []
+
+    data = data.copy()
+    data[chi2_col_out] = np.nan
+
+    for t in targets:
+        mask = data[target_col] == t
+        chi2_vals = data.loc[mask, chi2_col].dropna()
+
+        if len(chi2_vals) == 0:
+            continue
+
+        data.loc[mask, chi2_col_out] = data.loc[mask, chi2_col]
+        chi2_norm_all.append(data.loc[mask, chi2_col_out].dropna())
+
+    chi2_norm_all = pd.concat(chi2_norm_all)
+
+    # ----------------------------
+    # Bins logarithmiques communs
+    # ----------------------------
+    chi2_bins = np.logspace(
+        np.log10(chi2_norm_all.min() if chi2_min_fig is None else chi2_min_fig),
+        np.log10(chi2_norm_all.max() if chi2_max_fig is None else chi2_max_fig),
+        bins_chi2,
+    )
+
+    # ============================================================
+    # Cas per_target = False
+    # ============================================================
+    if not per_target:
+        if axs is None:
+            fig, ax = plt.subplots(1, 1, figsize=figsize, constrained_layout=True)
+        else:
+            ax = axs
+            fig = ax.figure
+
+        for t in targets:
+            sub = data[data[target_col] == t]
+            ax.hist(
+                sub[chi2_col_out].dropna(),
+                bins=chi2_bins,
+                histtype="step",
+                lw=lw,
+                density=density,
+                color=target_palette[t],
+                label=t,
+            )
+
+        ax.set_xscale("log")
+
+        if chi2_cut is not None:
+            ax.axvline(chi2_cut, ls="-.", c="k")
+
+        ax.set_xlabel(r"$\chi^2 / \langle \chi^2 \rangle_{\mathrm{TARGET}}$")
+        ax.set_ylabel("Density" if density else "Counts")
+        ax.set_title(f"Normalized CHI2 histogram – Filter: {filter_select}")
+        ax.grid(True, alpha=0.3)
+
+        # ticks partout
+        ax.minorticks_on()
+        ax.tick_params(axis="both", which="both", top=True, right=True)
+
+        # légende
+        handles = [
+            plt.Line2D([0], [0], color=target_palette[t], lw=lw)
+            for t in targets
+        ]
+        fig.legend(
+            handles,
+            targets,
+            title="TARGET",
+            loc="center left",
+            bbox_to_anchor=(1.02, 0.5),
+            ncol=2,
+        )
+
+        if suptitle:
+            if tag is not None:
+                suptitle = f"{suptitle} {tag}"
+            fig.suptitle(suptitle, fontsize=16)
+
+    # ============================================================
+    # Cas per_target = True
+    # ============================================================
+    else:
+        n_panels = n_targets
+
+        if axs is None:
+            fig, axs = plt.subplots(
+                n_panels, 1,
+                figsize=(figsize[0], figsize[1] * n_panels),
+                constrained_layout=True,
+            )
+            if n_panels == 1:
+                axs = [axs]
+        else:
+            fig = axs[0].figure
+
+        for i, t in enumerate(targets):
+            ax = axs[i]
+            sub = data[data[target_col] == t]
+
+            ax.hist(
+                sub[chi2_col_out].dropna(),
+                bins=chi2_bins,
+                histtype="step",
+                lw=lw,
+                density=density,
+                color=target_palette[t],
+            )
+
+            ax.set_xscale("log")
+
+            if chi2_cut is not None:
+                ax.axvline(chi2_cut, ls="-.", c="k")
+
+            ax.set_title(f"{t} – normalized CHI2 – Filter: {filter_select}")
+            ax.set_xlabel(r"$\chi^2 / \langle \chi^2 \rangle$")
+            ax.set_ylabel("Density" if density else "Counts")
+            ax.grid(True, alpha=0.3)
+
+            ax.minorticks_on()
+            ax.tick_params(axis="both", which="both", top=True, right=True)
+
+        if suptitle:
+            fig.suptitle(suptitle, fontsize=16)
+
+    return fig, axs
+
+
+#-----------------------------------------
+def plot_chi2_nonorm_histo_onetarget(
+    df,
+    target_name,
+    filter_col="FILTER",
+    filter_select=None,
+    target_col="TARGET",
+    chi2_col="CHI2_FIT",
+
+    # bornes / seuils (sur chi2 normalisé)
+    chi2_min_fig=None,
+    chi2_max_fig=None,
+    chi2_cut=None,
+
+    # histogramme
+    bins_chi2=100,
+    density=False,
+
+    # style
+    lw=4,
+
+    suptitle=None,
+
+    # affichage
+    axs=None,
+    figsize=(16, 10),
+
+    # colors
+    target_palette=None,   # dict: TARGET -> color
+):
+    """
+    Histogrammes de CHI2_FIT normalisé par la moyenne par TARGET :
+        chi2_norm = chi2 / <chi2>_TARGET
+
+    - per_target=False : tous les TARGET superposés
+    - per_target=True  : un histogramme par TARGET
+    """
+
+    data = df.copy()
+    chi2_col_out = chi2_col + "_nonorm"
+
+    # ----------------------------
+    # Filtrage par filtre
+    # ----------------------------
+    if filter_select is not None:
+        data = data[data[filter_col] == filter_select]
+
+
+    #---------------------------
+    # target color
+    #--------------------------
+    if target_palette is None:
+        target_color="grey"
+    else:
+        target_color = target_palette.get(target_name, "grey")
+
+
+    # ----------------------------
+    # Normalisation par target
+    # ----------------------------
+    chi2_norm_all = []
+
+    data = data.copy()
+    data[chi2_col_out] = np.nan
+
+    mask = data[target_col] == target_name
+    chi2_vals = data.loc[mask, chi2_col].dropna()
+
+
+    data.loc[mask, chi2_col_out] = data.loc[mask, chi2_col]
+    chi2_norm_all=data.loc[mask, chi2_col_out].dropna()
+
+    # ----------------------------
+    # Bins logarithmiques communs
+    # ----------------------------
+    chi2_bins = np.logspace(
+        np.log10(chi2_norm_all.min() if chi2_min_fig is None else chi2_min_fig),
+        np.log10(chi2_norm_all.max() if chi2_max_fig is None else chi2_max_fig),
+        bins_chi2,
+    )
+ 
+    # ============================================================
+    # Cas per_target = True
+    # ============================================================
+    n_panels = 1
+
+
+    if axs is None:
+        fig, axs = plt.subplots(
+            n_panels, 1,
+            figsize=(figsize[0], figsize[1] * n_panels),
+            constrained_layout=True,
+        )
+    if n_panels == 1:
+        axs = [axs]
+    else:
+        fig = axs[0].figure       
+    ax = axs[0]
+    sub = data[data[target_col] == target_name]
+
+    ax.hist(
+        sub[chi2_col_out].dropna(),
+        bins=chi2_bins,
+        histtype="step",
+        lw=lw,
+        density=density,
+        color=target_color
+    )
+
+    ax.set_xscale("log")
+
+    if chi2_cut is not None:
+        ax.axvline(chi2_cut, ls="-.", c="k")
+
+    ax.set_title(f"{target_name} – normalized CHI2 – Filter: {filter_select}")
+    ax.set_xlabel(r"$\chi^2 / \langle \chi^2 \rangle$")
+    ax.set_ylabel("Density" if density else "Counts")
+    ax.grid(True, alpha=0.3)
+
+    ax.minorticks_on()
+    ax.tick_params(axis="both", which="both", top=True, right=True)
+
+    if suptitle:
+        fig.suptitle(suptitle, fontsize=16)
+
+    return fig, axs
