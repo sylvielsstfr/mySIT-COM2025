@@ -19,7 +19,8 @@ plot_chi2_norm_histo_onetarget
 from .libStatistics import generate_chi2_samples,\
 generate_lognormal_samples,\
 ks_test_chi2_vs_lognormal,\
-plot_normalized_histogram
+plot_normalized_histogram,\
+qq_plot_chi2_vs_lognormal
 
 
 __all__ = ["get_filter_color",
@@ -47,5 +48,6 @@ __all__ = ["get_filter_color",
            "generate_chi2_samples",
            "generate_lognormal_samples",
            "ks_test_chi2_vs_lognormal",
-           "plot_normalized_histogram"
+           "plot_normalized_histogram",
+           "qq_plot_chi2_vs_lognormal"
           ]

@@ -71,7 +71,7 @@ def create_log_bins(n_bins, min_bound, max_bound):
 #---------------------------------------------------------------------
 
 def plot_normalized_histogram(samples, mean_value, n_bins=50, min_bound=None, max_bound=None, 
-                               title="Distribution Chi2 normalisée",fillcolor="r"):
+                               title="Distribution Chi2 normalisée",fillcolor="r",figsize=(10, 6)):
     """
     Trace l'histogramme des valeurs normalisées par la moyenne avec bins logarithmiques.   
     Parameters:
@@ -102,7 +102,7 @@ def plot_normalized_histogram(samples, mean_value, n_bins=50, min_bound=None, ma
     bins = create_log_bins(n_bins, min_bound, max_bound)
     
     # Création de la figure
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=figsize)
     
     # Histogramme
     counts, edges, patches = ax.hist(normalized_samples, bins=bins, 
@@ -228,3 +228,112 @@ def ks_test_chi2_vs_lognormal(data, verbose=True):
         print("Une p-value > 0.05 suggère que les données sont cohérentes avec la distribution.")
     
     return results
+
+
+#----------------------------------------------------------------
+
+def qq_plot_chi2_vs_lognormal(data, figsize=(14, 6), log_scale=False):
+    """
+    Crée des Q-Q plots pour comparer visuellement les données
+    aux distributions chi2 et log-normale.
+    
+    Parameters:
+    -----------
+    data : array
+        Données à tester
+    figsize : tuple
+        Taille de la figure (largeur, hauteur)
+    log_scale : bool
+        Si True, utilise une échelle logarithmique sur les deux axes
+        
+    Returns:
+    --------
+    fig : matplotlib figure
+        Figure contenant les deux Q-Q plots
+    (df_estimate, mu_estimate, sigma_estimate) : tuple
+        Paramètres estimés des distributions
+    """
+    
+    # Estimation des paramètres
+    df_estimate = np.mean(data)  # Pour chi2
+    
+    log_data = np.log(data[data > 0])
+    mu_estimate = np.mean(log_data)
+    sigma_estimate = np.std(log_data, ddof=1)
+    
+    # Création de la figure
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
+    
+    # ===== Q-Q Plot pour Chi2 =====
+    # Quantiles théoriques chi2
+    sorted_data = np.sort(data)
+    n = len(sorted_data)
+    theoretical_quantiles_chi2 = stats.chi2.ppf(np.linspace(0.01, 0.99, n), df_estimate)
+    
+    ax1.scatter(theoretical_quantiles_chi2, sorted_data, alpha=0.6, s=20, color='steelblue')
+    
+    # Ligne de référence (y = x)
+    min_val = min(theoretical_quantiles_chi2.min(), sorted_data.min())
+    max_val = max(theoretical_quantiles_chi2.max(), sorted_data.max())
+    ax1.plot([min_val, max_val], [min_val, max_val], 'r--', lw=2, label='Ligne y=x')
+    
+    if log_scale:
+        ax1.set_xscale('log')
+        ax1.set_yscale('log')
+    
+    ax1.set_xlabel(f'Quantiles théoriques Chi2 (df={df_estimate:.2f})', fontsize=11)
+    ax1.set_ylabel('Quantiles observés', fontsize=11)
+    title1 = 'Q-Q Plot: Données vs Chi2'
+    if log_scale:
+        title1 += ' (échelle log)'
+    ax1.set_title(title1, fontsize=13, fontweight='bold')
+    ax1.grid(True, alpha=0.3, which='both' if log_scale else 'major')
+    ax1.legend()
+    
+    # ===== Q-Q Plot pour Log-Normale =====
+    theoretical_quantiles_lognorm = stats.lognorm.ppf(
+        np.linspace(0.01, 0.99, n), 
+        s=sigma_estimate, 
+        scale=np.exp(mu_estimate)
+    )
+    
+    ax2.scatter(theoretical_quantiles_lognorm, sorted_data, alpha=0.6, s=20, color='forestgreen')
+    
+    # Ligne de référence
+    min_val = min(theoretical_quantiles_lognorm.min(), sorted_data.min())
+    max_val = max(theoretical_quantiles_lognorm.max(), sorted_data.max())
+    ax2.plot([min_val, max_val], [min_val, max_val], 'r--', lw=2, label='Ligne y=x')
+    
+    if log_scale:
+        ax2.set_xscale('log')
+        ax2.set_yscale('log')
+    
+    ax2.set_xlabel(f'Quantiles théoriques Log-Normale (μ={mu_estimate:.2f}, σ={sigma_estimate:.2f})', fontsize=11)
+    ax2.set_ylabel('Quantiles observés', fontsize=11)
+    title2 = 'Q-Q Plot: Données vs Log-Normale'
+    if log_scale:
+        title2 += ' (échelle log)'
+    ax2.set_title(title2, fontsize=13, fontweight='bold')
+    ax2.grid(True, alpha=0.3, which='both' if log_scale else 'major')
+    ax2.legend()
+
+    ax1.set_aspect('equal')
+    ax2.set_aspect('equal')
+    
+    plt.tight_layout()
+    
+    # Afficher un message d'interprétation
+    print("="*70)
+    print("INTERPRÉTATION DES Q-Q PLOTS")
+    print("="*70)
+    if log_scale:
+        print("\n• Échelle logarithmique activée pour mieux voir les détails")
+    print("\n• Si les points suivent la ligne rouge (y=x) :")
+    print("  → Les données correspondent bien à la distribution théorique")
+    print("\n• Si les points s'écartent systématiquement de la ligne :")
+    print("  → Les données ne suivent pas cette distribution")
+    print("\n• Regardez quel graphique a les points les plus alignés sur la ligne rouge")
+    print("  pour déterminer la meilleure distribution.")
+    print("="*70)
+    
+    return fig, (df_estimate, mu_estimate, sigma_estimate)
