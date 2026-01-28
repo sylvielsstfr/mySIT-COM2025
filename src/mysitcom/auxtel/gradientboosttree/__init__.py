@@ -1,3 +1,3 @@
-from .libProcessDataGBT import  normalize_column_data
+from .libProcessDataGBT import  normalize_column_data_bytarget_byfilter
 
-__all__ = ["normalize_column_data"]
+__all__ = ["normalize_column_data_bytarget_byfilter"]
