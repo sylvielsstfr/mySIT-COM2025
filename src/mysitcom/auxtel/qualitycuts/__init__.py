@@ -17,7 +17,7 @@ plot_chi2_norm_histo_by_target,\
 plot_chi2_norm_histo_onetarget,\
 plot_chi2_nonorm_histo_by_target,\
 plot_chi2_nonorm_histo_onetarget,\
-normalize_column_data
+normalize_column_data_bytarget_byfilter
 
 from .libStatistics import generate_chi2_samples,\
 generate_lognormal_samples,\
@@ -50,7 +50,7 @@ __all__ = ["get_filter_color",
            "plot_chi2_norm_histo_onetarget",
            "plot_chi2_nonorm_histo_by_target",
            "plot_chi2_nonorm_histo_onetarget",
-           "normalize_column_data",
+           "normalize_column_data_bytarget_byfilter",
            "generate_chi2_samples",
            "generate_lognormal_samples",
            "ks_test_chi2_vs_lognormal",
