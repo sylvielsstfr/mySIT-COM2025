@@ -18,6 +18,7 @@ plot_atmparam_vs_time,\
 plot_atmparam_diff_vs_time,\
 plot_atmparam_hist_per_filter,\
 plot_atmparam_diff_hist_per_filter
+from .libProcessDataPWV import normalize_column_data_bytarget_byfilter,shiftaverage_column_data_byfilter
 
 __all__ = ["get_astronomical_midnight",
            "GetNightMidnightsDict",
@@ -47,4 +48,6 @@ __all__ = ["get_astronomical_midnight",
            "plot_atmparam_diff_vs_time",
            "plot_atmparam_hist_per_filter"
            "plot_atmparam_diff_hist_per_filter",
+           "normalize_column_data_bytarget_byfilter",
+           "shiftaverage_column_data_byfilter"
           ]
