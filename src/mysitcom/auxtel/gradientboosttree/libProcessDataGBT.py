@@ -1,5 +1,4 @@
 """Process data for Gradient Boosted Trees."""
-import numpy as np
 import pandas as pd
 
 
@@ -53,7 +52,7 @@ def shiftaverage_column_data_byfilter(df,night_col,filter_col,feature_col,ext="s
     the_nights = df[night_col].unique()
     feature_col_out =f"{feature_col}_{ext}"
     #feature_col_mean =f"{feature_col}_mean"
-   
+
 
     all_df = []
     #df_out =  pd.DataFrame(columns=[target_col ,filter_col,feature_col_mean])
