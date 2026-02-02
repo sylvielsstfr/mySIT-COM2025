@@ -2553,8 +2553,6 @@ def plot_param_histogram_grid(
       columns -> filters
     """
 
-    import numpy as np
-    import matplotlib.pyplot as plt
 
     # ----------------------------
     # Filter ordering
@@ -2643,6 +2641,188 @@ def plot_param_histogram_grid(
             # ----------------------------
             if i == 0:
                 ax.set_title(str(f))
+
+    fig.tight_layout()
+    return fig, axs
+
+#------------------------------------------------------------------
+def plot_param_scatterandhistogram_grid(
+    df,
+    params,
+    y_col,
+    filter_col,
+    filter_order=None,          # list of filters in desired column order
+    param_ranges=None,          # dict: {param: (xmin, xmax)}
+    bins=50,
+    marker="+",
+    mcolor = "b",                    # int or dict {param: bins}
+    stacked=True,
+    density=False,
+    yminmax = (-2.0,2.0),
+    quantiles=(0.05, 0.10, 0.50, 0.90, 0.95),
+    quantile_linestyles=("--", ":", "-", ":", "--"),
+    quantile_color="k",
+    quantile_alpha=0.8,
+    show_quantile_legend=True,
+    logy=False,
+    alpha=0.7,
+    figsize=(14, 2.5),
+):
+    """
+    Plot a grid of histograms:
+      rows    -> parameters
+      columns -> filters
+    """
+
+
+
+    # ----------------------------
+    # Filter ordering
+    # ----------------------------
+    if filter_order is None:
+        filters = list(df[filter_col].unique())
+    else:
+        filters = filter_order
+
+    n_params = len(params)
+    n_filters = len(filters)
+
+    fig, axs = plt.subplots(
+        n_params,
+        n_filters,
+        figsize=(figsize[0] * n_filters, figsize[1] * n_params),
+        squeeze=False,
+        sharey=False,
+    )
+
+    # ----------------------------
+    # Loop
+    # ----------------------------
+    for i, param in enumerate(params):
+
+        # --- bin handling per parameter
+        nbins = bins[param] if isinstance(bins, dict) else bins
+
+        if param_ranges and param in param_ranges:
+            xmin, xmax = param_ranges[param]
+        else:
+            xmin, xmax = df[param].min(), df[param].max()
+
+        bin_edges = np.linspace(xmin, xmax, nbins + 1)
+
+        for j, f in enumerate(filters):
+
+            ax = axs[i, j]
+            ax2 =ax.twinx()
+
+            sub = df[df[filter_col] == f][param]
+            yy = df[df[filter_col] == f][y_col]
+
+            maskq = np.isfinite(sub) & np.isfinite(yy)
+            xq = sub[maskq]
+            yq = yy[maskq]
+
+            ax.scatter(sub,yy,marker=marker,color=mcolor,alpha=alpha)
+
+            ax2.hist(
+                sub,
+                bins=bin_edges,
+                stacked=stacked,
+                density=density,
+                alpha=alpha,
+                color=get_filter_color(f),
+            )
+
+            ax2.set_xlim(xmin, xmax)
+            ax.set_xlim(xmin, xmax)
+            ax.set_ylim(yminmax)
+
+            # quantile
+            qx = np.quantile(xq, quantiles)
+            qy = np.quantile(yq, quantiles)
+
+            for q, xv, yv, ls in zip(quantiles, qx, qy, quantile_linestyles):
+
+                # vertical lines (x quantiles)
+                ax.axvline(
+                    xv,
+                    linestyle=ls,
+                    color=quantile_color,
+                    alpha=quantile_alpha,
+                    linewidth=2.0,
+                    label=f"{int(q*100)}%" if (i == 0 and j == 0) else None,
+                )
+
+                # horizontal lines (y quantiles)
+                ax.axhline(
+                    yv,
+                    linestyle=ls,
+                    color=quantile_color,
+                    alpha=quantile_alpha,
+                    linewidth=1.2,
+                )
+
+
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax.minorticks_on()
+
+            ax.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=False,     # optional: set True if you want right ticks too
+            )
+
+            ax2.tick_params(
+            axis="y",
+            which="both",
+            left=False,
+            right=True,
+            labelleft=False,
+            labelright=True,
+)
+
+            if logy:
+                ax2.set_yscale("log")
+
+            ax.grid(True, alpha=0.5)
+
+            # ----------------------------
+            # Labels
+            # ----------------------------
+            ax.set_xlabel(param)
+
+            if j == n_filters-1:
+                ax2.set_ylabel("Count" if not density else "Density")
+            if j == 0:
+                ax.set_ylabel(y_col)
+
+            # ----------------------------
+            # Column titles
+            # ----------------------------
+            if i == 0:
+                ax.set_title(str(f))
+
+    if show_quantile_legend:
+        handles, labels = axs[0, 0].get_legend_handles_labels()
+        if handles:
+            fig.legend(
+                handles,
+                labels,
+                title="Quantiles",
+                loc="upper center",
+                ncol=len(quantiles),
+                frameon=False,
+                #fontsize=12,
+            )
 
     fig.tight_layout()
     return fig, axs
@@ -3072,9 +3252,6 @@ def plot_param_difference_vs_time(
     """
     Plot (param2 - param1) vs time.
     """
-
-    import matplotlib.pyplot as plt
-    from pandas.api.types import is_datetime64_any_dtype
 
     data = df[[time_col, param1, param2]].dropna()
 
