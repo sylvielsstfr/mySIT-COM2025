@@ -29,4 +29,6 @@
 - **QCUT06_ConstDB_target38666.ipynb**:
 - **QCUT07_ConstDB_ExternalParameters.ipynb**:
 
-
+## Parameters histograms with pdf files written
+- QCUT08_ExploreHoloQuality_ImpactOfAllQualityCuts.ipynb
+- QCUT09_ExploreHoloQuality_ImpactOfAllQualityCuts_bytarget.ipynb

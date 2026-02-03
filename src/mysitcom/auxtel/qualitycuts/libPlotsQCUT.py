@@ -2649,6 +2649,181 @@ def plot_param_histogram_grid(
     return fig, axs
 
 #------------------------------------------------------------------
+
+
+def plot_param_histogram_bytarget_grid(
+    df,
+    params,
+    filter_col,
+    target_col,
+    target_color_map,
+    filter_order=None,          # list of filters in desired column order
+    param_ranges=None,          # dict: {param: (xmin, xmax)}
+    bins=50,                    # int or dict {param: bins}
+    stacked=True,
+    density=False,
+    logy=False,
+    alpha=0.7,
+    figsize=(4, 2.5),
+):
+    """
+    Plot a grid of histograms:
+      rows    -> parameters
+      columns -> filters
+    """
+
+    ordered_list_of_targets = list(target_color_map.keys())
+
+    # ----------------------------
+    # Filter ordering
+    # ----------------------------
+
+    filters = list(df[filter_col].unique()) if filter_order is None else filter_order
+
+    n_params = len(params)
+    n_filters = len(filters)
+
+    fig, axs = plt.subplots(
+        n_params,
+        n_filters,
+        figsize=(figsize[0] * n_filters, figsize[1] * n_params),
+        squeeze=False,
+        sharey=False,
+    )
+
+    # ----------------------------
+    # Loop
+    # ----------------------------
+    for i, param in enumerate(params):
+
+        # --- bin handling per parameter
+        nbins = bins[param] if isinstance(bins, dict) else bins
+
+        if param_ranges and param in param_ranges:
+            xmin, xmax = param_ranges[param]
+        else:
+            xmin, xmax = df[param].min(), df[param].max()
+
+        bin_edges = np.linspace(xmin, xmax, nbins + 1)
+
+        for j, f in enumerate(filters):
+
+            ax = axs[i, j]
+
+            sub = df[df[filter_col] == f][param].dropna()
+
+            # ----------------------------
+            # Histogrammes empilés par TARGET
+            # ----------------------------
+            hist_data = []
+            hist_colors = []
+            for t in ordered_list_of_targets:
+                sub_t = df[(df[filter_col] == f) & (df[target_col] == t)][param].dropna()
+                if len(sub_t) == 0:
+                    continue
+                hist_data.append(sub_t.values)
+                hist_colors.append(target_color_map[t])
+            ax.hist(
+                hist_data,
+                bins=bin_edges,
+                stacked=True,
+                density=density,
+                alpha=alpha,
+                color=hist_colors,
+            )
+
+
+            ax.set_xlim(xmin, xmax)
+
+            # ----------------------------
+            # Ticks on all sides
+            # ----------------------------
+            ax.minorticks_on()
+
+            ax.tick_params(
+                axis="x",
+                which="both",
+                top=True,        # show ticks on top
+                bottom=True,     # keep bottom ticks
+            )
+            ax.tick_params(
+                axis="y",
+                which="both",
+                left=True,       # show ticks on left
+                right=True,     # optional: set True if you want right ticks too
+            )
+
+            if logy:
+                ax.set_yscale("log")
+
+            ax.grid(True, alpha=0.3)
+
+            # ----------------------------
+            # Labels
+            # ----------------------------
+            ax.set_xlabel(param)
+
+            if j == 0:
+                ax.set_ylabel("Count" if not density else "Density")
+
+            # ----------------------------
+            # Column titles
+            # ----------------------------
+            if i == 0:
+                ax.set_title(str(f))
+
+    fig.tight_layout()
+    return fig, axs
+
+#------------------------------------------------------------------
+def save_param_histogram_bytarget_pdf(
+    filename,
+    df,
+    params,
+    rows_per_page,
+    **plot_kwargs,
+):
+    """
+    Save histogram grids to a multi-page PDF.
+
+    Parameters
+    ----------
+    filename : str
+        Output PDF file.
+    params : list
+        List of parameters to plot.
+    rows_per_page : int
+        Number of parameter rows per page.
+    plot_kwargs :
+        Passed to plot_param_histogram_bytarget_grid
+    """
+
+    n_pages = math.ceil(len(params) / rows_per_page)
+
+    with PdfPages(filename) as pdf:
+        for page in range(n_pages):
+
+            p0 = page * rows_per_page
+            p1 = min((page + 1) * rows_per_page, len(params))
+            params_page = params[p0:p1]
+
+            fig, axs = plot_param_histogram_bytarget_grid(
+                df=df,
+                params=params_page,
+                **plot_kwargs,
+            )
+
+            fig.suptitle(
+                f"Parameters {p0+1}–{p1}",
+                fontsize=14,
+                y=1.02,
+            )
+
+            pdf.savefig(fig, bbox_inches="tight")
+            plt.close(fig)
+
+
+#
 def plot_param_scatterandhistogram_grid(
     df,
     params,
@@ -4096,12 +4271,8 @@ def plot_chi2_norm_histo_onetarget(
 
     #---------------------------
     # target color
-    #--------------------------
-    if target_palette is None:
-        target_color="grey"
-    else:
-        target_color = target_palette.get(target_name, "grey")
-
+    #--------------------------    
+    target_color="grey" if target_palette is None else target_palette.get(target_name, "grey")
 
     # ----------------------------
     # Normalisation par target
