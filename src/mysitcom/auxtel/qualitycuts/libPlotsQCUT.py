@@ -2655,7 +2655,7 @@ def plot_param_scatterandhistogram_grid(
     y_col,
     filter_col,
     filter_order=None,          # list of filters in desired column order
-    param_ranges=None,          # dict: {param: (xmin, xmax)}
+    params_ranges=None,          # dict: {param: (xmin, xmax)}
     bins=50,
     marker="+",
     mcolor = "b",                    # int or dict {param: bins}
@@ -2706,8 +2706,8 @@ def plot_param_scatterandhistogram_grid(
         # --- bin handling per parameter
         nbins = bins[param] if isinstance(bins, dict) else bins
 
-        if param_ranges and param in param_ranges:
-            xmin, xmax = param_ranges[param]
+        if params_ranges and param in params_ranges:
+            xmin, xmax = params_ranges[param]
         else:
             xmin, xmax = df[param].min(), df[param].max()
 
@@ -2837,8 +2837,8 @@ def plot_param_scatterandhistogram_page(
     params,
     y_col,
     filter_col,
-    filter_order=None,
-    param_ranges=None,
+    filter_order = None,
+    params_ranges = None,
     bins=50,
     marker="+",
     mcolor="b",
@@ -2887,8 +2887,8 @@ def plot_param_scatterandhistogram_page(
         # --- bin handling per parameter
         nbins = bins[param] if isinstance(bins, dict) else bins
 
-        if param_ranges and param in param_ranges:
-            xmin, xmax = param_ranges[param]
+        if params_ranges and param in params_ranges:
+            xmin, xmax = params_ranges[param]
         else:
             xmin, xmax = df[param].min(), df[param].max()
 
@@ -3017,7 +3017,8 @@ def plot_param_scatterandhistogram_pdf(
     pdf_filename,
     df,
     params,
-    params_per_page=5,
+    params_ranges,
+    params_per_page = 5,
     **plot_kwargs,
 ):
     """
@@ -3039,6 +3040,7 @@ def plot_param_scatterandhistogram_pdf(
             fig = plot_param_scatterandhistogram_page(
                 df,
                 params=params_page,
+                params_ranges = params_ranges,
                 **plot_kwargs,
             )
 
