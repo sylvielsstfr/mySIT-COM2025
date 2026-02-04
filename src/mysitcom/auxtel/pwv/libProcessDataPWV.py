@@ -263,3 +263,67 @@ def pwv_deviation_from_linear_interp_datetime(
     return df
 
 
+def pwv_next_prev_difference_datetime(
+    df,
+    night_col,
+    filter_col,
+    target_col,
+    time_col,
+    pwv_col,
+    time_unit="s",          # "s", "min", "h", "d"
+    suffix="nextprev"
+):
+    """
+    Compute PWV(next) - PWV(previous) and time(next) - time(previous),
+    using datetime columns. Values are assigned to the central row.
+    """
+
+    df = df.copy()
+
+    pwv_diff_col = f"{pwv_col}_{suffix}"
+    dt_col = f"dt_{suffix}"
+
+    df[pwv_diff_col] = np.nan
+    df[dt_col] = np.nan
+
+    grouped = df.groupby([target_col, night_col, filter_col])
+
+    unit_scale = {
+        "s": 1.0,
+        "min": 60.0,
+        "h": 3600.0,
+        "d": 86400.0,
+    }[time_unit]
+
+    for _, g in grouped:
+
+        g = g.sort_values(time_col)
+
+        if len(g) < 3:
+            continue
+
+        t = g[time_col].values
+        pwv = g[pwv_col].values
+
+        t_prev = t[:-2]
+        t_next = t[2:]
+
+        pwv_prev = pwv[:-2]
+        pwv_next = pwv[2:]
+
+        # Time difference
+        dt = t_next - t_prev
+        dt_val = pd.to_timedelta(dt).astype("timedelta64[s]") / unit_scale
+
+        # PWV difference
+        pwv_diff = pwv_next - pwv_prev
+
+        idx = g.index[1:-1]
+
+        df.loc[idx, pwv_diff_col] = pwv_diff
+        df.loc[idx, dt_col] = dt_val
+
+    # Optional: store dt as timedelta again
+    df[dt_col] = pd.to_timedelta(df[dt_col], unit=time_unit)
+
+    return df

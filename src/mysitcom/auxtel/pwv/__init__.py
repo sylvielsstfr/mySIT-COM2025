@@ -21,7 +21,8 @@ plot_atmparam_diff_hist_per_filter
 from .libProcessDataPWV import normalize_column_data_bytarget_byfilter,\
 normalize_column_data_bytarget_byfilter_bymethod,\
 shiftaverage_column_data_byfilter,\
-pwv_deviation_from_linear_interp_datetime
+pwv_deviation_from_linear_interp_datetime,\
+pwv_next_prev_difference_datetime
 
 __all__ = ["get_astronomical_midnight",
            "GetNightMidnightsDict",
@@ -53,5 +54,7 @@ __all__ = ["get_astronomical_midnight",
            "plot_atmparam_diff_hist_per_filter",
            "normalize_column_data_bytarget_byfilter",
            "shiftaverage_column_data_byfilter",
-           "pwv_deviation_from_linear_interp_datetime"
+           "pwv_deviation_from_linear_interp_datetime",
+           "pwv_next_prev_difference_datetime",
+           "normalize_column_data_bytarget_byfilter_bymethod"
           ]
