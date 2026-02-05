@@ -29,7 +29,9 @@ ks_test_chi2_vs_lognormal,\
 plot_normalized_histogram,\
 qq_plot_chi2_vs_lognormal
 
-from .libSelectionQCUT import ParameterCutSelection,ParameterCutTools
+from .libSelectionQCUT import ParameterCutSelection,ParameterCutTools,\
+ParameterCutPlotting,\
+ListOfParams,ListOfFilterOrder,ListOfParamRanges
 
 __all__ = ["get_filter_color",
            "scatter_datetime",
@@ -66,5 +68,9 @@ __all__ = ["get_filter_color",
            "plot_param_scatterandhistogram_grid",
            "plot_param_scatterandhistogram_pdf",
            "ParameterCutSelection",
-            "ParameterCutTools"
+           "ParameterCutTools",
+           "ParameterCutPlotting",
+           "ListOfParams",
+           "ListOfFilterOrder",
+           "ListOfParamRanges"
           ]
