@@ -1,9 +1,9 @@
+import json
+from typing import Any, Dict
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from typing import Dict, Any
-import json
-import matplotlib.pyplot as plt
-
 
 ListOfParams = [
     "alpha_0_1",
@@ -199,9 +199,6 @@ class ParameterCutPlotting:
     :return: _description_
     :rtype: _type_
     """
-
-
-
     @staticmethod
     def plot_selection_fraction_by_filter(
         df_stat,
@@ -227,7 +224,7 @@ class ParameterCutPlotting:
             n_filters,
             figsize=(figsize_per_filter[0] * n_filters, fig_height),
             sharey=True,
-          )
+            )
         if n_filters == 1:
             axes = [axes]
 
@@ -282,8 +279,8 @@ class ParameterCutPlotting:
 
         plt.tight_layout()
         return fig, axes
-    
 
+#-----------------
     @staticmethod
     def plot_target_param_cuts_one_filter(
         df,
@@ -305,27 +302,30 @@ class ParameterCutPlotting:
         df_t = df[df["TARGET"] == target].copy()
         if filter_value is not None:
             df_t = df_t[df_t["FILTER"] == filter_value]
+
         params = [p for p in cuts.keys() if p in df_t.columns]
         results = []
+
         for p in params:
             # applique la coupure pour ce paramètre
-          if filter_value is not None:
-              minv = cuts[p][filter_value].get("min")
-              maxv = cuts[p][filter_value].get("max")
-          else:
-              # appliquer un "or" sur tous les filtres ?
-              # ici on prend le min/max de la première occurrence
-              minv = list(cuts[p].values())[0].get("min")
-              maxv = list(cuts[p].values())[0].get("max")
-          mask = pd.Series(True, index=df_t.index)
-          if minv is not None:
-                  mask &= df_t[p] >= minv
-          if maxv is not None:
-                 mask &= df_t[p] <= maxv
-          n_pass = mask.sum()
-          n_total = len(df_t)
-          frac_pass = n_pass / n_total if n_total > 0 else 0
-          results.append((p, n_pass, n_total, frac_pass))
+            if filter_value is not None:
+                minv = cuts[p][filter_value].get("min")
+                maxv = cuts[p][filter_value].get("max")
+            else:
+                # appliquer un "or" sur tous les filtres ?
+                # ici on prend le min/max de la première occurrence
+                minv = list(cuts[p].values())[0].get("min")
+                maxv = list(cuts[p].values())[0].get("max")
+
+            mask = pd.Series(True, index=df_t.index)
+            if minv is not None:
+                mask &= df_t[p] >= minv
+            if maxv is not None:
+                mask &= df_t[p] <= maxv
+            n_pass = mask.sum()
+            n_total = len(df_t)
+            frac_pass = n_pass / n_total if n_total > 0 else 0
+            results.append((p, n_pass, n_total, frac_pass))
 
         df_res = pd.DataFrame(results, columns=["param","n_pass","n_total","frac_pass"])
 
@@ -341,90 +341,86 @@ class ParameterCutPlotting:
 
         plt.tight_layout()
         return fig, df_res
-    
 #-----------------------------------------------------------
     @staticmethod
     def plot_target_param_cuts_multi_filters(
-      df,
-      target,
-      cuts,
-      filter_order=None,
-      target_color="steelblue",
-      figsize_per_subplot=(16,3)
-      ):
-      """
-      Plot vertical barplots of fraction of selection per parameter
-      for a given TARGET, one subplot per filter (aligned x-axis).
+        df,
+        target,
+        cuts,
+        filter_order=None,
+        target_color="steelblue",
+        figsize_per_subplot=(16,3)
+        ):
+        """
+        Plot vertical barplots of fraction of selection per parameter
+        for a given TARGET, one subplot per filter (aligned x-axis).
     
-      df : dataframe original
-      target : str
-      cuts : dict, cuts[param][filter] = {'min':..,'max':..}
-      filter_order : list of filters to show
-      target_color : color of bars
-      figsize_per_subplot : tuple(width,height) for each subplot
-      """
-    
-      # dataframe du target
-      df_t = df[df["TARGET"] == target].copy()
-    
-      # si filter_order non fourni, on prend tous les filtres présents
-      if filter_order is None:
-          filter_order = df_t["FILTER"].unique()
+        df : dataframe original
+        target : str
+        cuts : dict, cuts[param][filter] = {'min':..,'max':..}
+        filter_order : list of filters to show
+        target_color : color of bars
+        figsize_per_subplot : tuple(width,height) for each subplot
+        """
 
-      n_filters = len(filter_order)
-      params = [p for p in cuts.keys() if p in df_t.columns]
-    
-      fig, axes = plt.subplots(
-          n_filters,
-          1,
-          figsize=(figsize_per_subplot[0], figsize_per_subplot[1]*n_filters),
-          sharex=True
-      )
-    
-      if n_filters == 1:
-          axes = [axes]
-    
-      for ax, filt in zip(axes, filter_order):
-          df_f = df_t[df_t["FILTER"] == filt].copy()
-        
-          results = []
-          for p in params:
-              if filt in cuts[p]:
-                  minv = cuts[p][filt].get("min")
-                  maxv = cuts[p][filt].get("max")
-              else:
-                  minv = None
-                  maxv = None
-            
-              mask = pd.Series(True, index=df_f.index)
-              if minv is not None:
-                  mask &= df_f[p] >= minv
-              if maxv is not None:
-                  mask &= df_f[p] <= maxv
-            
-              n_pass = mask.sum()
-              n_total = len(df_f)
-              frac_pass = n_pass / n_total if n_total > 0 else 0
-              results.append(frac_pass)
-        
-          ax.bar(params, results, color=target_color, edgecolor="black")
-          ax.set_ylim(0,1)
-          ax.set_ylabel(f"{filt}")
-          ax.grid(axis="y", alpha=0.3)
-    
-      axes[-1].set_xticklabels(params, rotation=45, ha="right")
-      axes[-1].set_xlabel("Parameter")
-    
-      fig.suptitle(f"Target: {target} : fraction of selected events", fontsize=14)
-      plt.tight_layout(rect=[0,0,1,0.96])
-    
-      return fig
+        # dataframe du target
+        df_t = df[df["TARGET"] == target].copy()
 
+        # si filter_order non fourni, on prend tous les filtres présents
+        if filter_order is None:
+            filter_order = df_t["FILTER"].unique()
 
+        n_filters = len(filter_order)
+        params = [p for p in cuts.keys() if p in df_t.columns]
+
+        fig, axes = plt.subplots(
+            n_filters,
+            1,
+            figsize=(figsize_per_subplot[0], figsize_per_subplot[1]*n_filters),
+            sharex=True
+        )
+
+        if n_filters == 1:
+            axes = [axes]
+
+        for ax, filt in zip(axes, filter_order):
+            df_f = df_t[df_t["FILTER"] == filt].copy()
+
+            results = []
+            for p in params:
+                if filt in cuts[p]:
+                    minv = cuts[p][filt].get("min")
+                    maxv = cuts[p][filt].get("max")
+                else:
+                    minv = None
+                    maxv = None
+
+                mask = pd.Series(True, index=df_f.index)
+                if minv is not None:
+                    mask &= df_f[p] >= minv
+                if maxv is not None:
+                    mask &= df_f[p] <= maxv
+
+                n_pass = mask.sum()
+                n_total = len(df_f)
+                frac_pass = n_pass / n_total if n_total > 0 else 0
+                results.append(frac_pass)
+
+            ax.bar(params, results, color=target_color, edgecolor="black")
+            ax.set_ylim(0,1)
+            ax.set_ylabel(f"{filt}")
+            ax.grid(axis="y", alpha=0.3)
+
+        axes[-1].set_xticklabels(params, rotation=45, ha="right")
+        axes[-1].set_xlabel("Parameter")
+
+        fig.suptitle(f"Target: {target} : fraction of selected events", fontsize=14)
+        plt.tight_layout(rect=[0,0,1,0.96])
+
+        return fig
 
 
-
-#
+#-----------------------------------------------------
 
 class ParameterCutTools:
     """
