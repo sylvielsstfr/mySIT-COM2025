@@ -95,7 +95,8 @@ REPO_URI  = "dp2_prep"
 # used in december 2025
 #collection = "LSSTCam/runs/DRP/20250417_20250921/w_2025_49/DM-53545" # 2025-12-12
 # used in february 2026
-collection = "LSSTCam/runs/DRP/20250515-20251214/v30_0_0_rc2/DM-53697"
+#collection = "LSSTCam/runs/DRP/20250515-20251214/v30_0_0_rc2/DM-53697"
+collection = "dp2_prep: LSSTCam/runs/DRP/DP2/v30_0_0/DM-53881/" # 2026-02-06 : collection utilisée pour l'extraction interactive des données FGCM (DRP v30.0.0-rc2)
 
 strcollection = collection.replace("/","_")
 strrepo = REPO_URI.replace("/","_")
