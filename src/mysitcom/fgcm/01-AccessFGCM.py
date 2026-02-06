@@ -54,8 +54,9 @@ from lsst.daf.butler import Butler
 REPO_URI  = "dp2_prep"
 #collection = "LSSTCam/runs/DRP/20250417_20250723/d_2025_11_21/DM-53374" # 2025-12-05
 #collection = "LSSTCam/runs/DRP/20250417_20250921/w_2025_49/DM-53545" # 2025-12-12
-collection = "LSSTCam/runs/DRP/20250417_20250921/w_2025_49/DM-53545" # 2026-02-06 : collection utilisée pour l'extraction interactive des données FGCM
-
+#collection = "LSSTCam/runs/DRP/20250417_20250921/w_2025_49/DM-53545" # 2026-02-06 : collection utilisée pour l'extraction interactive des données FGCM
+#collection = "LSSTCam/runs/DRP/20250515-20251214/v30_0_0_rc2/DM-53697" # 2026-02-06 : collection utilisée pour l'extraction interactive des données FGCM (DRP v30.0.0-rc2)
+collection = "LSSTCam/runs/DRP/DP2/v30_0_0/DM-53881/"
 butler = Butler(REPO_URI, collections=collection)
 registry = butler.registry
 dataset_types = list(registry.queryDatasetTypes())
