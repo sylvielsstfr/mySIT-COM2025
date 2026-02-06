@@ -45,7 +45,7 @@
 #
 
 
-#import textwrap
+import textwrap
 
 import lsst.geom as geom
 import numpy as np

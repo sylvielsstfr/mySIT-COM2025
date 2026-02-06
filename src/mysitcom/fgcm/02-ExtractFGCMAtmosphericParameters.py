@@ -63,7 +63,6 @@ from astropy.table import join
 from astropy.time import Time
 from lsst.daf.butler import Butler
 
-g
 # ## Configuration
 
 plt.rcParams["figure.figsize"] = (16,8)
