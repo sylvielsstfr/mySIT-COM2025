@@ -2,18 +2,16 @@
 
 # install with "pip install --user -e . "
 
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import matplotlib.dates as mdates
-import matplotlib.colors as mcolors
-from matplotlib.dates import DateFormatter
-from pandas.api.types import is_datetime64_any_dtype
-import pandas as pd
 from pprint import pprint
 
-
-
+import matplotlib.colors as mcolors
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from matplotlib.dates import DateFormatter
+from pandas.api.types import is_datetime64_any_dtype
 
 FILTER_COLORS = {
     "empty": "gray",
@@ -2076,7 +2074,7 @@ def summarize_dccd_chi2(df, target_col="TARGET", filter_col="FILTER",
         df
         .groupby([target_col, filter_col])
         .agg(
-            N=("CHI2_FIT", "size"), 
+            N=("CHI2_FIT", "size"),
             mean_DCCD = (dccd_col, "mean"),
             sigma_DCCD = (dccd_col, "std"),
             mean_CHI2 = (chi2_col, "mean"),
@@ -2108,9 +2106,6 @@ def plot_param_histogram_grid(
       rows    -> parameters
       columns -> filters
     """
-
-    import numpy as np
-    import matplotlib.pyplot as plt
 
     # ----------------------------
     # Filter ordering
@@ -2231,7 +2226,7 @@ def plot_params_and_chi2_vs_time(
     param_ylim=None,              # dict: {param: (ymin, ymax)}
     chi2_cut=None,
 
-    #colors of params   
+    #colors of params
     param_colors=None,             # dict: {param: color}
 
     # titles
@@ -2302,7 +2297,7 @@ def plot_params_and_chi2_vs_time(
 
         ax_r = ax.twinx()
 
-        # No loop on external parameter 
+        # No loop on external parameter
         h_param = ax.plot(
             data[time_col],
             data[param],
@@ -2310,7 +2305,7 @@ def plot_params_and_chi2_vs_time(
             marker=marker,
             color=param_color,
             alpha=alpha,
-            label=param,          
+            label=param,
             )
 
         # Right axis: CHI2
@@ -2324,10 +2319,10 @@ def plot_params_and_chi2_vs_time(
             alpha=0.25,
             color=get_filter_color(f)
             )
-            
+
         ax_r.set_yscale("log")
 
-        handles = h_param 
+        handles = h_param
         labels = [h.get_label() for h in handles]
 
         ax.legend(
@@ -2337,7 +2332,7 @@ def plot_params_and_chi2_vs_time(
                 frameon=True,
         )
 
-        
+
         # ----------------------------
         # Axis formatting
         # ----------------------------
@@ -2426,7 +2421,7 @@ def plot_param_chi2_correlation_grid(
 ):
     """
     Plot correlation between parameters and CHI2_FIT.
-    
+
     Rows: parameters
     Columns: filters
     """
@@ -2500,7 +2495,7 @@ def plot_param_chi2_correlation_grid(
             else:
                 ax.set_yticklabels([])
 
-           
+
             # ----------------------------
             # Column titles
             # ----------------------------
@@ -2531,7 +2526,7 @@ def plot_param2_vs_param1_colored_by_time(
     Color scale: (time - t0) in days.
     """
 
-    
+
     data = df[[time_col, param1, param2]].dropna()
 
     # ----------------------------
@@ -2555,11 +2550,11 @@ def plot_param2_vs_param1_colored_by_time(
         cmap=cmap,
         marker=marker,
         alpha=alpha,
-        
+
     )
 
     ax.set_aspect(aspect, adjustable="box")
-    
+
     ax.set_xlabel(param1)
     ax.set_ylabel(param2)
     ax.grid(True, alpha=0.3)
@@ -2636,8 +2631,8 @@ def plot_param_difference_vs_time(
 
 
     if zoomdiff is not None:
-        ax.set_ylim(zoomdiff[0],zoomdiff[1]) 
-    
+        ax.set_ylim(zoomdiff[0],zoomdiff[1])
+
     fig.autofmt_xdate()
     fig.tight_layout()
 
@@ -2686,8 +2681,8 @@ def plot_param_difference_vs_time_colored_by_chi2(
         (chi2_min, chi2_max) used for color normalization (in linear chi2).
     """
 
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
     from pandas.api.types import is_datetime64_any_dtype
 
     # ----------------------------
@@ -2741,12 +2736,12 @@ def plot_param_difference_vs_time_colored_by_chi2(
 
 
     if zoomdiff is not None:
-        ax.set_ylim(zoomdiff[0],zoomdiff[1]) 
-    
+        ax.set_ylim(zoomdiff[0],zoomdiff[1])
+
     fig.autofmt_xdate()
 
 
-    
+
     # ----------------------------
     # Colorbar
     # ----------------------------
@@ -2760,7 +2755,7 @@ def plot_param_difference_vs_time_colored_by_chi2(
         fraction=0.08,     # thickness relative to axes
     )
 
-    
+
     cbar.set_label(r"$\log_{10}(\chi^2)$")
 
     # ----------------------------
@@ -2809,7 +2804,7 @@ def plot_single_param_vs_time_colored_by_chi2(
         (chi2_min, chi2_max) used for color normalization (in linear chi2).
     """
 
-    
+
     # ----------------------------
     # Select & clean data
     # ----------------------------
@@ -2827,7 +2822,7 @@ def plot_single_param_vs_time_colored_by_chi2(
     # ----------------------------
     # Quantities to plot
     # ----------------------------
-    values = data[param] 
+    values = data[param]
 
     log_chi2 = np.log10(data[chi2_col])
 
@@ -2887,7 +2882,7 @@ def plot_single_param_vs_time_colored_by_chi2(
     fig.autofmt_xdate()
 
 
-    
+
     # ----------------------------
     # Colorbar
     # ----------------------------
@@ -2901,7 +2896,7 @@ def plot_single_param_vs_time_colored_by_chi2(
         fraction=0.08,     # thickness relative to axes
     )
 
-    
+
     cbar.set_label(r"$\log_{10}(\chi^2)$")
 
     fig.tight_layout()
@@ -3033,7 +3028,7 @@ def plot_atmparam_vs_time(
     figsize=(18, 6),
 ):
     """
-    Trace param_col vs time 
+    Trace param_col vs time
 
     Parameters
     ----------
@@ -3044,7 +3039,7 @@ def plot_atmparam_vs_time(
     if title_param is None:
         title_param=f"{param_col} vs time"
 
-    
+
     data = df.copy()
 
 
@@ -3073,19 +3068,19 @@ def plot_atmparam_vs_time(
     else:
         ax = axs
         fig = ax.figure
-   
+
 
     # ----------------------------
     # Plot per filter
     # ----------------------------
 
     filters = data[filter_col].unique()
-    
+
     for f in filters:
         sub = data[data[filter_col] == f]
 
         if param_err_col == None:
-            
+
             sc= ax.scatter(
                 sub[time_col],
                 sub[param_col],
@@ -3125,7 +3120,7 @@ def plot_atmparam_vs_time(
     # Labels, grid
     # ----------------------------
 
-    
+
     #handles, _ = sc1.legend_elements(prop="colors", alpha=alpha)
     #ax1.legend(
     #    handles,
@@ -3138,11 +3133,11 @@ def plot_atmparam_vs_time(
     ax.set_title(title_param)
     ax.grid(True, alpha=0.3)
 
- 
+
     # ----------------------------
     # Time axis
     # ----------------------------
-    
+
     ax.xaxis.set_major_formatter(date_form)
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
 
@@ -3162,7 +3157,7 @@ def plot_atmparam_vs_time(
         axis="y",
         which="both",
         left=True,       # show ticks on left
-        right=True,  
+        right=True,
         labelleft=True,
         labelright=True, # o   # optional: set True if you want right ticks too
     )
@@ -3170,7 +3165,7 @@ def plot_atmparam_vs_time(
     # ----------------------------
     # Global title
     # ----------------------------
-    
+
     if suptitle:
         fig.suptitle(suptitle)
 
@@ -3338,7 +3333,7 @@ def plot_atmparam_diff_vs_time(
         axis="y",
         which="both",
         left=True,       # show ticks on left
-        right=True,    
+        right=True,
         labelleft=True,
         labelright=True, # optional: set True if you want right ticks too
     )
@@ -3439,11 +3434,17 @@ def plot_atmparam_hist_per_filter(
         q25, q75 = np.percentile(sub, [25, 75])
         std_iqr = (q75 - q25) / 1.349
 
+         # MAD-based sigma
+        median = np.median(sub)
+        mad = np.median(np.abs(sub - median))
+        std_mad = 1.4826 * mad
+
         text = (
             f"{f}\n"
             f"μ = {mean:.3g}\n"
             f"σ = {std:.3g}\n"
-            f"σ(IQR) = {std_iqr:.3g}"
+            f"σ(IQR) = {std_iqr:.3g}\n"
+            f"σ(MAD) = {std_mad:.3g}"
         )
 
         ax.text(
@@ -3488,7 +3489,7 @@ def plot_atmparam_hist_per_filter(
         right=True,     # optional: set True if you want right ticks too
     )
 
-  
+
     if suptitle:
         fig.suptitle(suptitle)
 
@@ -3582,11 +3583,23 @@ def plot_atmparam_diff_hist_per_filter(
         q25, q75 = np.percentile(sub, [25, 75])
         std_iqr = (q75 - q25) / 1.349
 
+         # MAD-based sigma
+        median = np.median(sub)
+        mad = np.median(np.abs(sub - median))
+        std_mad = 1.4826 * mad
+
+        #text = (
+        #    f"{f}\n"
+        #    f"μ = {mean:.3g}\n"
+        #    f"σ = {std:.3g}\n"
+        #    f"σ(IQR) = {std_iqr:.3g}"
+        #)
         text = (
             f"{f}\n"
             f"μ = {mean:.3g}\n"
             f"σ = {std:.3g}\n"
-            f"σ(IQR) = {std_iqr:.3g}"
+            f"σ(IQR) = {std_iqr:.3g}\n"
+            f"σ(MAD) = {std_mad:.3g}"
         )
 
         ax.text(
@@ -3614,7 +3627,7 @@ def plot_atmparam_diff_hist_per_filter(
 
     ax.legend(title=filter_col)
 
-  
+
     # ----------------------------
     # Ticks on all sides
     # ----------------------------

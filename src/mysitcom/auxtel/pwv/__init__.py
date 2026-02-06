@@ -1,28 +1,38 @@
-from .libAstroPWV import get_astronomical_midnight,GetNightMidnightsDict,GetNightBoundariesDict
-from .libPlotsPWV import get_filter_color,scatter_datetime,strip_datetime,\
-bar_counts_by_night,plot_dccd_chi2_vs_time,plot_dccd_chi2_vs_time_by_filter,\
-stripplot_target_vs_time,plot_dccd_chi2_vs_time_by_target_filter,\
-plot_dccd_chi2_histo_by_target_filter,\
-plot_dccd_chi2_vs_time_by_target_filter_colorsedtype,\
-plot_dccd_chi2_histo_by_target_filter_colorsedtype,\
-summarize_dccd_chi2,\
-plot_param_histogram_grid,\
-plot_params_and_chi2_vs_time,\
-plot_param_chi2_correlation_grid,\
-plot_param2_vs_param1_colored_by_time,\
-plot_param_difference_vs_time,\
-plot_param_difference_vs_time_colored_by_chi2,\
-plot_single_param_vs_time_colored_by_chi2,\
-plot_single_param_vs_time,\
-plot_atmparam_vs_time,\
-plot_atmparam_diff_vs_time,\
-plot_atmparam_hist_per_filter,\
-plot_atmparam_diff_hist_per_filter
-from .libProcessDataPWV import normalize_column_data_bytarget_byfilter,\
-normalize_column_data_bytarget_byfilter_bymethod,\
-shiftaverage_column_data_byfilter,\
-pwv_deviation_from_linear_interp_datetime,\
-pwv_next_prev_difference_datetime
+from .libAstroPWV import GetNightBoundariesDict, GetNightMidnightsDict, get_astronomical_midnight
+from .libPlotsPWV import (
+           bar_counts_by_night,
+           get_filter_color,
+           plot_atmparam_diff_hist_per_filter,
+           plot_atmparam_diff_vs_time,
+           plot_atmparam_hist_per_filter,
+           plot_atmparam_vs_time,
+           plot_dccd_chi2_histo_by_target_filter,
+           plot_dccd_chi2_histo_by_target_filter_colorsedtype,
+           plot_dccd_chi2_vs_time,
+           plot_dccd_chi2_vs_time_by_filter,
+           plot_dccd_chi2_vs_time_by_target_filter,
+           plot_dccd_chi2_vs_time_by_target_filter_colorsedtype,
+           plot_param2_vs_param1_colored_by_time,
+           plot_param_chi2_correlation_grid,
+           plot_param_difference_vs_time,
+           plot_param_difference_vs_time_colored_by_chi2,
+           plot_param_histogram_grid,
+           plot_params_and_chi2_vs_time,
+           plot_single_param_vs_time,
+           plot_single_param_vs_time_colored_by_chi2,
+           scatter_datetime,
+           strip_datetime,
+           stripplot_target_vs_time,
+           summarize_dccd_chi2,
+)
+from .libProcessDataPWV import (
+           compute_atmparam_stats_per_filter,
+           normalize_column_data_bytarget_byfilter,
+           normalize_column_data_bytarget_byfilter_bymethod,
+           pwv_deviation_from_linear_interp_datetime,
+           pwv_next_prev_difference_datetime,
+           shiftaverage_column_data_byfilter,
+)
 
 __all__ = ["get_astronomical_midnight",
            "GetNightMidnightsDict",
@@ -56,5 +66,6 @@ __all__ = ["get_astronomical_midnight",
            "shiftaverage_column_data_byfilter",
            "pwv_deviation_from_linear_interp_datetime",
            "pwv_next_prev_difference_datetime",
-           "normalize_column_data_bytarget_byfilter_bymethod"
+           "normalize_column_data_bytarget_byfilter_bymethod",
+           "compute_atmparam_stats_per_filter",
           ]
