@@ -268,6 +268,7 @@ class ParameterCutPlotting:
             ax.set_title(filt)
             ax.set_xlim(0, 1.0)
             ax.grid(axis="x", alpha=0.3)
+            ax.grid(axis="y", alpha=0.8)
 
             ax.set_yticks(y)
             ax.set_yticklabels(df_f["TARGET"])
@@ -338,6 +339,7 @@ class ParameterCutPlotting:
         ax.set_title(f"Target: {target}" + (f" | Filter: {filter_value}" if filter_value else ""))
         ax.set_xticklabels(df_res["param"], rotation=45, ha="right")
         ax.grid(axis="y", alpha=0.3)
+        ax.grid(axis="x", alpha=0.8)
 
         plt.tight_layout()
         return fig, df_res
@@ -409,13 +411,15 @@ class ParameterCutPlotting:
             ax.bar(params, results, color=target_color, edgecolor="black")
             ax.set_ylim(0,1)
             ax.set_ylabel(f"{filt}")
-            ax.grid(axis="y", alpha=0.3)
+            ax.grid(axis="y", alpha=0.5)
+            ax.grid(axis="x", alpha=0.5)
 
         axes[-1].set_xticklabels(params, rotation=45, ha="right")
         axes[-1].set_xlabel("Parameter")
+        axes[0].set_title(f"Target: {target} : fraction of selected events", fontsize=14)
 
-        fig.suptitle(f"Target: {target} : fraction of selected events", fontsize=14)
-        plt.tight_layout(rect=[0,0,1,0.96])
+        #fig.suptitle(f"Target: {target} : fraction of selected events", fontsize=14)
+        #plt.tight_layout(rect=[0,0,1,0.96])
 
         return fig
 #------------------------------------------------------
@@ -479,3 +483,26 @@ class ParameterCutTools:
         """
         with open(path) as f:
             return json.load(f)
+
+    #------------------------------------------------------
+    # Dump json cut file into pandas dataframe
+    #---------
+    @staticmethod
+    def cuts_to_dataframe(cuts: dict) -> pd.DataFrame:
+        """Convert cuts dictionary to a pandas DataFrame for easier visualization.
+
+        :param cuts: dictionary with cuts
+        :type cuts: dict
+        :return: DataFrame with columns: param, filter, min, max
+        :rtype: pd.DataFrame
+        """
+        rows = []
+        for param, per_filter in cuts.items():
+            for filt, bounds in per_filter.items():
+                rows.append({
+                    "param": param,
+                    "filter": filt,
+                    "min": bounds.get("min"),
+                    "max": bounds.get("max")
+                })
+        return pd.DataFrame(rows)
