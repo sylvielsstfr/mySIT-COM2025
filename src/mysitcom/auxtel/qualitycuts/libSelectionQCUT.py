@@ -354,7 +354,7 @@ class ParameterCutPlotting:
         """
         Plot vertical barplots of fraction of selection per parameter
         for a given TARGET, one subplot per filter (aligned x-axis).
-    
+
         df : dataframe original
         target : str
         cuts : dict, cuts[param][filter] = {'min':..,'max':..}
@@ -418,8 +418,8 @@ class ParameterCutPlotting:
         plt.tight_layout(rect=[0,0,1,0.96])
 
         return fig
-
-
+#------------------------------------------------------
+# Classes pour gérer les cuts : écriture, lecture, application, statistiques, plots
 #-----------------------------------------------------
 
 class ParameterCutTools:
