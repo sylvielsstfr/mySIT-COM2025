@@ -14,14 +14,25 @@ from matplotlib.dates import DateFormatter
 from pandas.api.types import is_datetime64_any_dtype
 
 FILTER_COLORS = {
-    "empty": "gray",
-    "BG40_65mm_1": "blue",
-    "OG550_65mm_1": "red",
-    "FELH0600": "purple",
+    "empty"       : "tab:gray",
+    "BG40_65mm_1" : "darkblue",
+    "OG550_65mm_1": "darkred",
+    "FELH0600"    : "darkpurple",
 }
 
 DEFAULT_FILTER_COLOR = "purple"
 DEFAULT_TARGET_COLOR ="lightgrey"
+
+LSST_FILTERS_ORDER = ["u_24", "g_6", "r_57", "i_39", "z_20", "y_10"]
+
+LSST_FILTER_COLORS = {
+    "u_24": "tab:blue",
+    "g_6":  "tab:green",
+    "r_57": "tab:red",
+    "i_39": "tab:orange",
+    "z_20": "tab:gray",
+    "y_10": "black"
+}
 
 def get_filter_color(filter_name):
     return FILTER_COLORS.get(filter_name, DEFAULT_FILTER_COLOR)
@@ -3652,5 +3663,215 @@ def plot_atmparam_diff_hist_per_filter(
     return fig, ax
 
 
+#---------------------------------------------------------------
+def plotcompare_atmparam_fgcm_vs_time(
+    df,
+    df_fgcm,
+    time_col,
+    filter_col,
+    param_col,
+    time_fgcm_col,
+    filter_fgcm_col,
+    param_fgcm_col,
+    param_err_col = None,
+    # thresholds / bounds
+    param_min_fig=None,
+    param_max_fig=None,
+    param_min_cut=None,
+    param_max_cut=None,
 
+    title_param = None,
+
+    # display
+    marker="+",
+    lw=1.5,
+    alpha=0.5,
+    marker_fgcm="o",
+
+    # datetime
+    date_format="%y-%m-%d",
+
+    # titres
+    suptitle=None,
+
+    # axes externes
+    axs = None,
+    figsize=(18, 6),
+    ):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+        df_fgcm (_type_): _description_
+        time_col (_type_): _description_
+        filter_col (_type_): _description_
+        param_col (_type_): _description_
+        time_fgcm_col (_type_): _description_
+        filter_fgcm_col (_type_): _description_
+        param_fgcm_col (_type_): _description_
+        param_err_col (_type_, optional): _description_. Defaults to None.
+        param_min_fig (_type_, optional): _description_. Defaults to None.
+        param_max_fig (_type_, optional): _description_. Defaults to None.
+        param_min_cut (_type_, optional): _description_. Defaults to None.
+        param_max_cut (_type_, optional): _description_. Defaults to None.
+        title_param (_type_, optional): _description_. Defaults to None.
+        marker (str, optional): _description_. Defaults to "+".
+        lw (float, optional): _description_. Defaults to 1.5.
+        alpha (float, optional): _description_. Defaults to 0.5.
+        marker_fgcm (str, optional): _description_. Defaults to "o".
+        date_format (str, optional): _description_. Defaults to "%y-%m-%d".
+        suptitle (_type_, optional): _description_. Defaults to None.
+        axs (_type_, optional): _description_. Defaults to None.
+        figsize (tuple, optional): _description_. Defaults to (18, 6).
+
+    Returns:
+        _type_: _description_
+    """
+
+
+
+    if title_param is None:
+        title_param=f"{param_col} vs time"
+
+
+    data = df.copy()
+
+
+    # ----------------------------
+    # Gestion datetime (robuste)
+    # ----------------------------
+    if is_datetime64_any_dtype(data[time_col]):
+        try:
+            data[time_col] = data[time_col].dt.tz_convert(None)
+        except TypeError:
+            pass
+        # Codage numérique des filtres (palette discrète stable)
+    filter_cat = data[filter_col].astype("category")
+    filter_codes = filter_cat.cat.codes
+    filter_labels = filter_cat.cat.categories
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+    # ----------------------------
+    # Plot per filter in Auxtel
+    # ----------------------------
+
+    filters = data[filter_col].unique()
+
+    #loop on filters for Auxtel
+    for f in filters:
+        sub = data[data[filter_col] == f]
+
+        if param_err_col == None:
+
+            sc= ax.scatter(
+                sub[time_col],
+                sub[param_col],
+                color=get_filter_color(f),  # <- couleur fixe
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=f  # pour la légende
+            )
+        else:
+            ax.errorbar(
+                sub[time_col],
+                sub[param_col],
+                yerr=sub[param_err_col],
+                fmt=marker,
+                color=get_filter_color(f),
+                elinewidth=lw,
+                capsize=0,
+                alpha=alpha,
+                label=f,
+            )
+
+
+    ax.legend(title=filter_col, ncol=len(filters))
+
+
+
+    if param_min_fig is not None and param_max_fig is not None:
+        ax.set_ylim(param_min_fig, param_max_fig)
+
+    if param_min_cut is not None:
+        ax.axhline(param_min_cut, ls="-.", c="k")
+    if param_max_cut is not None:
+        ax.axhline(param_max_cut, ls="-.", c="k")
+
+
+
+    ax.set_ylabel(f"{param_col}")
+    ax.set_title(title_param)
+    ax.grid(True, alpha=0.3)
+
+
+    # ----------------------------
+    # Time axis
+    # ----------------------------
+
+    ax.xaxis.set_major_formatter(date_form)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,
+            labelleft=True,
+            labelright=True, # o   # optional: set True if you want right ticks too
+    )
+
+    #------------------------------------------------
+    # Plot PWV from FGCM
+    #------------------------------------------------
+
+    filters_fgcm = df_fgcm[filter_fgcm_col].values
+    values_fgcm = df_fgcm[param_fgcm_col].values
+
+    mask_valid_fgcm  = np.isfinite(values_fgcm)
+    dates_utc = df_fgcm[time_fgcm_col].values.astype("datetime64[ns]")
+
+
+    # Scatter par filtre
+    for f in LSST_FILTERS_ORDER:
+        m = (filters_fgcm == f) & mask_valid_fgcm
+        if np.sum(m) > 0:
+            ax.scatter(dates_utc[m], values_fgcm[m], marker=marker_fgcm,s=20, alpha=1,
+                            color=LSST_FILTER_COLORS[f], label=f)
+    # ----------------------------
+    # Global title
+    # ----------------------------
+
+    if suptitle:
+        fig.suptitle(suptitle)
+
+    if ax is None:
+        fig.tight_layout()
+
+    return fig, ax
+
+    #--------------------
 
