@@ -21,6 +21,7 @@ from .libPlotsPWV import (
            plot_single_param_vs_time,
            plot_single_param_vs_time_colored_by_chi2,
            plotcompare_atmparam_fgcm_vs_time,
+           plotcompare_atmparam_merra_vs_time,
            scatter_datetime,
            strip_datetime,
            stripplot_target_vs_time,
@@ -69,5 +70,6 @@ __all__ = ["get_astronomical_midnight",
            "pwv_next_prev_difference_datetime",
            "normalize_column_data_bytarget_byfilter_bymethod",
            "compute_atmparam_stats_per_filter",
-           "plotcompare_atmparam_fgcm_vs_time"
+           "plotcompare_atmparam_fgcm_vs_time",
+           "plotcompare_atmparam_merra_vs_time"
           ]
