@@ -892,9 +892,9 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             ax_dccd.set_ylim(ylim_min, ylim_max)
 
 
-        ax_dccd.set_ylabel("D_CCD [mm]")
-        ax_dccd.set_xlabel("Time")
-        ax_dccd.set_title(f"DCCD vs Time – Filter: {filter_select}")
+        ax_dccd.set_ylabel(dccd_col)
+        ax_dccd.set_xlabel(time_col)
+        ax_dccd.set_title(f"{dccd_col} vs {time_col} – Filter: {filter_select}")
         ax_dccd.xaxis.set_major_formatter(date_form)
         ax_dccd.grid(True, alpha=0.3)
         plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
@@ -922,9 +922,9 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             ax_chi2.set_ylim(ylim_min, ylim_max)
 
 
-        ax_chi2.set_ylabel("CHI2_FIT")
-        ax_chi2.set_xlabel("Time")
-        ax_chi2.set_title(f"CHI2 vs Time – Filter: {filter_select}")
+        ax_chi2.set_ylabel(chi2_col)
+        ax_chi2.set_xlabel(time_col)
+        ax_chi2.set_title(f"{chi2_col} vs {time_col} – Filter: {filter_select}")
         ax_chi2.xaxis.set_major_formatter(date_form)
         ax_chi2.grid(True, alpha=0.3)
         plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
@@ -978,9 +978,9 @@ def plot_dccd_chi2_vs_time_by_target_filter(
 
 
 
-            ax_dccd.set_ylabel("D_CCD [mm]")
-            ax_dccd.set_xlabel("Time")
-            ax_dccd.set_title(f"{t} – DCCD vs Time – Filter: {filter_select}")
+            ax_dccd.set_ylabel(dccd_col)
+            ax_dccd.set_xlabel(t)
+            ax_dccd.set_title(f"{t} – {dccd_col} vs {time_col} – Filter: {filter_select}")
             ax_dccd.xaxis.set_major_formatter(date_form)
             ax_dccd.grid(True, alpha=0.3)
             plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
@@ -1009,9 +1009,9 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             if force_global_time_xlim:
                 ax_chi2.set_xlim(time_min, time_max)
 
-            ax_chi2.set_ylabel("CHI2_FIT")
-            ax_chi2.set_xlabel("Time")
-            ax_chi2.set_title(f"{t} – CHI2 vs Time – Filter: {filter_select}")
+            ax_chi2.set_ylabel(chi2_col)
+            ax_chi2.set_xlabel(time_col)
+            ax_chi2.set_title(f"{t} – {chi2_col} vs {time_col} – Filter: {filter_select}")
             ax_chi2.xaxis.set_major_formatter(date_form)
             ax_chi2.grid(True, alpha=0.3)
             plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
@@ -1159,9 +1159,9 @@ def plot_dccd_chi2_histo_by_target_filter(
         if dccd_min_fig is not None and dccd_max_fig is not None:
             ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-        ax_dccd.set_xlabel("D_CCD [mm]")
+        ax_dccd.set_xlabel(dccd_col)
         ax_dccd.set_ylabel("Density" if density else "Counts")
-        ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
+        ax_dccd.set_title(f"{dccd_col} histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
         # --- CHI2 histogrammes
@@ -1185,9 +1185,9 @@ def plot_dccd_chi2_histo_by_target_filter(
         if chi2_min_fig is not None and chi2_max_fig is not None:
             ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-        ax_chi2.set_xlabel("CHI2_FIT")
+        ax_chi2.set_xlabel(chi2_col)
         ax_chi2.set_ylabel("Density" if density else "Counts")
-        ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
+        ax_chi2.set_title(f"{chi2_col} histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
         # --- légende globale
@@ -1272,8 +1272,8 @@ def plot_dccd_chi2_histo_by_target_filter(
             if chi2_min_fig is not None and chi2_max_fig is not None:
                 ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-            ax_chi2.set_title(f"{t} – CHI2 – Filter: {filter_select}")
-            ax_chi2.set_xlabel("CHI2_FIT")
+            ax_chi2.set_title(f"{t} – {chi2_col} – Filter: {filter_select}")
+            ax_chi2.set_xlabel(chi2_col)
             ax_chi2.set_ylabel("Density" if density else "Counts")
             ax_chi2.grid(True, alpha=0.3)
 
@@ -1422,9 +1422,9 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             ax_dccd.set_ylim(ylim_min, ylim_max)
 
 
-        ax_dccd.set_ylabel("D_CCD [mm]")
-        ax_dccd.set_xlabel("Time")
-        ax_dccd.set_title(f"DCCD vs Time – Filter: {filter_select}")
+        ax_dccd.set_ylabel(dccd_col)
+        ax_dccd.set_xlabel(time_col)
+        ax_dccd.set_title(f"{dccd_col} vs {time_col} – Filter: {filter_select}")
         ax_dccd.xaxis.set_major_formatter(date_form)
         ax_dccd.grid(True, alpha=0.3)
         plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
@@ -1452,9 +1452,9 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             ax_chi2.set_ylim(ylim_min, ylim_max)
 
 
-        ax_chi2.set_ylabel("CHI2_FIT")
-        ax_chi2.set_xlabel("Time")
-        ax_chi2.set_title(f"CHI2 vs Time – Filter: {filter_select}")
+        ax_chi2.set_ylabel(chi2_col)
+        ax_chi2.set_xlabel(t)
+        ax_chi2.set_title(f"{chi2_col} vs {time_col} – Filter: {filter_select}")
         ax_chi2.xaxis.set_major_formatter(date_form)
         ax_chi2.grid(True, alpha=0.3)
         plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
@@ -1510,9 +1510,9 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
 
 
 
-            ax_dccd.set_ylabel("D_CCD [mm]")
-            ax_dccd.set_xlabel("Time")
-            ax_dccd.set_title(f"{t} – DCCD vs Time – Filter: {filter_select}")
+            ax_dccd.set_ylabel(dccd_col)
+            ax_dccd.set_xlabel(time_col)
+            ax_dccd.set_title(f"{t} – {dccd_col} vs {time_col} – Filter: {filter_select}")
             ax_dccd.xaxis.set_major_formatter(date_form)
             ax_dccd.grid(True, alpha=0.3)
             plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
@@ -1538,9 +1538,9 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             if chi2_min_fig is not None and chi2_max_fig is not None:
                 ax_chi2.set_ylim(chi2_min_fig, chi2_max_fig)
 
-            ax_chi2.set_ylabel("CHI2_FIT")
-            ax_chi2.set_xlabel("Time")
-            ax_chi2.set_title(f"{t} – CHI2 vs Time – Filter: {filter_select}")
+            ax_chi2.set_ylabel(chi2_col)
+            ax_chi2.set_xlabel(time_col)
+            ax_chi2.set_title(f"{t} – {chi2_col} vs {time_col} – Filter: {filter_select}")
             ax_chi2.xaxis.set_major_formatter(date_form)
             ax_chi2.grid(True, alpha=0.3)
             plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
@@ -1695,9 +1695,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
         if dccd_min_fig is not None and dccd_max_fig is not None:
             ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-        ax_dccd.set_xlabel("D_CCD [mm]")
+        ax_dccd.set_xlabel(dccd_col)
         ax_dccd.set_ylabel("Density" if density else "Counts")
-        ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
+        ax_dccd.set_title(f"{dccd_col} histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
         # --- CHI2 histogrammes
@@ -1721,9 +1721,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
         if chi2_min_fig is not None and chi2_max_fig is not None:
             ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-        ax_chi2.set_xlabel("CHI2_FIT")
+        ax_chi2.set_xlabel(chi2_col)
         ax_chi2.set_ylabel("Density" if density else "Counts")
-        ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
+        ax_chi2.set_title(f"{chi2_col} histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
         # --- légende globale
@@ -1785,8 +1785,8 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
             if dccd_min_fig is not None and dccd_max_fig is not None:
                 ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-            ax_dccd.set_title(f"{t} – DCCD – Filter: {filter_select}")
-            ax_dccd.set_xlabel("D_CCD [mm]")
+            ax_dccd.set_title(f"{t} – {dccd_col} – Filter: {filter_select}")
+            ax_dccd.set_xlabel(dccd_col)
             ax_dccd.set_ylabel("Density" if density else "Counts")
             ax_dccd.grid(True, alpha=0.3)
 
@@ -1808,8 +1808,8 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
             if chi2_min_fig is not None and chi2_max_fig is not None:
                 ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-            ax_chi2.set_title(f"{t} – CHI2 – Filter: {filter_select}")
-            ax_chi2.set_xlabel("CHI2_FIT")
+            ax_chi2.set_title(f"{t} – {chi2_col} – Filter: {filter_select}")
+            ax_chi2.set_xlabel(chi2_col)
             ax_chi2.set_ylabel("Density" if density else "Counts")
             ax_chi2.grid(True, alpha=0.3)
 
@@ -1938,9 +1938,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
         if dccd_min_fig is not None or dccd_max_fig is not None:
             ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-        ax_dccd.set_xlabel("D_CCD [mm]")
+        ax_dccd.set_xlabel(dccd_col)
         ax_dccd.set_ylabel("Counts" if not density else "Density")
-        ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
+        ax_dccd.set_title(f"{dccd_col} histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
         # ---------- CHI2 histogram ----------
@@ -1966,9 +1966,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
         if chi2_min_fig is not None or chi2_max_fig is not None:
             ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-        ax_chi2.set_xlabel("CHI2_FIT")
+        ax_chi2.set_xlabel(chi2_col)
         ax_chi2.set_ylabel("Counts" if not density else "Density")
-        ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
+        ax_chi2.set_title(f"{chi2_col} histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
 
@@ -2029,8 +2029,8 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
             if dccd_min_fig is not None or dccd_max_fig is not None:
                 ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-            ax_dccd.set_title(f"{t} – DCCD")
-            ax_dccd.set_xlabel("D_CCD [mm]")
+            ax_dccd.set_title(f"{t} – {dccd_col}")
+            ax_dccd.set_xlabel(dccd_col)
             ax_dccd.set_ylabel("Counts" if not density else "Density")
             ax_dccd.grid(True, alpha=0.3)
 
@@ -2050,8 +2050,8 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
             if chi2_min_fig is not None or chi2_max_fig is not None:
                 ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-            ax_chi2.set_title(f"{t} – CHI2")
-            ax_chi2.set_xlabel("CHI2_FIT")
+            ax_chi2.set_title(f"{t} – {chi2_col}")
+            ax_chi2.set_xlabel(chi2_col)
             ax_chi2.set_ylabel("Counts" if not density else "Density")
             ax_chi2.grid(True, alpha=0.3)
 
@@ -2604,9 +2604,6 @@ def plot_param_difference_vs_time(
     """
     Plot (param2 - param1) vs time.
     """
-
-    import matplotlib.pyplot as plt
-    from pandas.api.types import is_datetime64_any_dtype
 
     data = df[[time_col, param1, param2]].dropna()
 
