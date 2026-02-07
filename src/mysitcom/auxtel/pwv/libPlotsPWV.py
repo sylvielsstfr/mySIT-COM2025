@@ -23,15 +23,23 @@ FILTER_COLORS = {
 DEFAULT_FILTER_COLOR = "purple"
 DEFAULT_TARGET_COLOR ="lightgrey"
 
-LSST_FILTERS_ORDER = ["u_24", "g_6", "r_57", "i_39", "z_20", "y_10"]
+LSST_FILTERS_ORDER = ["u", "g", "r", "i", "z", "y"]
 
 LSST_FILTER_COLORS = {
-    "u_24": "tab:blue",
-    "g_6":  "tab:green",
-    "r_57": "tab:red",
-    "i_39": "tab:orange",
-    "z_20": "tab:gray",
-    "y_10": "black"
+    "u": "tab:blue",
+    "g":  "tab:green",
+    "r": "tab:red",
+    "i": "tab:orange",
+    "z": "tab:gray",
+    "y": "black"
+}
+LSST_FILTER_COLORS = {
+    "u": "#4DA6FF",  # bright blue
+    "g": "#2ECC71",  # bright green
+    "r": "#FF4D4D",  # bright red
+    "i": "#FF9F1A",  # bright orange
+    "z": "#9B59B6",  # bright purple
+    "y": "#34495E",  # dark steel (lisible sur fond blanc)
 }
 
 def get_filter_color(filter_name):
@@ -3662,7 +3670,29 @@ def plot_atmparam_diff_hist_per_filter(
 
     return fig, ax
 
+#---------------------------------------------------------------
+def decode_physical_filter(x):
+    if isinstance(x, bytes):
+        return x.decode("utf-8")
+    if isinstance(x, str) and x.startswith("b'"):
+        return x[2:-1]          # "b'i_39'" → "i_39"
+    return x
 
+def normalize_physical_filter(x):
+    if pd.isna(x):
+        return np.nan
+
+    # bytes réels
+    if isinstance(x, (bytes, bytearray)):
+        x = x.decode("utf-8")
+
+    # string représentant des bytes : "b'i_39'"
+    if isinstance(x, str):
+        x = x.strip()
+        if x.startswith("b'") and x.endswith("'"):
+            x = x[2:-1]
+
+    return x
 #---------------------------------------------------------------
 def plotcompare_atmparam_fgcm_vs_time(
     df,
@@ -3797,9 +3827,6 @@ def plotcompare_atmparam_fgcm_vs_time(
             )
 
 
-    ax.legend(title=filter_col, ncol=len(filters))
-
-
 
     if param_min_fig is not None and param_max_fig is not None:
         ax.set_ylim(param_min_fig, param_max_fig)
@@ -3844,23 +3871,57 @@ def plotcompare_atmparam_fgcm_vs_time(
             labelright=True, # o   # optional: set True if you want right ticks too
     )
 
-    #------------------------------------------------
-    # Plot PWV from FGCM
-    #------------------------------------------------
 
-    filters_fgcm = df_fgcm[filter_fgcm_col].values
-    values_fgcm = df_fgcm[param_fgcm_col].values
+    # ----------------------------
+    # FGCM preprocessing (FIX FINAL)
+    # ----------------------------
+    dfg = df_fgcm.copy()
 
-    mask_valid_fgcm  = np.isfinite(values_fgcm)
-    dates_utc = df_fgcm[time_fgcm_col].values.astype("datetime64[ns]")
+    dfg["_time"] = pd.to_datetime(dfg[time_fgcm_col]).dt.tz_localize(None)
+    dfg["_val"]  = pd.to_numeric(dfg[param_fgcm_col], errors="coerce")
 
+    dfg["_physicalFilter"] = dfg[filter_fgcm_col].apply(normalize_physical_filter)
 
-    # Scatter par filtre
+    dfg["_filter"] = (
+        dfg["_physicalFilter"]
+        .astype(str)
+        .str.extract(r"^([ugrizy])")
+    )
+
+    #print("FGCM filters decoded:", dfg["_physicalFilter"].unique())
+    #print("FGCM photometric filters:", dfg["_filter"].value_counts())
+
+    dfg = dfg[dfg["_filter"].notna() & np.isfinite(dfg["_val"])]
+
+    # ----------------------------
+    # Plot FGCM
+    # ----------------------------
     for f in LSST_FILTERS_ORDER:
-        m = (filters_fgcm == f) & mask_valid_fgcm
-        if np.sum(m) > 0:
-            ax.scatter(dates_utc[m], values_fgcm[m], marker=marker_fgcm,s=20, alpha=1,
-                            color=LSST_FILTER_COLORS[f], label=f)
+        sub = dfg[dfg["_filter"] == f]
+
+        if sub.empty:
+            print(f"Warning: no valid FGCM data for filter {f}")
+            continue
+        ax.scatter(
+            sub["_time"],
+            sub["_val"],
+            marker=marker_fgcm,
+            s=35,
+            alpha=1.0,
+            color=LSST_FILTER_COLORS[f],
+            edgecolor=LSST_FILTER_COLORS[f],
+            linewidths=0.4,
+            zorder=5,
+            label=f"FGCM {f}",
+        )
+
+
+
+
+    #---------------------------------
+    # legend
+    #-----------------------------------------------
+    ax.legend(title=filter_col, ncol=len(filters),loc="upper left",fontsize=12)
     # ----------------------------
     # Global title
     # ----------------------------
@@ -3868,8 +3929,8 @@ def plotcompare_atmparam_fgcm_vs_time(
     if suptitle:
         fig.suptitle(suptitle)
 
-    if ax is None:
-        fig.tight_layout()
+
+    fig.tight_layout()
 
     return fig, ax
 
