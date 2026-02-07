@@ -4009,6 +4009,10 @@ def plotcompare_atmparam_merra_vs_time(
 
     data = df.copy()
 
+    DT = pd.Timedelta(minutes=7*24*60)
+    TMIN  = df["Time"].min()-DT
+    TMAX  = df["Time"].max()+DT
+
 
     # ----------------------------
     # Gestion datetime (robuste)
@@ -4150,6 +4154,8 @@ def plotcompare_atmparam_merra_vs_time(
             label="MERRA",
         )
 
+
+    ax.set_xlim(TMIN, TMAX)
     #---------------------------------
     # legend
     #-----------------------------------------------
