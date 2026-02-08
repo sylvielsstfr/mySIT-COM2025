@@ -5,6 +5,7 @@ from .libPlotsPWV import (
            plot_atmparam_diff_hist_per_filter,
            plot_atmparam_diff_vs_time,
            plot_atmparam_hist_per_filter,
+           plot_atmparam_hist_stacked_bytarget,
            plot_atmparam_vs_time,
            plot_atmparam_vs_time_byfilter_bytarget,
            plot_dccd_chi2_histo_by_target_filter,
@@ -74,4 +75,5 @@ __all__ = ["get_astronomical_midnight",
            "plotcompare_atmparam_fgcm_vs_time",
            "plotcompare_atmparam_merra_vs_time",
            "plot_atmparam_vs_time_byfilter_bytarget",
+           "plot_atmparam_hist_stacked_bytarget"
           ]

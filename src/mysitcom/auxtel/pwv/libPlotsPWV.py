@@ -4425,3 +4425,125 @@ def plot_atmparam_vs_time_byfilter_bytarget(
         fig.tight_layout()
 
     return fig, ax
+
+#------------------------------------
+def plot_atmparam_hist_stacked_bytarget(
+    df,
+    param_col,
+    target_col="TARGET",
+    filter_col=None,
+    filter_value=None,          # ex: "OG550_65mm_1" ou None
+    target_color_map=None,
+
+    bins=50,
+    value_range=None,
+    density=False,
+
+    title=None,
+    axs=None,
+    figsize=(10, 6),
+    ylogscale=False,
+):
+    """
+    Histogramme stacké de param_col par TARGET.
+
+    - Empilement dans l'ordre de target_color_map
+    - Couleur définie par target_color_map
+    - Optionnellement filtré sur un filtre donné
+    """
+
+    if target_color_map is None:
+        raise ValueError("target_color_map must be provided")
+
+    data = df.copy()
+
+    # ----------------------------
+    # Sélection filtre (optionnelle)
+    # ----------------------------
+    if filter_col is not None and filter_value is not None:
+        data = data[data[filter_col] == filter_value]
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+    # ----------------------------
+    # Construction des stacks
+    # ----------------------------
+    values = []
+    colors = []
+    labels = []
+
+    for target, color in target_color_map.items():
+
+        sub = data[data[target_col] == target][param_col].dropna()
+
+        if len(sub) == 0:
+            continue
+        # calcul mean et sigma
+        mean = np.mean(sub.values)
+        sigma = np.std(sub.values)
+
+
+        values.append(sub.values)
+        colors.append(color)
+        labels.append(f"{target} (μ={mean:.2f}, σ={sigma:.2f})")
+
+    # ----------------------------
+    # Histogramme stacké
+    # ----------------------------
+    ax.hist(
+        values,
+        bins=bins,
+        range=value_range,
+        stacked=True,
+        color=colors,
+        label=labels,
+        density=density,
+        edgecolor="none",
+    )
+
+    # ----------------------------
+    # Labels & titre
+    # ----------------------------
+    ax.set_xlabel(param_col)
+    ax.set_ylabel("Counts" if not density else "Density")
+
+    if title is None:
+        title = f"{param_col} distribution by TARGET"
+        if filter_value is not None:
+            title += f" ({filter_value})"
+
+    ax.set_title(title)
+
+    #ax.legend(
+    #    title=target_col,
+    #    fontsize=9,
+    #    ncol=2,
+    #    frameon=True,
+    #)
+    ax.legend(
+        title=target_col,
+        fontsize=9,
+        ncol=1,
+        frameon=True,
+        loc="upper left",                 # point d’ancrage de la légende
+        bbox_to_anchor=(1.01, 1.08),         # légèrement à droite du plot
+        borderaxespad=0.5,
+    )
+
+    ax.grid(True, alpha=0.3)
+    if ylogscale:
+        ax.set_yscale("log")
+
+     # ----------------------------
+
+    fig.tight_layout()
+
+    return fig, ax
+
