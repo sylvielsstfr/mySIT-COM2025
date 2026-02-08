@@ -2,9 +2,10 @@
 import numpy as np
 import pandas as pd
 
+
 def normalize_column_data_bytarget_byfilter(df,target_col,filter_col,feature_col,ext="norm"):
     """
-    Docstring pour normalize_data 
+    Docstring pour normalize_data
     :param df: Pandas dataframe
     :param target_col: name of columns target in dataframe
     :param filter_col: name of columns filter in dataframe
@@ -40,7 +41,7 @@ def normalize_column_data_bytarget_byfilter(df,target_col,filter_col,feature_col
 def normalize_column_data_bytarget_byfilter_bymethod(df,target_col,filter_col,feature_col,
                                             ext="norm",method="mean"):
     """
-    Docstring pour normalize_data 
+    Docstring pour normalize_data
     :param df: Pandas dataframe
     :param target_col: name of columns target in dataframe
     :param filter_col: name of columns filter in dataframe
@@ -327,3 +328,68 @@ def pwv_next_prev_difference_datetime(
     df[dt_col] = pd.to_timedelta(df[dt_col], unit=time_unit)
 
     return df
+
+def compute_atmparam_stats_per_filter(
+    df,
+    filter_col,
+    param_col,
+):
+    """
+    Compute statistics on param_col per filter.
+
+    Returns
+    -------
+    pandas.DataFrame
+        index   : filter
+        columns : mean, median, sigma, sigma_mad, sigma_iqr
+    """
+
+    data = df.copy()
+
+    # ----------------------------
+    # data to compute
+    # ----------------------------
+    data = data[[filter_col, param_col]].dropna()
+
+    results = []
+
+    # ----------------------------
+    # compute per filter
+    # ----------------------------
+    for f, subdf in data.groupby(filter_col):
+        sub = subdf[param_col].values
+
+        mean = np.mean(sub)
+        median = np.median(sub)
+        sigma = np.std(sub, ddof=1)
+
+        # IQR-based sigma
+        q25, q75 = np.percentile(sub, [25, 75])
+        sigma_iqr = (q75 - q25) / 1.349
+
+        # MAD-based sigma
+        mad = np.median(np.abs(sub - median))
+        sigma_mad = 1.4826 * mad
+
+        results.append(
+            dict(
+                filter=f,
+                mean=mean,
+                median=median,
+                sigma=sigma,
+                sigma_mad=sigma_mad,
+                sigma_iqr=sigma_iqr,
+            )
+        )
+
+    # ----------------------------
+    # Build DataFrame
+    # ----------------------------
+    df_stats = (
+        pd.DataFrame(results)
+        .set_index("filter")
+        .sort_index()
+    )
+
+    return df_stats.T
+

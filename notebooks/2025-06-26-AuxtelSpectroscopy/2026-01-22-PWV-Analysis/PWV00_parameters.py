@@ -3,7 +3,7 @@
 # affiliation : IJCLab/IN2P3/CNRS
 # Creation date : 2026-01-22
 # last update : 2026-01-22 : run2026_v01
-
+# last update : 2026-02-07 : add FGCM file
 
 from astropy.time import Time
 from datetime import datetime
@@ -135,7 +135,8 @@ FLAG_CORRECTFOR_PWV_REPEAT_RATIO = False
 SIGMA_PWV_REPEAT = 0.10
 FACTORERR_PWV_REPEAT = 10.
 
-
+# FGCM file
+fimename_fgcm = "../../2025-12-04-FGCM/data_FGCM04_ReadMergeAtmParams/fgcm_rdp2_prep_cLSSTCam_runs_DRP_20250417-20251214_DM-53545andDM-53697.csv"
 
 # Merra2 pathname
 

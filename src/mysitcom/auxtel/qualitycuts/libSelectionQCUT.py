@@ -192,6 +192,92 @@ class ParameterCutSelection:
             })
 
         return pd.DataFrame(rows)
+
+#-------------------------------------------------------
+
+
+    def selection_statistics_inoutliers_by_param(self, cuts: Dict[str, Any]) -> pd.DataFrame:
+        """
+        Compute outlier statistics per (TARGET, FILTER, PARAMETER).
+
+        Parameters
+        ----------
+            cuts : Dict[str, Any]
+            Format: {param: {filter: {"min": value, "max": value}}}
+
+        Returns
+        -------
+            pd.DataFrame
+                Columns:
+            TARGET, FILTER, param, n_total,
+            n_below_min, n_above_max, frac_out
+        """
+        rows = []
+
+        grouped = self.df.groupby([self.target_col, self.filter_col])
+
+        # loop on target and filters
+        for (target, filt), g in grouped:
+            n_total = len(g)
+            mask_total = np.ones(n_total, dtype=bool)
+
+            # loop per parameter
+            for param, per_filter in cuts.items():
+                if param not in g.columns:
+                    continue
+                if filt not in per_filter:
+                    continue
+
+                bounds = per_filter[filt]
+                x = g[param]
+
+                mask_pass = np.ones(n_total, dtype=bool)
+
+                if bounds.get("min") is not None:
+                    mask_pass &= x >= bounds["min"]
+                if bounds.get("max") is not None:
+                    mask_pass &= x <= bounds["max"]
+
+                n_pass = mask_pass.sum()
+                n_out = (~mask_pass).sum()
+
+                n_below = 0
+                n_above = 0
+
+                if bounds.get("min") is not None:
+                    n_below = (x < bounds["min"]).sum()
+
+                if bounds.get("max") is not None:
+                    n_above = (x > bounds["max"]).sum()
+
+
+                #rows.append({
+                #    self.target_col: target,
+                #    self.filter_col: filt,
+                #    "param": param,
+                #    "n_total": n_total,
+                #    "n_pass": n_pass,
+                #    "n_out": n_out,
+                #    "n_below_min": n_below,
+                #    "n_above_max": n_above,
+                #    "frac_pass_all": n_pass / n_total if n_total > 0 else np.nan,
+                #    "frac_out": n_out / n_total if n_total > 0 else np.nan
+                #})
+                rows.append({
+                    self.target_col: target,
+                    self.filter_col: filt,
+                    "param": param,
+                    "n_total": n_total,
+                    "n_pass": n_pass,
+                    "n_out": n_out,
+                    "n_below_min": (x < bounds["min"]).sum() if bounds.get("min") is not None else 0,
+                    "n_above_max": (x > bounds["max"]).sum() if bounds.get("max") is not None else 0,
+                    "frac_pass_all": n_pass / n_total if n_total > 0 else np.nan,
+                    "frac_out": n_out / n_total if n_total > 0 else np.nan
+                })
+
+        return pd.DataFrame(rows)
+
 #------------------------------------------------------
 class ParameterCutPlotting:
     """_summary_
@@ -268,6 +354,7 @@ class ParameterCutPlotting:
             ax.set_title(filt)
             ax.set_xlim(0, 1.0)
             ax.grid(axis="x", alpha=0.3)
+            ax.grid(axis="y", alpha=0.8)
 
             ax.set_yticks(y)
             ax.set_yticklabels(df_f["TARGET"])
@@ -338,6 +425,7 @@ class ParameterCutPlotting:
         ax.set_title(f"Target: {target}" + (f" | Filter: {filter_value}" if filter_value else ""))
         ax.set_xticklabels(df_res["param"], rotation=45, ha="right")
         ax.grid(axis="y", alpha=0.3)
+        ax.grid(axis="x", alpha=0.8)
 
         plt.tight_layout()
         return fig, df_res
@@ -409,13 +497,15 @@ class ParameterCutPlotting:
             ax.bar(params, results, color=target_color, edgecolor="black")
             ax.set_ylim(0,1)
             ax.set_ylabel(f"{filt}")
-            ax.grid(axis="y", alpha=0.3)
+            ax.grid(axis="y", alpha=0.5)
+            ax.grid(axis="x", alpha=0.5)
 
         axes[-1].set_xticklabels(params, rotation=45, ha="right")
         axes[-1].set_xlabel("Parameter")
+        axes[0].set_title(f"Target: {target} : fraction of selected events", fontsize=14)
 
-        fig.suptitle(f"Target: {target} : fraction of selected events", fontsize=14)
-        plt.tight_layout(rect=[0,0,1,0.96])
+        #fig.suptitle(f"Target: {target} : fraction of selected events", fontsize=14)
+        #plt.tight_layout(rect=[0,0,1,0.96])
 
         return fig
 #------------------------------------------------------
@@ -479,3 +569,26 @@ class ParameterCutTools:
         """
         with open(path) as f:
             return json.load(f)
+
+    #------------------------------------------------------
+    # Dump json cut file into pandas dataframe
+    #---------
+    @staticmethod
+    def cuts_to_dataframe(cuts: dict) -> pd.DataFrame:
+        """Convert cuts dictionary to a pandas DataFrame for easier visualization.
+
+        :param cuts: dictionary with cuts
+        :type cuts: dict
+        :return: DataFrame with columns: param, filter, min, max
+        :rtype: pd.DataFrame
+        """
+        rows = []
+        for param, per_filter in cuts.items():
+            for filt, bounds in per_filter.items():
+                rows.append({
+                    "param": param,
+                    "filter": filt,
+                    "min": bounds.get("min"),
+                    "max": bounds.get("max")
+                })
+        return pd.DataFrame(rows)

@@ -2,28 +2,55 @@
 
 # install with "pip install --user -e . "
 
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import matplotlib.dates as mdates
-import matplotlib.colors as mcolors
-from matplotlib.dates import DateFormatter
-from pandas.api.types import is_datetime64_any_dtype
-import pandas as pd
 from pprint import pprint
 
-
-
+import matplotlib.colors as mcolors
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from matplotlib.dates import DateFormatter
+from matplotlib.lines import Line2D
+from pandas.api.types import is_datetime64_any_dtype
 
 FILTER_COLORS = {
-    "empty": "gray",
-    "BG40_65mm_1": "blue",
-    "OG550_65mm_1": "red",
-    "FELH0600": "purple",
+    "empty"       : "tab:gray",
+    "BG40_65mm_1" : "darkblue",
+    "OG550_65mm_1": "darkred",
+    "FELH0600"    : "darkpurple",
 }
 
 DEFAULT_FILTER_COLOR = "purple"
 DEFAULT_TARGET_COLOR ="lightgrey"
+FILTER_MARKERS = {
+    "empty"        : "o",
+    "BG40_65mm_1"  : "^",
+    "OG550_65mm_1" : "x",
+    "FELH0600"     : "s",
+}
+DEFAULT_FILTER_MARKER = "."
+
+LSST_FILTERS_ORDER = ["u", "g", "r", "i", "z", "y"]
+
+LSST_FILTER_COLORS = {
+    "u": "tab:blue",
+    "g":  "tab:green",
+    "r": "tab:red",
+    "i": "tab:orange",
+    "z": "tab:gray",
+    "y": "black"
+}
+LSST_FILTER_COLORS = {
+    "u": "#4DA6FF",  # bright blue
+    "g": "#2ECC71",  # bright green
+    "r": "#FF4D4D",  # bright red
+    "i": "#FF9F1A",  # bright orange
+    "z": "#9B59B6",  # bright purple
+    "y": "#34495E",  # dark steel (lisible sur fond blanc)
+}
+
+MERRA_COLOR="darkblue"
 
 def get_filter_color(filter_name):
     return FILTER_COLORS.get(filter_name, DEFAULT_FILTER_COLOR)
@@ -894,9 +921,9 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             ax_dccd.set_ylim(ylim_min, ylim_max)
 
 
-        ax_dccd.set_ylabel("D_CCD [mm]")
-        ax_dccd.set_xlabel("Time")
-        ax_dccd.set_title(f"DCCD vs Time – Filter: {filter_select}")
+        ax_dccd.set_ylabel(dccd_col)
+        ax_dccd.set_xlabel(time_col)
+        ax_dccd.set_title(f"{dccd_col} vs {time_col} – Filter: {filter_select}")
         ax_dccd.xaxis.set_major_formatter(date_form)
         ax_dccd.grid(True, alpha=0.3)
         plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
@@ -924,9 +951,9 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             ax_chi2.set_ylim(ylim_min, ylim_max)
 
 
-        ax_chi2.set_ylabel("CHI2_FIT")
-        ax_chi2.set_xlabel("Time")
-        ax_chi2.set_title(f"CHI2 vs Time – Filter: {filter_select}")
+        ax_chi2.set_ylabel(chi2_col)
+        ax_chi2.set_xlabel(time_col)
+        ax_chi2.set_title(f"{chi2_col} vs {time_col} – Filter: {filter_select}")
         ax_chi2.xaxis.set_major_formatter(date_form)
         ax_chi2.grid(True, alpha=0.3)
         plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
@@ -980,9 +1007,9 @@ def plot_dccd_chi2_vs_time_by_target_filter(
 
 
 
-            ax_dccd.set_ylabel("D_CCD [mm]")
-            ax_dccd.set_xlabel("Time")
-            ax_dccd.set_title(f"{t} – DCCD vs Time – Filter: {filter_select}")
+            ax_dccd.set_ylabel(dccd_col)
+            ax_dccd.set_xlabel(t)
+            ax_dccd.set_title(f"{t} – {dccd_col} vs {time_col} – Filter: {filter_select}")
             ax_dccd.xaxis.set_major_formatter(date_form)
             ax_dccd.grid(True, alpha=0.3)
             plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
@@ -1011,9 +1038,9 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             if force_global_time_xlim:
                 ax_chi2.set_xlim(time_min, time_max)
 
-            ax_chi2.set_ylabel("CHI2_FIT")
-            ax_chi2.set_xlabel("Time")
-            ax_chi2.set_title(f"{t} – CHI2 vs Time – Filter: {filter_select}")
+            ax_chi2.set_ylabel(chi2_col)
+            ax_chi2.set_xlabel(time_col)
+            ax_chi2.set_title(f"{t} – {chi2_col} vs {time_col} – Filter: {filter_select}")
             ax_chi2.xaxis.set_major_formatter(date_form)
             ax_chi2.grid(True, alpha=0.3)
             plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
@@ -1161,9 +1188,9 @@ def plot_dccd_chi2_histo_by_target_filter(
         if dccd_min_fig is not None and dccd_max_fig is not None:
             ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-        ax_dccd.set_xlabel("D_CCD [mm]")
+        ax_dccd.set_xlabel(dccd_col)
         ax_dccd.set_ylabel("Density" if density else "Counts")
-        ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
+        ax_dccd.set_title(f"{dccd_col} histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
         # --- CHI2 histogrammes
@@ -1187,9 +1214,9 @@ def plot_dccd_chi2_histo_by_target_filter(
         if chi2_min_fig is not None and chi2_max_fig is not None:
             ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-        ax_chi2.set_xlabel("CHI2_FIT")
+        ax_chi2.set_xlabel(chi2_col)
         ax_chi2.set_ylabel("Density" if density else "Counts")
-        ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
+        ax_chi2.set_title(f"{chi2_col} histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
         # --- légende globale
@@ -1274,8 +1301,8 @@ def plot_dccd_chi2_histo_by_target_filter(
             if chi2_min_fig is not None and chi2_max_fig is not None:
                 ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-            ax_chi2.set_title(f"{t} – CHI2 – Filter: {filter_select}")
-            ax_chi2.set_xlabel("CHI2_FIT")
+            ax_chi2.set_title(f"{t} – {chi2_col} – Filter: {filter_select}")
+            ax_chi2.set_xlabel(chi2_col)
             ax_chi2.set_ylabel("Density" if density else "Counts")
             ax_chi2.grid(True, alpha=0.3)
 
@@ -1424,9 +1451,9 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             ax_dccd.set_ylim(ylim_min, ylim_max)
 
 
-        ax_dccd.set_ylabel("D_CCD [mm]")
-        ax_dccd.set_xlabel("Time")
-        ax_dccd.set_title(f"DCCD vs Time – Filter: {filter_select}")
+        ax_dccd.set_ylabel(dccd_col)
+        ax_dccd.set_xlabel(time_col)
+        ax_dccd.set_title(f"{dccd_col} vs {time_col} – Filter: {filter_select}")
         ax_dccd.xaxis.set_major_formatter(date_form)
         ax_dccd.grid(True, alpha=0.3)
         plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
@@ -1454,9 +1481,9 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             ax_chi2.set_ylim(ylim_min, ylim_max)
 
 
-        ax_chi2.set_ylabel("CHI2_FIT")
-        ax_chi2.set_xlabel("Time")
-        ax_chi2.set_title(f"CHI2 vs Time – Filter: {filter_select}")
+        ax_chi2.set_ylabel(chi2_col)
+        ax_chi2.set_xlabel(t)
+        ax_chi2.set_title(f"{chi2_col} vs {time_col} – Filter: {filter_select}")
         ax_chi2.xaxis.set_major_formatter(date_form)
         ax_chi2.grid(True, alpha=0.3)
         plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
@@ -1512,9 +1539,9 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
 
 
 
-            ax_dccd.set_ylabel("D_CCD [mm]")
-            ax_dccd.set_xlabel("Time")
-            ax_dccd.set_title(f"{t} – DCCD vs Time – Filter: {filter_select}")
+            ax_dccd.set_ylabel(dccd_col)
+            ax_dccd.set_xlabel(time_col)
+            ax_dccd.set_title(f"{t} – {dccd_col} vs {time_col} – Filter: {filter_select}")
             ax_dccd.xaxis.set_major_formatter(date_form)
             ax_dccd.grid(True, alpha=0.3)
             plt.setp(ax_dccd.get_xticklabels(), rotation=45, ha="right")
@@ -1540,9 +1567,9 @@ def plot_dccd_chi2_vs_time_by_target_filter_colorsedtype(
             if chi2_min_fig is not None and chi2_max_fig is not None:
                 ax_chi2.set_ylim(chi2_min_fig, chi2_max_fig)
 
-            ax_chi2.set_ylabel("CHI2_FIT")
-            ax_chi2.set_xlabel("Time")
-            ax_chi2.set_title(f"{t} – CHI2 vs Time – Filter: {filter_select}")
+            ax_chi2.set_ylabel(chi2_col)
+            ax_chi2.set_xlabel(time_col)
+            ax_chi2.set_title(f"{t} – {chi2_col} vs {time_col} – Filter: {filter_select}")
             ax_chi2.xaxis.set_major_formatter(date_form)
             ax_chi2.grid(True, alpha=0.3)
             plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
@@ -1697,9 +1724,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
         if dccd_min_fig is not None and dccd_max_fig is not None:
             ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-        ax_dccd.set_xlabel("D_CCD [mm]")
+        ax_dccd.set_xlabel(dccd_col)
         ax_dccd.set_ylabel("Density" if density else "Counts")
-        ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
+        ax_dccd.set_title(f"{dccd_col} histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
         # --- CHI2 histogrammes
@@ -1723,9 +1750,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
         if chi2_min_fig is not None and chi2_max_fig is not None:
             ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-        ax_chi2.set_xlabel("CHI2_FIT")
+        ax_chi2.set_xlabel(chi2_col)
         ax_chi2.set_ylabel("Density" if density else "Counts")
-        ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
+        ax_chi2.set_title(f"{chi2_col} histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
         # --- légende globale
@@ -1787,8 +1814,8 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
             if dccd_min_fig is not None and dccd_max_fig is not None:
                 ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-            ax_dccd.set_title(f"{t} – DCCD – Filter: {filter_select}")
-            ax_dccd.set_xlabel("D_CCD [mm]")
+            ax_dccd.set_title(f"{t} – {dccd_col} – Filter: {filter_select}")
+            ax_dccd.set_xlabel(dccd_col)
             ax_dccd.set_ylabel("Density" if density else "Counts")
             ax_dccd.grid(True, alpha=0.3)
 
@@ -1810,8 +1837,8 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype(
             if chi2_min_fig is not None and chi2_max_fig is not None:
                 ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-            ax_chi2.set_title(f"{t} – CHI2 – Filter: {filter_select}")
-            ax_chi2.set_xlabel("CHI2_FIT")
+            ax_chi2.set_title(f"{t} – {chi2_col} – Filter: {filter_select}")
+            ax_chi2.set_xlabel(chi2_col)
             ax_chi2.set_ylabel("Density" if density else "Counts")
             ax_chi2.grid(True, alpha=0.3)
 
@@ -1940,9 +1967,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
         if dccd_min_fig is not None or dccd_max_fig is not None:
             ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-        ax_dccd.set_xlabel("D_CCD [mm]")
+        ax_dccd.set_xlabel(dccd_col)
         ax_dccd.set_ylabel("Counts" if not density else "Density")
-        ax_dccd.set_title(f"DCCD histogram – Filter: {filter_select}")
+        ax_dccd.set_title(f"{dccd_col} histogram – Filter: {filter_select}")
         ax_dccd.grid(True, alpha=0.3)
 
         # ---------- CHI2 histogram ----------
@@ -1968,9 +1995,9 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
         if chi2_min_fig is not None or chi2_max_fig is not None:
             ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-        ax_chi2.set_xlabel("CHI2_FIT")
+        ax_chi2.set_xlabel(chi2_col)
         ax_chi2.set_ylabel("Counts" if not density else "Density")
-        ax_chi2.set_title(f"CHI2 histogram – Filter: {filter_select}")
+        ax_chi2.set_title(f"{chi2_col} histogram – Filter: {filter_select}")
         ax_chi2.grid(True, alpha=0.3)
 
 
@@ -2031,8 +2058,8 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
             if dccd_min_fig is not None or dccd_max_fig is not None:
                 ax_dccd.set_xlim(dccd_min_fig, dccd_max_fig)
 
-            ax_dccd.set_title(f"{t} – DCCD")
-            ax_dccd.set_xlabel("D_CCD [mm]")
+            ax_dccd.set_title(f"{t} – {dccd_col}")
+            ax_dccd.set_xlabel(dccd_col)
             ax_dccd.set_ylabel("Counts" if not density else "Density")
             ax_dccd.grid(True, alpha=0.3)
 
@@ -2052,8 +2079,8 @@ def plot_dccd_chi2_histo_by_target_filter_colorsedtype_bad(
             if chi2_min_fig is not None or chi2_max_fig is not None:
                 ax_chi2.set_xlim(chi2_min_fig, chi2_max_fig)
 
-            ax_chi2.set_title(f"{t} – CHI2")
-            ax_chi2.set_xlabel("CHI2_FIT")
+            ax_chi2.set_title(f"{t} – {chi2_col}")
+            ax_chi2.set_xlabel(chi2_col)
             ax_chi2.set_ylabel("Counts" if not density else "Density")
             ax_chi2.grid(True, alpha=0.3)
 
@@ -2076,7 +2103,7 @@ def summarize_dccd_chi2(df, target_col="TARGET", filter_col="FILTER",
         df
         .groupby([target_col, filter_col])
         .agg(
-            N=("CHI2_FIT", "size"), 
+            N=("CHI2_FIT", "size"),
             mean_DCCD = (dccd_col, "mean"),
             sigma_DCCD = (dccd_col, "std"),
             mean_CHI2 = (chi2_col, "mean"),
@@ -2108,9 +2135,6 @@ def plot_param_histogram_grid(
       rows    -> parameters
       columns -> filters
     """
-
-    import numpy as np
-    import matplotlib.pyplot as plt
 
     # ----------------------------
     # Filter ordering
@@ -2231,7 +2255,7 @@ def plot_params_and_chi2_vs_time(
     param_ylim=None,              # dict: {param: (ymin, ymax)}
     chi2_cut=None,
 
-    #colors of params   
+    #colors of params
     param_colors=None,             # dict: {param: color}
 
     # titles
@@ -2302,7 +2326,7 @@ def plot_params_and_chi2_vs_time(
 
         ax_r = ax.twinx()
 
-        # No loop on external parameter 
+        # No loop on external parameter
         h_param = ax.plot(
             data[time_col],
             data[param],
@@ -2310,7 +2334,7 @@ def plot_params_and_chi2_vs_time(
             marker=marker,
             color=param_color,
             alpha=alpha,
-            label=param,          
+            label=param,
             )
 
         # Right axis: CHI2
@@ -2324,10 +2348,10 @@ def plot_params_and_chi2_vs_time(
             alpha=0.25,
             color=get_filter_color(f)
             )
-            
+
         ax_r.set_yscale("log")
 
-        handles = h_param 
+        handles = h_param
         labels = [h.get_label() for h in handles]
 
         ax.legend(
@@ -2337,7 +2361,7 @@ def plot_params_and_chi2_vs_time(
                 frameon=True,
         )
 
-        
+
         # ----------------------------
         # Axis formatting
         # ----------------------------
@@ -2426,7 +2450,7 @@ def plot_param_chi2_correlation_grid(
 ):
     """
     Plot correlation between parameters and CHI2_FIT.
-    
+
     Rows: parameters
     Columns: filters
     """
@@ -2500,7 +2524,7 @@ def plot_param_chi2_correlation_grid(
             else:
                 ax.set_yticklabels([])
 
-           
+
             # ----------------------------
             # Column titles
             # ----------------------------
@@ -2531,7 +2555,7 @@ def plot_param2_vs_param1_colored_by_time(
     Color scale: (time - t0) in days.
     """
 
-    
+
     data = df[[time_col, param1, param2]].dropna()
 
     # ----------------------------
@@ -2555,11 +2579,11 @@ def plot_param2_vs_param1_colored_by_time(
         cmap=cmap,
         marker=marker,
         alpha=alpha,
-        
+
     )
 
     ax.set_aspect(aspect, adjustable="box")
-    
+
     ax.set_xlabel(param1)
     ax.set_ylabel(param2)
     ax.grid(True, alpha=0.3)
@@ -2610,9 +2634,6 @@ def plot_param_difference_vs_time(
     Plot (param2 - param1) vs time.
     """
 
-    import matplotlib.pyplot as plt
-    from pandas.api.types import is_datetime64_any_dtype
-
     data = df[[time_col, param1, param2]].dropna()
 
     if not is_datetime64_any_dtype(data[time_col]):
@@ -2636,8 +2657,8 @@ def plot_param_difference_vs_time(
 
 
     if zoomdiff is not None:
-        ax.set_ylim(zoomdiff[0],zoomdiff[1]) 
-    
+        ax.set_ylim(zoomdiff[0],zoomdiff[1])
+
     fig.autofmt_xdate()
     fig.tight_layout()
 
@@ -2686,8 +2707,8 @@ def plot_param_difference_vs_time_colored_by_chi2(
         (chi2_min, chi2_max) used for color normalization (in linear chi2).
     """
 
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
     from pandas.api.types import is_datetime64_any_dtype
 
     # ----------------------------
@@ -2741,12 +2762,12 @@ def plot_param_difference_vs_time_colored_by_chi2(
 
 
     if zoomdiff is not None:
-        ax.set_ylim(zoomdiff[0],zoomdiff[1]) 
-    
+        ax.set_ylim(zoomdiff[0],zoomdiff[1])
+
     fig.autofmt_xdate()
 
 
-    
+
     # ----------------------------
     # Colorbar
     # ----------------------------
@@ -2760,7 +2781,7 @@ def plot_param_difference_vs_time_colored_by_chi2(
         fraction=0.08,     # thickness relative to axes
     )
 
-    
+
     cbar.set_label(r"$\log_{10}(\chi^2)$")
 
     # ----------------------------
@@ -2809,7 +2830,7 @@ def plot_single_param_vs_time_colored_by_chi2(
         (chi2_min, chi2_max) used for color normalization (in linear chi2).
     """
 
-    
+
     # ----------------------------
     # Select & clean data
     # ----------------------------
@@ -2827,7 +2848,7 @@ def plot_single_param_vs_time_colored_by_chi2(
     # ----------------------------
     # Quantities to plot
     # ----------------------------
-    values = data[param] 
+    values = data[param]
 
     log_chi2 = np.log10(data[chi2_col])
 
@@ -2887,7 +2908,7 @@ def plot_single_param_vs_time_colored_by_chi2(
     fig.autofmt_xdate()
 
 
-    
+
     # ----------------------------
     # Colorbar
     # ----------------------------
@@ -2901,7 +2922,7 @@ def plot_single_param_vs_time_colored_by_chi2(
         fraction=0.08,     # thickness relative to axes
     )
 
-    
+
     cbar.set_label(r"$\log_{10}(\chi^2)$")
 
     fig.tight_layout()
@@ -3033,7 +3054,7 @@ def plot_atmparam_vs_time(
     figsize=(18, 6),
 ):
     """
-    Trace param_col vs time 
+    Trace param_col vs time
 
     Parameters
     ----------
@@ -3044,7 +3065,7 @@ def plot_atmparam_vs_time(
     if title_param is None:
         title_param=f"{param_col} vs time"
 
-    
+
     data = df.copy()
 
 
@@ -3073,19 +3094,19 @@ def plot_atmparam_vs_time(
     else:
         ax = axs
         fig = ax.figure
-   
+
 
     # ----------------------------
     # Plot per filter
     # ----------------------------
 
     filters = data[filter_col].unique()
-    
+
     for f in filters:
         sub = data[data[filter_col] == f]
 
         if param_err_col == None:
-            
+
             sc= ax.scatter(
                 sub[time_col],
                 sub[param_col],
@@ -3125,7 +3146,7 @@ def plot_atmparam_vs_time(
     # Labels, grid
     # ----------------------------
 
-    
+
     #handles, _ = sc1.legend_elements(prop="colors", alpha=alpha)
     #ax1.legend(
     #    handles,
@@ -3138,11 +3159,11 @@ def plot_atmparam_vs_time(
     ax.set_title(title_param)
     ax.grid(True, alpha=0.3)
 
- 
+
     # ----------------------------
     # Time axis
     # ----------------------------
-    
+
     ax.xaxis.set_major_formatter(date_form)
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
 
@@ -3162,7 +3183,7 @@ def plot_atmparam_vs_time(
         axis="y",
         which="both",
         left=True,       # show ticks on left
-        right=True,  
+        right=True,
         labelleft=True,
         labelright=True, # o   # optional: set True if you want right ticks too
     )
@@ -3170,7 +3191,7 @@ def plot_atmparam_vs_time(
     # ----------------------------
     # Global title
     # ----------------------------
-    
+
     if suptitle:
         fig.suptitle(suptitle)
 
@@ -3338,7 +3359,7 @@ def plot_atmparam_diff_vs_time(
         axis="y",
         which="both",
         left=True,       # show ticks on left
-        right=True,    
+        right=True,
         labelleft=True,
         labelright=True, # optional: set True if you want right ticks too
     )
@@ -3439,11 +3460,17 @@ def plot_atmparam_hist_per_filter(
         q25, q75 = np.percentile(sub, [25, 75])
         std_iqr = (q75 - q25) / 1.349
 
+         # MAD-based sigma
+        median = np.median(sub)
+        mad = np.median(np.abs(sub - median))
+        std_mad = 1.4826 * mad
+
         text = (
             f"{f}\n"
             f"μ = {mean:.3g}\n"
             f"σ = {std:.3g}\n"
-            f"σ(IQR) = {std_iqr:.3g}"
+            f"σ(IQR) = {std_iqr:.3g}\n"
+            f"σ(MAD) = {std_mad:.3g}"
         )
 
         ax.text(
@@ -3488,7 +3515,7 @@ def plot_atmparam_hist_per_filter(
         right=True,     # optional: set True if you want right ticks too
     )
 
-  
+
     if suptitle:
         fig.suptitle(suptitle)
 
@@ -3582,11 +3609,23 @@ def plot_atmparam_diff_hist_per_filter(
         q25, q75 = np.percentile(sub, [25, 75])
         std_iqr = (q75 - q25) / 1.349
 
+         # MAD-based sigma
+        median = np.median(sub)
+        mad = np.median(np.abs(sub - median))
+        std_mad = 1.4826 * mad
+
+        #text = (
+        #    f"{f}\n"
+        #    f"μ = {mean:.3g}\n"
+        #    f"σ = {std:.3g}\n"
+        #    f"σ(IQR) = {std_iqr:.3g}"
+        #)
         text = (
             f"{f}\n"
             f"μ = {mean:.3g}\n"
             f"σ = {std:.3g}\n"
-            f"σ(IQR) = {std_iqr:.3g}"
+            f"σ(IQR) = {std_iqr:.3g}\n"
+            f"σ(MAD) = {std_mad:.3g}"
         )
 
         ax.text(
@@ -3614,7 +3653,7 @@ def plot_atmparam_diff_hist_per_filter(
 
     ax.legend(title=filter_col)
 
-  
+
     # ----------------------------
     # Ticks on all sides
     # ----------------------------
@@ -3641,6 +3680,870 @@ def plot_atmparam_diff_hist_per_filter(
 
     return fig, ax
 
+#---------------------------------------------------------------
+def decode_physical_filter(x):
+    if isinstance(x, bytes):
+        return x.decode("utf-8")
+    if isinstance(x, str) and x.startswith("b'"):
+        return x[2:-1]          # "b'i_39'" → "i_39"
+    return x
+
+def normalize_physical_filter(x):
+    if pd.isna(x):
+        return np.nan
+
+    # bytes réels
+    if isinstance(x, (bytes, bytearray)):
+        x = x.decode("utf-8")
+
+    # string représentant des bytes : "b'i_39'"
+    if isinstance(x, str):
+        x = x.strip()
+        if x.startswith("b'") and x.endswith("'"):
+            x = x[2:-1]
+
+    return x
+#---------------------------------------------------------------
+def plotcompare_atmparam_fgcm_vs_time(
+    df,
+    df_fgcm,
+    time_col,
+    filter_col,
+    param_col,
+    time_fgcm_col,
+    filter_fgcm_col,
+    param_fgcm_col,
+    param_err_col = None,
+    # thresholds / bounds
+    param_min_fig=None,
+    param_max_fig=None,
+    param_min_cut=None,
+    param_max_cut=None,
+
+    title_param = None,
+
+    # display
+    marker="+",
+    lw=1.5,
+    alpha=0.5,
+    marker_fgcm="o",
+
+    # datetime
+    date_format="%y-%m-%d",
+
+    # titres
+    suptitle=None,
+
+    # axes externes
+    axs = None,
+    figsize=(18, 6),
+    ):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+        df_fgcm (_type_): _description_
+        time_col (_type_): _description_
+        filter_col (_type_): _description_
+        param_col (_type_): _description_
+        time_fgcm_col (_type_): _description_
+        filter_fgcm_col (_type_): _description_
+        param_fgcm_col (_type_): _description_
+        param_err_col (_type_, optional): _description_. Defaults to None.
+        param_min_fig (_type_, optional): _description_. Defaults to None.
+        param_max_fig (_type_, optional): _description_. Defaults to None.
+        param_min_cut (_type_, optional): _description_. Defaults to None.
+        param_max_cut (_type_, optional): _description_. Defaults to None.
+        title_param (_type_, optional): _description_. Defaults to None.
+        marker (str, optional): _description_. Defaults to "+".
+        lw (float, optional): _description_. Defaults to 1.5.
+        alpha (float, optional): _description_. Defaults to 0.5.
+        marker_fgcm (str, optional): _description_. Defaults to "o".
+        date_format (str, optional): _description_. Defaults to "%y-%m-%d".
+        suptitle (_type_, optional): _description_. Defaults to None.
+        axs (_type_, optional): _description_. Defaults to None.
+        figsize (tuple, optional): _description_. Defaults to (18, 6).
+
+    Returns:
+        _type_: _description_
+    """
 
 
+
+    if title_param is None:
+        title_param=f"{param_col} vs time"
+
+
+    data = df.copy()
+
+
+    # ----------------------------
+    # Gestion datetime (robuste)
+    # ----------------------------
+    if is_datetime64_any_dtype(data[time_col]):
+        try:
+            data[time_col] = data[time_col].dt.tz_convert(None)
+        except TypeError:
+            pass
+        # Codage numérique des filtres (palette discrète stable)
+    filter_cat = data[filter_col].astype("category")
+    filter_codes = filter_cat.cat.codes
+    filter_labels = filter_cat.cat.categories
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+    # ----------------------------
+    # Plot per filter in Auxtel
+    # ----------------------------
+
+    filters = data[filter_col].unique()
+
+    #loop on filters for Auxtel
+    for f in filters:
+        sub = data[data[filter_col] == f]
+
+        if param_err_col == None:
+
+            sc= ax.scatter(
+                sub[time_col],
+                sub[param_col],
+                color=get_filter_color(f),  # <- couleur fixe
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=f  # pour la légende
+            )
+        else:
+            ax.errorbar(
+                sub[time_col],
+                sub[param_col],
+                yerr=sub[param_err_col],
+                fmt=marker,
+                color=get_filter_color(f),
+                elinewidth=lw,
+                capsize=0,
+                alpha=alpha,
+                label=f,
+            )
+
+
+
+    if param_min_fig is not None and param_max_fig is not None:
+        ax.set_ylim(param_min_fig, param_max_fig)
+
+    if param_min_cut is not None:
+        ax.axhline(param_min_cut, ls="-.", c="k")
+    if param_max_cut is not None:
+        ax.axhline(param_max_cut, ls="-.", c="k")
+
+
+
+    ax.set_ylabel(f"{param_col}")
+    ax.set_title(title_param)
+    ax.grid(True, alpha=0.3)
+
+
+    # ----------------------------
+    # Time axis
+    # ----------------------------
+
+    ax.xaxis.set_major_formatter(date_form)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,
+            labelleft=True,
+            labelright=True, # o   # optional: set True if you want right ticks too
+    )
+
+
+    # ----------------------------
+    # FGCM preprocessing
+    # ----------------------------
+    dfg = df_fgcm.copy()
+
+    dfg["_time"] = pd.to_datetime(dfg[time_fgcm_col]).dt.tz_localize(None)
+    dfg["_val"]  = pd.to_numeric(dfg[param_fgcm_col], errors="coerce")
+
+    dfg["_physicalFilter"] = dfg[filter_fgcm_col].apply(normalize_physical_filter)
+
+    dfg["_filter"] = (
+        dfg["_physicalFilter"]
+        .astype(str)
+        .str.extract(r"^([ugrizy])")
+    )
+
+    #print("FGCM filters decoded:", dfg["_physicalFilter"].unique())
+    #print("FGCM photometric filters:", dfg["_filter"].value_counts())
+
+    dfg = dfg[dfg["_filter"].notna() & np.isfinite(dfg["_val"])]
+
+    # ----------------------------
+    # Plot FGCM
+    # ----------------------------
+    for f in LSST_FILTERS_ORDER:
+        sub = dfg[dfg["_filter"] == f]
+
+        if sub.empty:
+            print(f"Warning: no valid FGCM data for filter {f}")
+            continue
+        ax.scatter(
+            sub["_time"],
+            sub["_val"],
+            marker=marker_fgcm,
+            s=35,
+            alpha=1.0,
+            color=LSST_FILTER_COLORS[f],
+            edgecolor=LSST_FILTER_COLORS[f],
+            linewidths=0.4,
+            zorder=5,
+            label=f"FGCM {f}",
+        )
+
+
+
+
+    #---------------------------------
+    # legend
+    #-----------------------------------------------
+    ax.legend(title=filter_col, ncol=len(filters),loc="upper left",fontsize=12)
+    # ----------------------------
+    # Global title
+    # ----------------------------
+
+    if suptitle:
+        fig.suptitle(suptitle)
+
+
+    fig.tight_layout()
+
+    return fig, ax
+
+    #--------------------
+
+#---------------------------------------------------------------
+def plotcompare_atmparam_merra_vs_time(
+    df,
+    df_merra,
+    time_col,
+    filter_col,
+    param_col,
+    time_merra_col,
+    param_merra_col,
+    param_err_col = None,
+    # thresholds / bounds
+    param_min_fig=None,
+    param_max_fig=None,
+    param_min_cut=None,
+    param_max_cut=None,
+
+    title_param = None,
+
+    # display
+    marker="+",
+    lw=1.5,
+    alpha=0.5,
+    marker_merra=".",
+
+    # datetime
+    date_format="%y-%m-%d",
+
+    # titres
+    suptitle=None,
+
+    # axes externes
+    axs = None,
+    figsize=(18, 6),
+    ):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+        df_merra (_type_): _description_
+        time_col (_type_): _description_
+        filter_col (_type_): _description_
+        param_col (_type_): _description_
+        time_merra_col (_type_): _description_
+        param_merra_col (_type_): _description_
+        param_err_col (_type_, optional): _description_. Defaults to None.
+        param_min_fig (_type_, optional): _description_. Defaults to None.
+        param_max_fig (_type_, optional): _description_. Defaults to None.
+        param_min_cut (_type_, optional): _description_. Defaults to None.
+        param_max_cut (_type_, optional): _description_. Defaults to None.
+        title_param (_type_, optional): _description_. Defaults to None.
+        marker (str, optional): _description_. Defaults to "+".
+        lw (float, optional): _description_. Defaults to 1.5.
+        alpha (float, optional): _description_. Defaults to 0.5.
+        marker_fgcm (str, optional): _description_. Defaults to "o".
+        date_format (str, optional): _description_. Defaults to "%y-%m-%d".
+        suptitle (_type_, optional): _description_. Defaults to None.
+        axs (_type_, optional): _description_. Defaults to None.
+        figsize (tuple, optional): _description_. Defaults to (18, 6).
+
+    Returns:
+        _type_: _description_
+    """
+
+
+
+    if title_param is None:
+        title_param=f"{param_col} vs time"
+
+
+    data = df.copy()
+
+    DT = pd.Timedelta(minutes=7*24*60)
+    TMIN  = df["Time"].min()-DT
+    TMAX  = df["Time"].max()+DT
+
+
+    # ----------------------------
+    # Gestion datetime (robuste)
+    # ----------------------------
+    if is_datetime64_any_dtype(data[time_col]):
+        try:
+            data[time_col] = data[time_col].dt.tz_convert(None)
+        except TypeError:
+            pass
+        # Codage numérique des filtres (palette discrète stable)
+    filter_cat = data[filter_col].astype("category")
+    filter_codes = filter_cat.cat.codes
+    filter_labels = filter_cat.cat.categories
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+    # ----------------------------
+    # Plot per filter in Auxtel
+    # ----------------------------
+
+    filters = data[filter_col].unique()
+
+    #loop on filters for Auxtel
+    for f in filters:
+        sub = data[data[filter_col] == f]
+
+        if param_err_col == None:
+
+            sc= ax.scatter(
+                sub[time_col],
+                sub[param_col],
+                color=get_filter_color(f),  # <- couleur fixe
+                marker=marker,
+                lw=lw,
+                alpha=alpha,
+                label=f  # pour la légende
+            )
+        else:
+            ax.errorbar(
+                sub[time_col],
+                sub[param_col],
+                yerr=sub[param_err_col],
+                fmt=marker,
+                color=get_filter_color(f),
+                elinewidth=lw,
+                capsize=0,
+                alpha=alpha,
+                label=f,
+            )
+
+
+
+    if param_min_fig is not None and param_max_fig is not None:
+        ax.set_ylim(param_min_fig, param_max_fig)
+
+    if param_min_cut is not None:
+        ax.axhline(param_min_cut, ls="-.", c="k")
+    if param_max_cut is not None:
+        ax.axhline(param_max_cut, ls="-.", c="k")
+
+
+
+    ax.set_ylabel(f"{param_col}")
+    ax.set_title(title_param)
+    ax.grid(True, alpha=0.3)
+
+
+    # ----------------------------
+    # Time axis
+    # ----------------------------
+
+    ax.xaxis.set_major_formatter(date_form)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+            axis="x",
+            which="both",
+            top=True,        # show ticks on top
+            bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+            axis="y",
+            which="both",
+            left=True,       # show ticks on left
+            right=True,
+            labelleft=True,
+            labelright=True, # o   # optional: set True if you want right ticks too
+    )
+
+
+    # ----------------------------
+    # MERRA preprocessing
+    # ----------------------------
+    dfm = df_merra.copy()
+
+    dfm["_time"] = pd.to_datetime(dfm[time_merra_col]).dt.tz_localize(None)
+    dfm["_val"]  = pd.to_numeric(dfm[param_merra_col], errors="coerce")
+
+
+    # ----------------------------
+    # Plot MERRA
+    # ----------------------------
+
+    ax.scatter(
+            dfm["_time"],
+            dfm["_val"],
+            marker=marker_merra,
+            s=10,
+            alpha=1.0,
+            color=MERRA_COLOR,
+            edgecolor=MERRA_COLOR,
+            #linewidths=0.2,
+            zorder=1,
+            #label=f"MERRA {f}",
+        )
+    ax.plot(
+            dfm["_time"],
+            dfm["_val"],
+            alpha=1.0,
+            color=MERRA_COLOR,
+            linewidth=0.5,
+            zorder=1,
+            label="MERRA",
+        )
+
+
+    ax.set_xlim(TMIN, TMAX)
+    #---------------------------------
+    # legend
+    #-----------------------------------------------
+    ax.legend(title=filter_col, ncol=len(filters),loc="upper left",fontsize=12)
+    # ----------------------------
+    # Global title
+    # ----------------------------
+
+    if suptitle:
+        fig.suptitle(suptitle)
+
+
+    fig.tight_layout()
+
+    return fig, ax
+
+ #--------------------
+def plot_atmparam_vs_time_byfilter_bytarget(
+    df,
+    time_col,
+    filter_col,
+    param_col,
+    target_col="TARGET",
+    param_err_col=None,
+
+    # mappings
+    target_color_map=None,
+    filter_marker_map=None,
+
+    # thresholds / bounds
+    param_min_fig=None,
+    param_max_fig=None,
+    param_min_cut=None,
+    param_max_cut=None,
+
+    title_param=None,
+
+    # display (fallback)
+    marker="+",
+    lw=1.5,
+    alpha=0.5,
+
+    date_format="%y-%m-%d",
+    suptitle=None,
+    axs=None,
+    figsize=(18, 6),
+    ):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+        time_col (_type_): _description_
+        filter_col (_type_): _description_
+        param_col (_type_): _description_
+        target_col (str, optional): _description_. Defaults to "TARGET".
+        param_err_col (_type_, optional): _description_. Defaults to None.
+        target_color_map (_type_, optional): _description_. Defaults to None.
+        filter_marker_map (_type_, optional): _description_. Defaults to None.
+        param_min_fig (_type_, optional): _description_. Defaults to None.
+        param_max_fig (_type_, optional): _description_. Defaults to None.
+        param_min_cut (_type_, optional): _description_. Defaults to None.
+        param_max_cut (_type_, optional): _description_. Defaults to None.
+        title_param (_type_, optional): _description_. Defaults to None.
+        marker (str, optional): _description_. Defaults to "+".
+        lw (float, optional): _description_. Defaults to 1.5.
+        alpha (float, optional): _description_. Defaults to 0.5.
+        date_format (str, optional): _description_. Defaults to "%y-%m-%d".
+        suptitle (_type_, optional): _description_. Defaults to None.
+        axs (_type_, optional): _description_. Defaults to None.
+        figsize (tuple, optional): _description_. Defaults to (18, 6).
+    """
+    if title_param is None:
+        title_param=f"{param_col} vs time"
+
+    if filter_marker_map is None:
+        filter_marker_map = FILTER_MARKERS.copy()
+
+    data = df.copy()
+
+
+    # ----------------------------
+    # Gestion datetime (robuste)
+    # ----------------------------
+    if is_datetime64_any_dtype(data[time_col]):
+        try:
+            data[time_col] = data[time_col].dt.tz_convert(None)
+        except TypeError:
+            pass
+
+    # Codage numérique des filtres (palette discrète stable)
+    filter_cat = data[filter_col].astype("category")
+    filter_codes = filter_cat.cat.codes
+    filter_labels = filter_cat.cat.categories
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+
+    # ----------------------------
+    # Plot per target and per filter
+    # ----------------------------
+
+    filters_seen = set()
+    groups = data.groupby([target_col, filter_col])
+
+    for (target, filt), sub in groups:
+
+        filters_seen.add(filt)
+        # --- couleur (TARGET)
+#        if target_color_map is not None:
+#            color = target_color_map.get(target, "k")
+#        else:
+ #           color = get_filter_color(filt)
+        color = (
+            target_color_map.get(target, "k")
+            if target_color_map is not None
+            else get_filter_color(filt)
+        )
+
+
+        # --- marker (FILTER)
+        #if filter_marker_map is not None:
+        #    m = filter_marker_map.get(filt, marker)
+        #else:
+        #    m = marker
+        m = (
+            filter_marker_map.get(filt, marker)
+            if filter_marker_map is not None
+            else marker
+            )
+
+
+
+        if param_err_col is None:
+            ax.scatter(
+                sub[time_col],
+                sub[param_col],
+                color=color,
+                marker=m,
+                lw=lw,
+                alpha=alpha,
+            )
+        else:
+            ax.errorbar(
+                sub[time_col],
+                sub[param_col],
+                yerr=sub[param_err_col],
+                fmt=m,
+                color=color,
+                elinewidth=lw,
+                capsize=0,
+                alpha=alpha,
+                markersize=4,
+            )
+
+
+    filters = sorted(data[filter_col].unique())
+
+
+     #handles, _ = sc1.legend_elements(prop="colors", alpha=alpha)
+    #ax1.legend(
+    #    handles,
+    #    filter_labels,
+    #    title=filter_col,
+    #    ncols=len(filter_labels),
+    #)
+
+    legend_handles = []
+
+    for f in filters_seen:
+        marker = (
+            filter_marker_map.get(f, "+")
+            if filter_marker_map is not None
+            else "+"
+        )
+
+        legend_handles.append(
+            Line2D(
+                [0], [0],
+                marker=marker,
+                linestyle="None",
+                color="k",          # couleur neutre
+                label=f,
+                markersize=8,
+            )
+        )
+
+    ax.legend(
+        handles=legend_handles,
+        title=filter_col,
+        ncol=len(filters),
+        frameon=True,
+    )
+
+
+
+    if param_min_fig is not None and param_max_fig is not None:
+        ax.set_ylim(param_min_fig, param_max_fig)
+
+    if param_min_cut is not None:
+        ax.axhline(param_min_cut, ls="-.", c="k")
+    if param_max_cut is not None:
+        ax.axhline(param_max_cut, ls="-.", c="k")
+
+    # ----------------------------
+    # Labels, grid
+    # ----------------------------
+
+    ax.set_ylabel(f"{param_col}")
+    ax.set_title(title_param)
+    ax.grid(True, alpha=0.3)
+
+
+    # ----------------------------
+    # Time axis
+    # ----------------------------
+
+    ax.xaxis.set_major_formatter(date_form)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,
+        labelleft=True,
+        labelright=True, # o   # optional: set True if you want right ticks too
+    )
+
+    # ----------------------------
+    # Global title
+    # ----------------------------
+
+    if suptitle:
+        fig.suptitle(suptitle)
+
+    if ax is None:
+        fig.tight_layout()
+
+    return fig, ax
+
+#------------------------------------
+def plot_atmparam_hist_stacked_bytarget(
+    df,
+    param_col,
+    target_col="TARGET",
+    filter_col=None,
+    filter_value=None,          # ex: "OG550_65mm_1" ou None
+    target_color_map=None,
+
+    bins=50,
+    value_range=None,
+    density=False,
+
+    title=None,
+    axs=None,
+    figsize=(10, 6),
+    ylogscale=False,
+):
+    """
+    Histogramme stacké de param_col par TARGET.
+
+    - Empilement dans l'ordre de target_color_map
+    - Couleur définie par target_color_map
+    - Optionnellement filtré sur un filtre donné
+    """
+
+    if target_color_map is None:
+        raise ValueError("target_color_map must be provided")
+
+    data = df.copy()
+
+    # ----------------------------
+    # Sélection filtre (optionnelle)
+    # ----------------------------
+    if filter_col is not None and filter_value is not None:
+        data = data[data[filter_col] == filter_value]
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+    # ----------------------------
+    # Construction des stacks
+    # ----------------------------
+    values = []
+    colors = []
+    labels = []
+
+    for target, color in target_color_map.items():
+
+        sub = data[data[target_col] == target][param_col].dropna()
+
+        if len(sub) == 0:
+            continue
+        # calcul mean et sigma
+        mean = np.mean(sub.values)
+        sigma = np.std(sub.values)
+
+
+        values.append(sub.values)
+        colors.append(color)
+        labels.append(f"{target} (μ={mean:.2f}, σ={sigma:.2f})")
+
+    # ----------------------------
+    # Histogramme stacké
+    # ----------------------------
+    ax.hist(
+        values,
+        bins=bins,
+        range=value_range,
+        stacked=True,
+        color=colors,
+        label=labels,
+        density=density,
+        edgecolor="none",
+    )
+
+    # ----------------------------
+    # Labels & titre
+    # ----------------------------
+    ax.set_xlabel(param_col)
+    ax.set_ylabel("Counts" if not density else "Density")
+
+    if title is None:
+        title = f"{param_col} distribution by TARGET"
+        if filter_value is not None:
+            title += f" ({filter_value})"
+
+    ax.set_title(title)
+
+    #ax.legend(
+    #    title=target_col,
+    #    fontsize=9,
+    #    ncol=2,
+    #    frameon=True,
+    #)
+    ax.legend(
+        title=target_col,
+        fontsize=9,
+        ncol=1,
+        frameon=True,
+        loc="upper left",                 # point d’ancrage de la légende
+        bbox_to_anchor=(1.01, 1.08),         # légèrement à droite du plot
+        borderaxespad=0.5,
+    )
+
+    ax.grid(True, alpha=0.3)
+    if ylogscale:
+        ax.set_yscale("log")
+
+     # ----------------------------
+
+    fig.tight_layout()
+
+    return fig, ax
 
