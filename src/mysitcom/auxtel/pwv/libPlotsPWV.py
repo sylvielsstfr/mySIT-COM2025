@@ -4057,9 +4057,9 @@ def plotcompare_atmparam_merra_vs_time(
     for f in filters:
         sub = data[data[filter_col] == f]
 
-        if param_err_col == None:
+        if param_err_col is None:
 
-            sc= ax.scatter(
+            ax.scatter(
                 sub[time_col],
                 sub[param_col],
                 color=get_filter_color(f),  # <- couleur fixe
