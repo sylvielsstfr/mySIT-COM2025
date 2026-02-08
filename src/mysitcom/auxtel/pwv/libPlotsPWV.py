@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.dates import DateFormatter
+from matplotlib.lines import Line2D
 from pandas.api.types import is_datetime64_any_dtype
 
 FILTER_COLORS = {
@@ -22,6 +23,13 @@ FILTER_COLORS = {
 
 DEFAULT_FILTER_COLOR = "purple"
 DEFAULT_TARGET_COLOR ="lightgrey"
+FILTER_MARKERS = {
+    "empty"        : "o",
+    "BG40_65mm_1"  : "^",
+    "OG550_65mm_1" : "x",
+    "FELH0600"     : "s",
+}
+DEFAULT_FILTER_MARKER = "."
 
 LSST_FILTERS_ORDER = ["u", "g", "r", "i", "z", "y"]
 
@@ -4172,4 +4180,248 @@ def plotcompare_atmparam_merra_vs_time(
 
     return fig, ax
 
-    #--------------------
+ #--------------------
+def plot_atmparam_vs_time_byfilter_bytarget(
+    df,
+    time_col,
+    filter_col,
+    param_col,
+    target_col="TARGET",
+    param_err_col=None,
+
+    # mappings
+    target_color_map=None,
+    filter_marker_map=None,
+
+    # thresholds / bounds
+    param_min_fig=None,
+    param_max_fig=None,
+    param_min_cut=None,
+    param_max_cut=None,
+
+    title_param=None,
+
+    # display (fallback)
+    marker="+",
+    lw=1.5,
+    alpha=0.5,
+
+    date_format="%y-%m-%d",
+    suptitle=None,
+    axs=None,
+    figsize=(18, 6),
+    ):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+        time_col (_type_): _description_
+        filter_col (_type_): _description_
+        param_col (_type_): _description_
+        target_col (str, optional): _description_. Defaults to "TARGET".
+        param_err_col (_type_, optional): _description_. Defaults to None.
+        target_color_map (_type_, optional): _description_. Defaults to None.
+        filter_marker_map (_type_, optional): _description_. Defaults to None.
+        param_min_fig (_type_, optional): _description_. Defaults to None.
+        param_max_fig (_type_, optional): _description_. Defaults to None.
+        param_min_cut (_type_, optional): _description_. Defaults to None.
+        param_max_cut (_type_, optional): _description_. Defaults to None.
+        title_param (_type_, optional): _description_. Defaults to None.
+        marker (str, optional): _description_. Defaults to "+".
+        lw (float, optional): _description_. Defaults to 1.5.
+        alpha (float, optional): _description_. Defaults to 0.5.
+        date_format (str, optional): _description_. Defaults to "%y-%m-%d".
+        suptitle (_type_, optional): _description_. Defaults to None.
+        axs (_type_, optional): _description_. Defaults to None.
+        figsize (tuple, optional): _description_. Defaults to (18, 6).
+    """
+    if title_param is None:
+        title_param=f"{param_col} vs time"
+
+    if filter_marker_map is None:
+        filter_marker_map = FILTER_MARKERS.copy()
+
+    data = df.copy()
+
+
+    # ----------------------------
+    # Gestion datetime (robuste)
+    # ----------------------------
+    if is_datetime64_any_dtype(data[time_col]):
+        try:
+            data[time_col] = data[time_col].dt.tz_convert(None)
+        except TypeError:
+            pass
+
+    # Codage numérique des filtres (palette discrète stable)
+    filter_cat = data[filter_col].astype("category")
+    filter_codes = filter_cat.cat.codes
+    filter_labels = filter_cat.cat.categories
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+
+    # ----------------------------
+    # Plot per target and per filter
+    # ----------------------------
+
+    filters_seen = set()
+    groups = data.groupby([target_col, filter_col])
+
+    for (target, filt), sub in groups:
+
+        filters_seen.add(filt)
+        # --- couleur (TARGET)
+#        if target_color_map is not None:
+#            color = target_color_map.get(target, "k")
+#        else:
+ #           color = get_filter_color(filt)
+        color = (
+            target_color_map.get(target, "k")
+            if target_color_map is not None
+            else get_filter_color(filt)
+        )
+
+
+        # --- marker (FILTER)
+        #if filter_marker_map is not None:
+        #    m = filter_marker_map.get(filt, marker)
+        #else:
+        #    m = marker
+        m = (
+            filter_marker_map.get(filt, marker)
+            if filter_marker_map is not None
+            else marker
+            )
+
+
+
+        if param_err_col is None:
+            ax.scatter(
+                sub[time_col],
+                sub[param_col],
+                color=color,
+                marker=m,
+                lw=lw,
+                alpha=alpha,
+            )
+        else:
+            ax.errorbar(
+                sub[time_col],
+                sub[param_col],
+                yerr=sub[param_err_col],
+                fmt=m,
+                color=color,
+                elinewidth=lw,
+                capsize=0,
+                alpha=alpha,
+                markersize=4,
+            )
+
+
+    filters = sorted(data[filter_col].unique())
+
+
+     #handles, _ = sc1.legend_elements(prop="colors", alpha=alpha)
+    #ax1.legend(
+    #    handles,
+    #    filter_labels,
+    #    title=filter_col,
+    #    ncols=len(filter_labels),
+    #)
+
+    legend_handles = []
+
+    for f in filters_seen:
+        marker = (
+            filter_marker_map.get(f, "+")
+            if filter_marker_map is not None
+            else "+"
+        )
+
+        legend_handles.append(
+            Line2D(
+                [0], [0],
+                marker=marker,
+                linestyle="None",
+                color="k",          # couleur neutre
+                label=f,
+                markersize=8,
+            )
+        )
+
+    ax.legend(
+        handles=legend_handles,
+        title=filter_col,
+        ncol=len(filters),
+        frameon=True,
+    )
+
+
+
+    if param_min_fig is not None and param_max_fig is not None:
+        ax.set_ylim(param_min_fig, param_max_fig)
+
+    if param_min_cut is not None:
+        ax.axhline(param_min_cut, ls="-.", c="k")
+    if param_max_cut is not None:
+        ax.axhline(param_max_cut, ls="-.", c="k")
+
+    # ----------------------------
+    # Labels, grid
+    # ----------------------------
+
+    ax.set_ylabel(f"{param_col}")
+    ax.set_title(title_param)
+    ax.grid(True, alpha=0.3)
+
+
+    # ----------------------------
+    # Time axis
+    # ----------------------------
+
+    ax.xaxis.set_major_formatter(date_form)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,
+        labelleft=True,
+        labelright=True, # o   # optional: set True if you want right ticks too
+    )
+
+    # ----------------------------
+    # Global title
+    # ----------------------------
+
+    if suptitle:
+        fig.suptitle(suptitle)
+
+    if ax is None:
+        fig.tight_layout()
+
+    return fig, ax
