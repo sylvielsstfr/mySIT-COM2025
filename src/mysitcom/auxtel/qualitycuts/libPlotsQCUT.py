@@ -4,16 +4,17 @@
 
 
 import math
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import matplotlib.dates as mdates
+from pprint import pprint
+
 import matplotlib.colors as mcolors
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.dates import DateFormatter
 from pandas.api.types import is_datetime64_any_dtype
-import pandas as pd
-from pprint import pprint
-from matplotlib.backends.backend_pdf import PdfPages
 
 FILTER_COLORS = {
     "empty": "gray",
@@ -1157,7 +1158,7 @@ def plot_dccd_chi2_vs_time_by_target_filter(
             ax_chi2.xaxis.set_major_formatter(date_form)
             ax_chi2.grid(True, alpha=0.3)
             plt.setp(ax_chi2.get_xticklabels(), rotation=45, ha="right")
-    
+
             # ----------------------------
             # Ticks on all sides
             # ----------------------------
@@ -2523,7 +2524,7 @@ def summarize_dccd_chi2(df, target_col="TARGET", filter_col="FILTER",
         df
         .groupby([target_col, filter_col])
         .agg(
-            N=("CHI2_FIT", "size"), 
+            N=("CHI2_FIT", "size"),
             mean_DCCD = (dccd_col, "mean"),
             sigma_DCCD = (dccd_col, "std"),
             mean_CHI2 = (chi2_col, "mean"),
@@ -3252,7 +3253,7 @@ def plot_params_and_chi2_vs_time(
     param_ylim=None,              # dict: {param: (ymin, ymax)}
     chi2_cut=None,
 
-    #colors of params   
+    #colors of params
     param_colors=None,             # dict: {param: color}
 
     # titles
@@ -3323,7 +3324,7 @@ def plot_params_and_chi2_vs_time(
 
         ax_r = ax.twinx()
 
-        # No loop on external parameter 
+        # No loop on external parameter
         h_param = ax.plot(
             data[time_col],
             data[param],
@@ -3331,7 +3332,7 @@ def plot_params_and_chi2_vs_time(
             marker=marker,
             color=param_color,
             alpha=alpha,
-            label=param,          
+            label=param,
             )
 
         # Right axis: CHI2
@@ -3345,10 +3346,10 @@ def plot_params_and_chi2_vs_time(
             alpha=0.25,
             color=get_filter_color(f)
             )
-            
+
         ax_r.set_yscale("log")
 
-        handles = h_param 
+        handles = h_param
         labels = [h.get_label() for h in handles]
 
         ax.legend(
@@ -3358,7 +3359,7 @@ def plot_params_and_chi2_vs_time(
                 frameon=True,
         )
 
-        
+
         # ----------------------------
         # Axis formatting
         # ----------------------------
@@ -3448,7 +3449,7 @@ def plot_param_chi2_correlation_grid(
 ):
     """
     Plot correlation between parameters and CHI2_FIT.
-    
+
     Rows: parameters
     Columns: filters
     """
@@ -3538,7 +3539,7 @@ def plot_param_chi2_correlation_grid(
             else:
                 ax.set_yticklabels([])
 
-           
+
             # ----------------------------
             # Column titles
             # ----------------------------
@@ -3569,7 +3570,7 @@ def plot_param2_vs_param1_colored_by_time(
     Color scale: (time - t0) in days.
     """
 
-    
+
     data = df[[time_col, param1, param2]].dropna()
 
     # ----------------------------
@@ -3593,11 +3594,11 @@ def plot_param2_vs_param1_colored_by_time(
         cmap=cmap,
         marker=marker,
         alpha=alpha,
-        
+
     )
 
     ax.set_aspect(aspect, adjustable="box")
-    
+
     ax.set_xlabel(param1)
     ax.set_ylabel(param2)
     ax.grid(True, alpha=0.3)
@@ -3851,7 +3852,7 @@ def plot_single_param_vs_time_colored_by_chi2(
     # ----------------------------
     # Quantities to plot
     # ----------------------------
-    values = data[param] 
+    values = data[param]
 
     log_chi2 = np.log10(data[chi2_col])
 
@@ -3903,12 +3904,12 @@ def plot_single_param_vs_time_colored_by_chi2(
 
 
     if zoomrange is not None:
-        ax.set_ylim(zoomrange[0],zoomrange[1]) 
-    
+        ax.set_ylim(zoomrange[0],zoomrange[1])
+
     fig.autofmt_xdate()
 
 
-    
+
     # ----------------------------
     # Colorbar
     # ----------------------------
@@ -3922,7 +3923,7 @@ def plot_single_param_vs_time_colored_by_chi2(
         fraction=0.08,     # thickness relative to axes
     )
 
-    
+
     cbar.set_label(r"$\log_{10}(\chi^2)$")
 
     fig.tight_layout()
@@ -4271,7 +4272,7 @@ def plot_chi2_norm_histo_onetarget(
 
     #---------------------------
     # target color
-    #--------------------------    
+    #--------------------------
     target_color="grey" if target_palette is None else target_palette.get(target_name, "grey")
 
     # ----------------------------
@@ -4298,7 +4299,7 @@ def plot_chi2_norm_histo_onetarget(
         np.log10(chi2_norm_all.max() if chi2_max_fig is None else chi2_max_fig),
         bins_chi2,
     )
- 
+
     # ============================================================
     # Cas per_target = True
     # ============================================================
@@ -4314,7 +4315,7 @@ def plot_chi2_norm_histo_onetarget(
     if n_panels == 1:
         axs = [axs]
     else:
-        fig = axs[0].figure       
+        fig = axs[0].figure
     ax = axs[0]
     sub = data[data[target_col] == target_name]
 
@@ -4349,7 +4350,7 @@ def plot_chi2_norm_histo_onetarget(
 #-------------------------------------------------------------
 def normalize_column_data_bytarget_byfilter(df,target_col,filter_col,feature_col,ext="norm"):
     """
-    Docstring pour normalize_data 
+    Docstring pour normalize_data
     :param df: Pandas dataframe
     :param target_col: name of columns target in dataframe
     :param filter_col: name of columns filter in dataframe
@@ -4660,7 +4661,7 @@ def plot_chi2_nonorm_histo_onetarget(
         np.log10(chi2_norm_all.max() if chi2_max_fig is None else chi2_max_fig),
         bins_chi2,
     )
- 
+
     # ============================================================
     # Cas per_target = True
     # ============================================================
@@ -4676,7 +4677,7 @@ def plot_chi2_nonorm_histo_onetarget(
     if n_panels == 1:
         axs = [axs]
     else:
-        fig = axs[0].figure       
+        fig = axs[0].figure
     ax = axs[0]
     sub = data[data[target_col] == target_name]
 
@@ -4706,3 +4707,222 @@ def plot_chi2_nonorm_histo_onetarget(
         fig.suptitle(suptitle, fontsize=16)
 
     return fig, axs
+
+
+#-------------------------------------------------------------
+
+def plot_frac_pass_per_param(
+    df,
+    param,
+    target_dict,
+    filter_order,
+    value_col="frac_pass_all",
+    annotate=True,
+    suptitle=None,
+):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+        param (_type_): _description_
+        target_dict (_type_): _description_
+        filter_order (_type_): _description_
+        value_col (str, optional): _description_. Defaults to "frac_pass_all".
+        annotate (bool, optional): _description_. Defaults to True.
+
+    Returns:
+        _type_: _description_
+    """
+
+    targets = list(target_dict.keys())
+    n_filters = len(filter_order)
+
+    fig, axes = plt.subplots(
+        1,
+        n_filters,
+        figsize=(5 * n_filters, 8),
+        sharey=True
+    )
+
+    if n_filters == 1:
+        axes = [axes]
+
+    for ax, filt in zip(axes, filter_order):
+
+        sub = df[
+            (df["param"] == param) &
+            (df["FILTER"] == filt) &
+            (df["TARGET"].isin(targets))
+        ]
+
+        # réindexation propre dans l’ordre voulu
+        sub = (
+            sub.set_index("TARGET")
+               .reindex(targets)
+               .reset_index()
+        )
+
+        y = np.arange(len(targets))
+        values = sub[value_col].values
+
+        bars = ax.barh(
+            y,
+            values,
+            color=[target_dict[t] for t in targets]
+        )
+
+        ax.set_yticks(y)
+        ax.set_yticklabels(targets,fontsize=18)
+        ax.set_xlim(0, 1.05)
+        ax.set_title(f"{filt}")
+
+        ax.invert_yaxis()
+
+        # Annotation n_pass / n_total
+        if annotate:
+            for i, (v, n_pass, n_total) in enumerate(
+                zip(sub[value_col], sub["n_pass"], sub["n_total"])
+            ):
+
+                if pd.notna(n_pass) and pd.notna(n_total):
+                    label = f"{int(n_pass)}/{int(n_total)}"
+                else:
+                    label = ""
+
+                ax.text(
+                    v + 0.02 if pd.notna(v) else 0.02,
+                    i,
+                    label,
+                    va="center",
+                    fontsize=12
+                )
+        ax.set_xlabel("Fraction passing all cuts")
+
+    if suptitle:
+        fig.suptitle(suptitle, fontsize=20)
+
+    fig.tight_layout()
+    return fig
+
+#----------------------------------------------------------------------------
+
+
+def plot_param_hist_per_filter(
+    df,
+    param,
+    target_dict,
+    filter_order,
+    bins=40,
+    stacked=False,
+    density=False,
+    vmin=None,
+    vmax=None,
+    window_factor=1.2,
+    cutmin=None,
+    cutmax=None,
+):
+    """
+    Histogram of `param` per filter, with one subplot per filter.
+    Each subplot contains histograms for all targets.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+    param : str
+        Name of parameter column.
+    target_dict : dict
+        {target_name: color}
+    filter_order : list
+        Ordered list of filters.
+    bins : int
+    stacked : bool
+    density : bool
+    vmin, vmax : float or None
+        Nominal range of the parameter.
+    window_factor : float
+        Factor to enlarge (vmin, vmax) window.
+    cutmin, cutmax : float or None
+        Vertical cut lines.
+    """
+
+    targets = list(target_dict.keys())
+    n_filters = len(filter_order)
+
+    fig, axes = plt.subplots(
+        1,
+        n_filters,
+        figsize=(5 * n_filters, 4),
+        sharey=True
+    )
+
+    if n_filters == 1:
+        axes = [axes]
+
+    # -------------------------
+    # Compute plotting range
+    # -------------------------
+    if vmin is not None and vmax is not None:
+        center = 0.5 * (vmin + vmax)
+        half_width = 0.5 * (vmax - vmin) * window_factor
+        xmin = center - half_width
+        xmax = center + half_width
+    else:
+        xmin = df[param].min()
+        xmax = df[param].max()
+
+    # -------------------------
+    # Loop over filters
+    # -------------------------
+    for ax, filt in zip(axes, filter_order):
+
+        data_list = []
+        colors = []
+
+        for target in targets:
+
+            sub = df[
+                (df["FILTER"] == filt) &
+                (df["TARGET"] == target)
+            ]
+
+            values = sub[param].dropna().values
+
+            if len(values) > 0:
+                data_list.append(values)
+                colors.append(target_dict[target])
+
+        if len(data_list) > 0:
+            ax.hist(
+                data_list,
+                bins=bins,
+                range=(xmin, xmax),
+                stacked=stacked,
+                density=density,
+                color=colors,
+                label=targets[:len(data_list)],
+                alpha=0.8
+            )
+
+        # -------------------------
+        # Vertical cut lines
+        # -------------------------
+        if cutmin is not None:
+            ax.axvline(cutmin, linestyle="--", linewidth=2)
+
+        if cutmax is not None:
+            ax.axvline(cutmax, linestyle="--", linewidth=2)
+
+        ax.set_xlim(xmin, xmax)
+        ax.set_title(filt)
+
+        if density:
+            ax.set_ylabel("Density")
+        else:
+            ax.set_ylabel("Counts")
+
+        ax.set_xlabel(param)
+
+    fig.tight_layout()
+    return fig
+
+
