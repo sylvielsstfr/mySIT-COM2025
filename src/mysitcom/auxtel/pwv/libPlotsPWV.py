@@ -3433,7 +3433,7 @@ def plot_atmparam_hist_per_filter(
 
     # Vertical placement for text
     y_text = 0.95
-    dy = 0.2
+    dy = 0.25
 
     # ----------------------------
     # Plot per filter
@@ -3457,19 +3457,22 @@ def plot_atmparam_hist_per_filter(
         # Statistics
         # ----------------------------
         mean = np.mean(sub)
+        median = np.median(sub)
         std = np.std(sub, ddof=1)
 
         q25, q75 = np.percentile(sub, [25, 75])
         std_iqr = (q75 - q25) / 1.349
 
          # MAD-based sigma
-        median = np.median(sub)
         mad = np.median(np.abs(sub - median))
         std_mad = 1.4826 * mad
+
+
 
         text = (
             f"{f}\n"
             f"μ = {mean:.3g}\n"
+            f"med = {median:.3g}\n"
             f"σ = {std:.3g}\n"
             f"σ(IQR) = {std_iqr:.3g}\n"
             f"σ(MAD) = {std_mad:.3g}"
