@@ -163,10 +163,13 @@ class ParameterCutSelection:
 
         grouped = self.df.groupby([self.target_col, self.filter_col])
 
+        # Loop over each (TARGET, FILTER) group (chunck of data with same target and filter)
         for (target, filt), g in grouped:
+            # Total number of observations in this group
             n_total = len(g)
             mask_total = np.ones(n_total, dtype=bool)
 
+            # Loop over each parameter and apply the corresponding cuts for this filter
             for param, per_filter in cuts.items():
                 if param not in g.columns:
                     continue
@@ -176,13 +179,16 @@ class ParameterCutSelection:
                 bounds = per_filter[filt]
                 x = g[param]
 
+                #
                 if bounds.get("min") is not None:
                     mask_total &= x >= bounds["min"]
                 if bounds.get("max") is not None:
                     mask_total &= x <= bounds["max"]
 
+            # Number of observations that pass all cuts for this (TARGET, FILTER) group
             n_pass = mask_total.sum()
 
+            #
             rows.append({
                 self.target_col: target,
                 self.filter_col: filt,
@@ -216,12 +222,16 @@ class ParameterCutSelection:
 
         grouped = self.df.groupby([self.target_col, self.filter_col])
 
-        # loop on target and filters
+        # loop on chunks of targets and filters
         for (target, filt), g in grouped:
-            n_total = len(g)
-            mask_total = np.ones(n_total, dtype=bool)
 
-            # loop per parameter
+            #
+            n_total = len(g)
+
+            #
+            #mask_total = np.ones(n_total, dtype=bool)
+
+            # loop per parameter and filter
             for param, per_filter in cuts.items():
                 if param not in g.columns:
                     continue
@@ -277,6 +287,9 @@ class ParameterCutSelection:
                 })
 
         return pd.DataFrame(rows)
+
+
+
 
 #------------------------------------------------------
 class ParameterCutPlotting:
