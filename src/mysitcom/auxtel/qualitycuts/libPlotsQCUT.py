@@ -4799,51 +4799,28 @@ def plot_frac_pass_per_param(
         ax.set_xlabel("Fraction passing all cuts")
 
     if suptitle:
-        fig.suptitle(suptitle, fontsize=20)
+        fig.suptitle(suptitle, fontsize=20,fontweight="bold")
 
     fig.tight_layout()
     return fig
 
 #----------------------------------------------------------------------------
 
-
 def plot_param_hist_per_filter(
     df,
     param,
     target_dict,
     filter_order,
+    cuts_dict=None,
     bins=40,
     stacked=False,
     density=False,
     vmin=None,
     vmax=None,
     window_factor=1.2,
-    cutmin=None,
-    cutmax=None,
+    yscale = "lin",
+    suptitle = None
 ):
-    """
-    Histogram of `param` per filter, with one subplot per filter.
-    Each subplot contains histograms for all targets.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-    param : str
-        Name of parameter column.
-    target_dict : dict
-        {target_name: color}
-    filter_order : list
-        Ordered list of filters.
-    bins : int
-    stacked : bool
-    density : bool
-    vmin, vmax : float or None
-        Nominal range of the parameter.
-    window_factor : float
-        Factor to enlarge (vmin, vmax) window.
-    cutmin, cutmax : float or None
-        Vertical cut lines.
-    """
 
     targets = list(target_dict.keys())
     n_filters = len(filter_order)
@@ -4859,7 +4836,7 @@ def plot_param_hist_per_filter(
         axes = [axes]
 
     # -------------------------
-    # Compute plotting range
+    # Global plotting range
     # -------------------------
     if vmin is not None and vmax is not None:
         center = 0.5 * (vmin + vmax)
@@ -4870,6 +4847,8 @@ def plot_param_hist_per_filter(
         xmin = df[param].min()
         xmax = df[param].max()
 
+    bins_edges = np.linspace(xmin, xmax, bins + 1)
+
     # -------------------------
     # Loop over filters
     # -------------------------
@@ -4877,6 +4856,7 @@ def plot_param_hist_per_filter(
 
         data_list = []
         colors = []
+        labels = []
 
         for target in targets:
 
@@ -4890,27 +4870,37 @@ def plot_param_hist_per_filter(
             if len(values) > 0:
                 data_list.append(values)
                 colors.append(target_dict[target])
+                labels.append(target)
 
         if len(data_list) > 0:
             ax.hist(
                 data_list,
-                bins=bins,
+                bins=bins_edges,
                 range=(xmin, xmax),
                 stacked=stacked,
                 density=density,
                 color=colors,
-                label=targets[:len(data_list)],
-                alpha=0.8
+                alpha=0.8,
+                label=labels
             )
 
-        # -------------------------
-        # Vertical cut lines
-        # -------------------------
-        if cutmin is not None:
-            ax.axvline(cutmin, linestyle="--", linewidth=2)
+        if yscale == "log":
+            ax.set_yscale(yscale)
 
-        if cutmax is not None:
-            ax.axvline(cutmax, linestyle="--", linewidth=2)
+
+        # -------------------------
+        # Filter-specific cuts
+        # -------------------------
+        if cuts_dict is not None and filt in cuts_dict:
+
+            cutmin = cuts_dict[filt].get("min", None)
+            cutmax = cuts_dict[filt].get("max", None)
+
+            if cutmin is not None:
+                ax.axvline(cutmin, linestyle="--", linewidth=2,color="r")
+
+            if cutmax is not None:
+                ax.axvline(cutmax, linestyle="--", linewidth=2,color="r")
 
         ax.set_xlim(xmin, xmax)
         ax.set_title(filt)
@@ -4922,7 +4912,11 @@ def plot_param_hist_per_filter(
 
         ax.set_xlabel(param)
 
+    #if not stacked:
+        #axes[0].legend(fontsize=9)
+    if suptitle:
+        fig.suptitle(suptitle,fontsize=20,fontweight="bold")
+
     fig.tight_layout()
     return fig
-
 
