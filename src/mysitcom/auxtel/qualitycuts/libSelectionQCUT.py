@@ -299,11 +299,12 @@ class ParameterCutPlotting:
     :rtype: _type_
     """
     @staticmethod
-    def plot_selection_fraction_by_filter(
+    def plot_selection_fraction_by_filter_old(
         df_stat,
         target_color_map,
         filter_order=None,
         figsize_per_filter=(6, 0.35),
+         annotate=False,
         ):
         """
         Horizontal bar plot of selection fraction per TARGET, grouped by FILTER.
@@ -363,6 +364,123 @@ class ParameterCutPlotting:
                 edgecolor="black",
                 alpha=0.9,
             )
+
+            ax.set_title(filt)
+            ax.set_xlim(0, 1.0)
+            ax.grid(axis="x", alpha=0.3)
+            ax.grid(axis="y", alpha=0.8)
+
+            ax.set_yticks(y)
+            ax.set_yticklabels(df_f["TARGET"])
+
+            ax.set_xlabel("Selected fraction")
+            ax.invert_yaxis()
+
+        axes[0].set_ylabel("TARGET")
+
+        plt.tight_layout()
+        return fig, axes
+
+    @staticmethod
+#-----------------
+    def plot_selection_fraction_by_filter(
+        df_stat,
+        target_color_map,
+        filter_order=None,
+        figsize_per_filter=(6, 0.4),
+        annotate=False,
+        ):
+        """
+        Horizontal bar plot of selection fraction per TARGET, grouped by FILTER.
+
+        Parameters
+        ----------
+        df_stat : pandas.DataFrame
+            Must contain columns:
+            TARGET, FILTER, n_total, n_pass_all, frac_pass_all
+        target_color_map : dict
+            Mapping TARGET -> color
+        filter_order : list, optional
+            Order of filters
+        annotate : bool, optional
+            If True, display n_pass_all/n_total on bars
+        """
+
+        if filter_order is None:
+            filter_order = df_stat["FILTER"].unique()
+
+        n_filters = len(filter_order)
+
+        n_targets = df_stat["TARGET"].nunique()
+        fig_height = max(4, figsize_per_filter[1] * n_targets)
+
+        fig, axes = plt.subplots(
+            1,
+            n_filters,
+            figsize=(figsize_per_filter[0] * n_filters, fig_height),
+            sharey=True,
+        )
+
+        if n_filters == 1:
+            axes = [axes]
+
+        target_order = (
+            df_stat
+            .groupby("TARGET")["n_total"]
+            .sum()
+            .sort_values(ascending=False)
+            .index
+        )
+
+        for ax, filt in zip(axes, filter_order):
+            df_f = df_stat[df_stat["FILTER"] == filt].copy()
+
+            df_f = (
+                df_f
+                .set_index("TARGET")
+                .reindex(target_order)
+                .reset_index()
+            )
+
+            y = np.arange(len(df_f))
+
+            colors = [
+                target_color_map.get(t, "gray")
+                for t in df_f["TARGET"]
+            ]
+
+            bars = ax.barh(
+                y,
+                df_f["frac_pass_all"],
+                color=colors,
+                edgecolor="black",
+                alpha=0.9,
+            )
+
+            # -------------------------
+            # Optional annotation
+            # -------------------------
+            if annotate:
+                for i, (frac, n_pass, n_tot) in enumerate(
+                    zip(
+                        df_f["frac_pass_all"],
+                        df_f["n_pass_all"],
+                        df_f["n_total"],
+                    )
+                ):
+                    if pd.notna(frac) and pd.notna(n_pass) and pd.notna(n_tot):
+                        label = f"{int(n_pass)}/{int(n_tot)}"
+
+                        # Position slightly to the right of the bar
+                        x_pos = min(frac + 0.02, 0.98)
+
+                        ax.text(
+                            x_pos,
+                            i,
+                            label,
+                            va="center",
+                            fontsize=12,fontweight="bold"
+                        )
 
             ax.set_title(filt)
             ax.set_xlim(0, 1.0)

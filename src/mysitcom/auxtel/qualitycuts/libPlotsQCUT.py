@@ -4795,7 +4795,7 @@ def plot_frac_pass_per_param(
                     i,
                     label,
                     va="center",
-                    fontsize=12
+                    fontsize=12,fontweight="bold"
                 )
         ax.set_xlabel("Fraction passing all cuts")
 

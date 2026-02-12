@@ -1,141 +1,141 @@
 {
   "CHI2_FIT_norm": {
     "BG40_65mm_1": {
-      "max": 4,
+      "max": 2,
       "min": 0
     },
     "OG550_65mm_1": {
-      "max": 4,
+      "max": 2,
       "min": 0
     },
     "empty": {
-      "max": 4,
+      "max": 2,
       "min": 0
     }
   },
   "D2CCD": {
     "BG40_65mm_1": {
-      "max": 189,
-      "min": 185
+      "max": 188.5,
+      "min": 186
     },
     "OG550_65mm_1": {
-      "max": 189,
-      "min": 185
+      "max": 188,
+      "min": 186.5
     },
     "empty": {
-      "max": 189.5,
-      "min": 185
+      "max": 188,
+      "min": 186.5
     }
   },
   "D_CCD [mm]_ram": {
     "BG40_65mm_1": {
-      "max": 189,
-      "min": 185
+      "max": 188,
+      "min": 186
     },
     "OG550_65mm_1": {
-      "max": 189,
-      "min": 185
+      "max": 188,
+      "min": 186
     },
     "empty": {
-      "max": 189.5,
-      "min": 185
+      "max": 188.0,
+      "min": 186.5
     }
   },
   "D_CCD [mm]_rum": {
     "BG40_65mm_1": {
-      "max": 189,
-      "min": 185
+      "max": 188,
+      "min": 186
     },
     "OG550_65mm_1": {
-      "max": 189,
-      "min": 185
+      "max": 188,
+      "min": 185.5
     },
     "empty": {
-      "max": 189.5,
-      "min": 185
+      "max": 188,
+      "min": 186.5
     }
   },
   "MEANFWHM": {
     "BG40_65mm_1": {
-      "max": 20,
-      "min": 1
+      "max": 12,
+      "min": 2
     },
     "OG550_65mm_1": {
-      "max": 20,
-      "min": 1
+      "max": 11,
+      "min": 2
     },
     "empty": {
-      "max": 20,
-      "min": 1
+      "max": 10,
+      "min": 2
     }
   },
   "P [hPa]": {
     "BG40_65mm_1": {
-      "max": 3000,
+      "max": 2000,
       "min": 0
     },
     "OG550_65mm_1": {
-      "max": 3000,
+      "max": 2000,
       "min": 0
     },
     "empty": {
-      "max": 3000,
+      "max": 2000,
       "min": 0
     }
   },
   "PIXSHIFT": {
     "BG40_65mm_1": {
-      "max": 1,
-      "min": -1
+      "max": 0.35,
+      "min": -0.35
     },
     "OG550_65mm_1": {
-      "max": 1,
-      "min": -1
+      "max": 0.35,
+      "min": -0.35
     },
     "empty": {
-      "max": 1,
-      "min": -1
+      "max": 0.35,
+      "min": -0.35
     }
   },
   "PSF_REG": {
     "BG40_65mm_1": {
 
-      "min": 1e-3
+      "min": 1e-5
     },
     "OG550_65mm_1": {
 
-      "min": 1e-3
+      "min": 1e-5
     },
     "empty": {
 
-      "min": 1e-3
+      "min": 1e-5
     }
   },
   "TRACE_R": {
     "BG40_65mm_1": {
-      "max": 150,
-      "min": 0
+      "max": 40,
+      "min": 15
     },
     "OG550_65mm_1": {
-      "max": 150,
-      "min": 0
+      "max": 60,
+      "min": 30
     },
     "empty": {
-      "max": 150,
-      "min": 0
+      "max": 75,
+      "min": 50
     }
   },
   "alpha_0_1": {
     "BG40_65mm_1": {
-      "max": 6,
+      "max": 4,
       "min": 1
     },
     "OG550_65mm_1": {
-      "max": 6,
+      "max": 4,
       "min": 1
     },
     "empty": {
-      "max": 6,
+      "max": 4,
       "min": 1
     }
   },
@@ -145,166 +145,166 @@
       "min": 1
     },
     "OG550_65mm_1": {
-      "max": 6,
+      "max": 3,
       "min": 1
     },
     "empty": {
-      "max": 6,
+      "max": 3,
       "min": 1
     }
   },
   "alpha_1_1": {
     "BG40_65mm_1": {
-      "max": 1.2,
-      "min": -1.2
+      "max": 0.5,
+      "min": -0.5
     },
     "OG550_65mm_1": {
-      "max": 1.2,
-      "min": -1.2
+      "max": 0.5,
+      "min": -1
     },
     "empty": {
-      "max": 1.2,
-      "min": -1.2
+      "max": 0.9,
+      "min": -1
     }
   },
   "angle [deg]": {
     "BG40_65mm_1": {
-      "max": 0.4,
-      "min": 0.1
+      "max": 0.3,
+      "min": 0.18
     },
     "OG550_65mm_1": {
-      "max": 0.4,
-      "min": 0.1
+      "max": 0.3,
+      "min": 0.18
     },
     "empty": {
-      "max": 0.4,
-      "min": 0.1
+      "max": 0.3,
+      "min": 0.18
     }
   },
   "alpha_pix [pix]": {
     "BG40_65mm_1": {
-      "max": 9.5,
-      "min": -9.5
+      "max": 4.5,
+      "min": -2.5
     },
     "OG550_65mm_1": {
-      "max": 9.5,
-      "min": -9.5
+      "max": 8.5,
+      "min": -3.5
     },
     "empty": {
-      "max": 9.5,
-      "min": -9.5
+      "max": 4.0,
+      "min": -3.5
     }
   },
   "chi2_ram_norm": {
     "BG40_65mm_1": {
-      "max": 4,
+      "max": 2,
       "min": 0
     },
     "OG550_65mm_1": {
-      "max": 4,
+      "max": 2,
       "min": 0
     },
     "empty": {
-      "max": 4,
+      "max": 2,
       "min": 0
     }
   },
   "chi2_rum_norm": {
     "BG40_65mm_1": {
-      "max": 4,
+      "max": 2,
       "min": 0
     },
     "OG550_65mm_1": {
-      "max": 4,
+      "max": 2,
       "min": 0
     },
     "empty": {
-      "max": 4,
+      "max": 2,
       "min": 0
     }
   },
   "gamma_0_1": {
     "BG40_65mm_1": {
-      "max": 20,
+      "max": 15,
       "min": 0
     },
     "OG550_65mm_1": {
-      "max": 20,
+      "max": 15,
       "min": 0
     },
     "empty": {
-      "max": 20,
+      "max": 15,
       "min": 0
     }
   },
   "gamma_1_1": {
     "BG40_65mm_1": {
-      "max": 5,
-      "min": -5.5
+      "max": 2,
+      "min": -4.5
     },
     "OG550_65mm_1": {
-      "max": 5,
-      "min": -5.5
+      "max": 1,
+      "min": -3
     },
     "empty": {
-      "max": 5,
-      "min": -5.5
+      "max": 2,
+      "min": -4
     }
   },
   "gamma_2_1": {
     "BG40_65mm_1": {
-      "max": 5,
-      "min": -3
+      "max": 3,
+      "min": -1.5
     },
     "OG550_65mm_1": {
-      "max": 5,
-      "min": -3
+      "max": 2,
+      "min": -1.5
     },
     "empty": {
-      "max": 5,
-      "min": -3
+      "max": 3,
+      "min": -1.5
     }
   },
   "reso [nm]": {
     "BG40_65mm_1": {
-      "max": 6,
-      "min": 0
+      "max": 5,
+      "min": 0.5
     },
     "OG550_65mm_1": {
-      "max": 6,
-      "min": 0
+      "max": 4,
+      "min": 0.5
     },
     "empty": {
-      "max": 6,
-      "min": 0
+      "max": 4,
+      "min": 0.5
     }
   },
   "shift_x [pix]": {
     "BG40_65mm_1": {
-      "max": 5,
-      "min": -5
+      "max": 5.0,
+      "min": -1.5
     },
     "OG550_65mm_1": {
-      "max": 8,
-      "min": -5
+      "max": 5.0,
+      "min": -1.5
     },
     "empty": {
-      "max": 5,
-      "min": -5
+      "max": 1.5,
+      "min": -1.5
     }
   },
   "shift_y [pix]": {
     "BG40_65mm_1": {
-      "max": 5,
-      "min": -5
+      "max": 3,
+      "min": -3
     },
     "OG550_65mm_1": {
-      "max": 5,
-      "min": -5
+      "max": 2,
+      "min": -2
     },
     "empty": {
-      "max": 5,
-      "min": -5
+      "max": 3,
+      "min": -4
     }
   }
 }
