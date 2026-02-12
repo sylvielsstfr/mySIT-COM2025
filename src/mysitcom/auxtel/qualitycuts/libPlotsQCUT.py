@@ -4777,6 +4777,7 @@ def plot_frac_pass_per_param(
         ax.set_title(f"{filt}")
 
         ax.invert_yaxis()
+        ax.grid()
 
         # Annotation n_pass / n_total
         if annotate:
