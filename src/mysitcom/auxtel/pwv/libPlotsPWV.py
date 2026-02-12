@@ -52,6 +52,8 @@ LSST_FILTER_COLORS = {
 
 MERRA_COLOR="darkblue"
 
+TARGETTYPE_COLORS = {"gaia": "red","calspec":"blue"}
+
 def get_filter_color(filter_name):
     return FILTER_COLORS.get(filter_name, DEFAULT_FILTER_COLOR)
 
@@ -3431,7 +3433,7 @@ def plot_atmparam_hist_per_filter(
 
     # Vertical placement for text
     y_text = 0.95
-    dy = 0.2
+    dy = 0.25
 
     # ----------------------------
     # Plot per filter
@@ -3455,19 +3457,22 @@ def plot_atmparam_hist_per_filter(
         # Statistics
         # ----------------------------
         mean = np.mean(sub)
+        median = np.median(sub)
         std = np.std(sub, ddof=1)
 
         q25, q75 = np.percentile(sub, [25, 75])
         std_iqr = (q75 - q25) / 1.349
 
          # MAD-based sigma
-        median = np.median(sub)
         mad = np.median(np.abs(sub - median))
         std_mad = 1.4826 * mad
+
+
 
         text = (
             f"{f}\n"
             f"μ = {mean:.3g}\n"
+            f"med = {median:.3g}\n"
             f"σ = {std:.3g}\n"
             f"σ(IQR) = {std_iqr:.3g}\n"
             f"σ(MAD) = {std_mad:.3g}"
@@ -3797,7 +3802,7 @@ def plotcompare_atmparam_fgcm_vs_time(
     # ----------------------------
 
     if axs is None:
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        fig, ax = plt.subplots(1, 1, figsize=figsize,layout="constrained")
     else:
         ax = axs
         fig = ax.figure
@@ -4057,9 +4062,9 @@ def plotcompare_atmparam_merra_vs_time(
     for f in filters:
         sub = data[data[filter_col] == f]
 
-        if param_err_col == None:
+        if param_err_col is None:
 
-            sc= ax.scatter(
+            ax.scatter(
                 sub[time_col],
                 sub[param_col],
                 color=get_filter_color(f),  # <- couleur fixe
@@ -4289,7 +4294,7 @@ def plot_atmparam_vs_time_byfilter_bytarget(
         color = (
             target_color_map.get(target, "k")
             if target_color_map is not None
-            else get_filter_color(filt)
+            else "k"
         )
 
 
@@ -4546,4 +4551,391 @@ def plot_atmparam_hist_stacked_bytarget(
     fig.tight_layout()
 
     return fig, ax
+
+#------------------- Difference Calspec Gaia --------------------------------------
+#--------------------
+def plot_atmparam_vs_time_byfilter_bytargetsedtype(
+    df,
+    time_col,
+    filter_col,
+    param_col,
+    target_col="TARGET",
+    targettype_col="TARGET_TYPE",
+    param_err_col=None,
+
+    # mappings
+    targettype_color_map=None,
+    filter_marker_map=None,
+
+    # thresholds / bounds
+    param_min_fig=None,
+    param_max_fig=None,
+    param_min_cut=None,
+    param_max_cut=None,
+
+    title_param=None,
+
+    # display (fallback)
+    marker="+",
+    lw=1.5,
+    alpha=0.5,
+
+    date_format="%y-%m-%d",
+    suptitle=None,
+    axs=None,
+    figsize=(18, 6),
+    ):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+        time_col (_type_): _description_
+        filter_col (_type_): _description_
+        param_col (_type_): _description_
+        target_col (str, optional): _description_. Defaults to "TARGET".
+        param_err_col (_type_, optional): _description_. Defaults to None.
+        target_color_map (_type_, optional): _description_. Defaults to None.
+        filter_marker_map (_type_, optional): _description_. Defaults to None.
+        param_min_fig (_type_, optional): _description_. Defaults to None.
+        param_max_fig (_type_, optional): _description_. Defaults to None.
+        param_min_cut (_type_, optional): _description_. Defaults to None.
+        param_max_cut (_type_, optional): _description_. Defaults to None.
+        title_param (_type_, optional): _description_. Defaults to None.
+        marker (str, optional): _description_. Defaults to "+".
+        lw (float, optional): _description_. Defaults to 1.5.
+        alpha (float, optional): _description_. Defaults to 0.5.
+        date_format (str, optional): _description_. Defaults to "%y-%m-%d".
+        suptitle (_type_, optional): _description_. Defaults to None.
+        axs (_type_, optional): _description_. Defaults to None.
+        figsize (tuple, optional): _description_. Defaults to (18, 6).
+    """
+    if title_param is None:
+        title_param=f"{param_col} vs time"
+
+    if filter_marker_map is None:
+        filter_marker_map = FILTER_MARKERS.copy()
+
+    data = df.copy()
+
+
+    # ----------------------------
+    # Gestion datetime (robuste)
+    # ----------------------------
+    if is_datetime64_any_dtype(data[time_col]):
+        try:
+            data[time_col] = data[time_col].dt.tz_convert(None)
+        except TypeError:
+            pass
+
+
+
+    date_form = DateFormatter(date_format)
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+
+    # ----------------------------
+    # Plot per target and per filter
+    # ----------------------------
+
+    filters_seen = set()
+    groups = data.groupby([targettype_col, filter_col])
+
+    for (targettype, filt), sub in groups:
+
+        filters_seen.add(filt)
+        # --- couleur (TARGET)
+#        if target_color_map is not None:
+#            color = target_color_map.get(target, "k")
+#        else:
+ #           color = get_filter_color(filt)
+        color = (
+            targettype_color_map.get(targettype, "k")
+            if targettype_color_map is not None
+            else "k"
+        )
+
+        # --- marker (FILTER)
+        #if filter_marker_map is not None:
+        #    m = filter_marker_map.get(filt, marker)
+        #else:
+        #    m = marker
+        m = (
+            filter_marker_map.get(filt, marker)
+            if filter_marker_map is not None
+            else marker
+            )
+
+
+
+        if param_err_col is None:
+            ax.scatter(
+                sub[time_col],
+                sub[param_col],
+                color=color,
+                marker=m,
+                lw=lw,
+                alpha=alpha,
+            )
+        else:
+            ax.errorbar(
+                sub[time_col],
+                sub[param_col],
+                yerr=sub[param_err_col],
+                fmt=m,
+                color=color,
+                elinewidth=lw,
+                capsize=0,
+                alpha=alpha,
+                markersize=4,
+            )
+
+
+    filters = sorted(data[filter_col].unique())
+
+
+     #handles, _ = sc1.legend_elements(prop="colors", alpha=alpha)
+    #ax1.legend(
+    #    handles,
+    #    filter_labels,
+    #    title=filter_col,
+    #    ncols=len(filter_labels),
+    #)
+
+    legend_handles = []
+
+    for f in filters_seen:
+        marker = (
+            filter_marker_map.get(f, "+")
+            if filter_marker_map is not None
+            else "+"
+        )
+
+        legend_handles.append(
+            Line2D(
+                [0], [0],
+                marker=marker,
+                linestyle="None",
+                color="k",          # couleur neutre
+                label=f,
+                markersize=8,
+            )
+        )
+
+    ax.legend(
+        handles=legend_handles,
+        title=filter_col,
+        ncol=len(filters),
+        frameon=True,
+    )
+
+
+
+    if param_min_fig is not None and param_max_fig is not None:
+        ax.set_ylim(param_min_fig, param_max_fig)
+
+    if param_min_cut is not None:
+        ax.axhline(param_min_cut, ls="-.", c="k")
+    if param_max_cut is not None:
+        ax.axhline(param_max_cut, ls="-.", c="k")
+
+    # ----------------------------
+    # Labels, grid
+    # ----------------------------
+
+    ax.set_ylabel(f"{param_col}")
+    ax.set_title(title_param)
+    ax.grid(True, alpha=0.3)
+
+
+    # ----------------------------
+    # Time axis
+    # ----------------------------
+
+    ax.xaxis.set_major_formatter(date_form)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+    # ----------------------------
+    # Ticks on all sides
+    # ----------------------------
+    ax.minorticks_on()
+
+    ax.tick_params(
+        axis="x",
+        which="both",
+        top=True,        # show ticks on top
+        bottom=True,     # keep bottom ticks
+    )
+    ax.tick_params(
+        axis="y",
+        which="both",
+        left=True,       # show ticks on left
+        right=True,
+        labelleft=True,
+        labelright=True, # o   # optional: set True if you want right ticks too
+    )
+
+    # ----------------------------
+    # Global title
+    # ----------------------------
+
+    if suptitle:
+        fig.suptitle(suptitle)
+
+    if ax is None:
+        fig.tight_layout()
+
+    return fig, ax
+
+#------------------------------------
+def plot_atmparam_hist_bytargetsedtype(
+    df,
+    param_col,
+    target_col="TARGET",
+    targettype_col="TARGETTYPE",
+    filter_col=None,
+    filter_value=None,          # ex: "OG550_65mm_1" ou None
+    targettype_color_map=None,
+
+    bins=50,
+    value_range=None,
+    density=True,
+
+    title=None,
+    axs=None,
+    figsize=(10, 6),
+    ylogscale=False,
+    stacked=False,
+):
+    """
+    Histogramme stacké de param_col par TARGET.
+
+    - Empilement dans l'ordre de target_color_map
+    - Couleur définie par target_color_map
+    - Optionnellement filtré sur un filtre donné
+    """
+
+    if targettype_color_map is None:
+        raise ValueError("target_color_map must be provided")
+
+    data = df.copy()
+
+    # ----------------------------
+    # Sélection filtre (optionnelle)
+    # ----------------------------
+    if filter_col is not None and filter_value is not None:
+        data = data[data[filter_col] == filter_value]
+
+    # ----------------------------
+    # Axes
+    # ----------------------------
+    if axs is None:
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+    else:
+        ax = axs
+        fig = ax.figure
+
+    # ----------------------------
+    # Construction des stacks
+    # ----------------------------
+    values = []
+    colors = []
+    labels = []
+
+    for targettype, color in targettype_color_map.items():
+
+        sub = data[data[targettype_col] == targettype][param_col].dropna()
+
+        if len(sub) == 0:
+            continue
+        # calcul mean et sigma
+        mean = np.mean(sub.values)
+        median = np.median(sub.values)
+        sigma = np.std(sub.values,ddof=1)
+        q25, q75 = np.percentile(sub.values, [25, 75])
+        std_iqr = (q75 - q25) / 1.349
+
+        mad = np.median(np.abs(sub.values - median))
+        std_mad = 1.4826 * mad
+
+
+        values.append(sub.values)
+        colors.append(color)
+
+
+        text = (
+            f"{targettype}\n"
+            f"μ = {mean:.3g}\n"
+            f"med = {median:.3g}\n"
+            f"σ = {sigma:.3g}\n"
+            f"σ(IQR) = {std_iqr:.3g}\n"
+            f"σ(MAD) = {std_mad:.3g}"
+        )
+
+        #labels.append(f"{targettype} (μ={mean:.2f}, σ={sigma:.2f})")
+        labels.append(text)
+
+    # ----------------------------
+    # Histogramme stacké
+    # ----------------------------
+    ax.hist(
+        values,
+        bins=bins,
+        range=value_range,
+        stacked=stacked,
+        color=colors,
+        label=labels,
+        density=density,
+        edgecolor="none",
+
+    )
+
+    # ----------------------------
+    # Labels & titre
+    # ----------------------------
+    ax.set_xlabel(param_col)
+    ax.set_ylabel("Counts" if not density else "Density")
+
+    if title is None:
+        title = f"{param_col} distribution by TARGET TYPE"
+        if filter_value is not None:
+            title += f" ({filter_value})"
+
+    ax.set_title(title)
+
+    #ax.legend(
+    #    title=target_col,
+    #    fontsize=9,
+    #    ncol=2,
+    #    frameon=True,
+    #)
+    ax.legend(
+        title=target_col,
+        fontsize=9,
+        ncol=1,
+        frameon=True,
+        loc="upper left",                 # point d’ancrage de la légende
+        bbox_to_anchor=(1.01, 1.0),         # légèrement à droite du plot
+        borderaxespad=0.5,
+    )
+
+    ax.grid(True, alpha=0.3)
+    if ylogscale:
+        ax.set_yscale("log")
+
+    # ----------------------------
+
+    fig.tight_layout()
+
+    return fig, ax
+
 

@@ -4,10 +4,12 @@ from .libPlotsPWV import (
            get_filter_color,
            plot_atmparam_diff_hist_per_filter,
            plot_atmparam_diff_vs_time,
+           plot_atmparam_hist_bytargetsedtype,
            plot_atmparam_hist_per_filter,
            plot_atmparam_hist_stacked_bytarget,
            plot_atmparam_vs_time,
            plot_atmparam_vs_time_byfilter_bytarget,
+           plot_atmparam_vs_time_byfilter_bytargetsedtype,
            plot_dccd_chi2_histo_by_target_filter,
            plot_dccd_chi2_histo_by_target_filter_colorsedtype,
            plot_dccd_chi2_vs_time,
@@ -75,5 +77,7 @@ __all__ = ["get_astronomical_midnight",
            "plotcompare_atmparam_fgcm_vs_time",
            "plotcompare_atmparam_merra_vs_time",
            "plot_atmparam_vs_time_byfilter_bytarget",
-           "plot_atmparam_hist_stacked_bytarget"
+           "plot_atmparam_hist_stacked_bytarget",
+           "plot_atmparam_hist_bytargetsedtype",
+           "plot_atmparam_vs_time_byfilter_bytargetsedtype"
           ]
