@@ -1,7 +1,6 @@
 import json
 from typing import Any, Dict
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -17,8 +16,8 @@ ListOfParams = [
     "angle [deg]",
     "alpha_pix [pix]",
     "reso [nm]",
-    #"shift_x[pix]",
-    #"shift_y[pix]",
+    "shift_x [pix]",
+    "shift_y [pix]",
     'MEANFWHM',
     'PIXSHIFT',
     'PSF_REG',
@@ -91,6 +90,8 @@ class ParameterCutSelection:
         Name of the column containing filter information.
     target_col : str
         Name of the column containing target information.
+
+    Return the pandas dataframe id, flag
     """
     def __init__(
         self,
@@ -117,33 +118,32 @@ class ParameterCutSelection:
         """
         Returns a dataframe with (id, pass_all_cuts)
         """
-
-        # container of per row mask (and of all parameters mask)
+        # container for flags for each row
         mask_all = np.ones(len(self.df), dtype=bool)
 
-        # loop on parameters and its corresponding dictionnary bounds
+        # loop on parameters and its dictionnary of cuts bounds
         for param, per_filter in cuts.items():
             if param not in self.df.columns:
                 continue
 
-            #init container of per row mask (for that current parameters)
             param_mask = np.ones(len(self.df), dtype=bool)
 
-            #loop on each filter bounds for that param
+            # loop on keys (filter) dictionnary of cuts bounds
             for filt, bounds in per_filter.items():
-                # find the rows indexes corresponding to that filter
+
+                # mask to select rows for that filter
                 m = self.df[self.filter_col] == filt
-                # get the param value for that filt
+
+                #extract the params values for that filter
                 x = self.df.loc[m, param]
 
-                # update the param mask fot the rows of that fit for that param
+                # update the selection flag for the selected rows for that parameter
                 if bounds.get("min") is not None:
                     param_mask[m] &= x >= bounds["min"]
 
                 if bounds.get("max") is not None:
                     param_mask[m] &= x <= bounds["max"]
 
-            # update the global mask-and over all parameters
             mask_all &= param_mask
 
         return pd.DataFrame({
@@ -299,355 +299,6 @@ class ParameterCutSelection:
 
 
 
-
-#------------------------------------------------------
-class ParameterCutPlotting:
-    """_summary_
-
-    :return: _description_
-    :rtype: _type_
-    """
-    @staticmethod
-    def plot_selection_fraction_by_filter_old(
-        df_stat,
-        target_color_map,
-        filter_order=None,
-        figsize_per_filter=(6, 0.35),
-         annotate=False,
-        ):
-        """
-        Horizontal bar plot of selection fraction per TARGET, grouped by FILTER.
-        """
-
-        if filter_order is None:
-            filter_order = df_stat["FILTER"].unique()
-
-        n_filters = len(filter_order)
-
-        # figure height adapts to number of targets
-        n_targets = df_stat["TARGET"].nunique()
-        fig_height = max(4, figsize_per_filter[1] * n_targets)
-
-        fig, axes = plt.subplots(
-            1,
-            n_filters,
-            figsize=(figsize_per_filter[0] * n_filters, fig_height),
-            sharey=True,
-            )
-        if n_filters == 1:
-            axes = [axes]
-
-        target_order = (
-            df_stat
-            .groupby("TARGET")["n_total"]
-            .sum()
-            .sort_values(ascending=False)
-            .index
-        )
-
-        for ax, filt in zip(axes, filter_order):
-            df_f = df_stat[df_stat["FILTER"] == filt].copy()
-
-            # impose the same TARGET order for all filters
-            df_f = (
-                df_f
-                .set_index("TARGET")
-                .reindex(target_order)
-                .reset_index()
-            )
-
-            # sort targets for readability
-            #df_f = df_f.sort_values("frac_pass_all")
-
-            y = np.arange(len(df_f))
-
-            colors = [
-                target_color_map.get(t, "gray")
-                for t in df_f["TARGET"]
-            ]
-
-            ax.barh(
-                y,
-                df_f["frac_pass_all"],
-                color=colors,
-                edgecolor="black",
-                alpha=0.9,
-            )
-
-            ax.set_title(filt)
-            ax.set_xlim(0, 1.0)
-            ax.grid(axis="x", alpha=0.3)
-            ax.grid(axis="y", alpha=0.8)
-
-            ax.set_yticks(y)
-            ax.set_yticklabels(df_f["TARGET"])
-
-            ax.set_xlabel("Selected fraction")
-            ax.invert_yaxis()
-
-        axes[0].set_ylabel("TARGET")
-
-        plt.tight_layout()
-        return fig, axes
-
-    @staticmethod
-#-----------------
-    def plot_selection_fraction_by_filter(
-        df_stat,
-        target_color_map,
-        filter_order=None,
-        figsize_per_filter=(6, 0.4),
-        annotate=False,
-        ):
-        """
-        Horizontal bar plot of selection fraction per TARGET, grouped by FILTER.
-
-        Parameters
-        ----------
-        df_stat : pandas.DataFrame
-            Must contain columns:
-            TARGET, FILTER, n_total, n_pass_all, frac_pass_all
-        target_color_map : dict
-            Mapping TARGET -> color
-        filter_order : list, optional
-            Order of filters
-        annotate : bool, optional
-            If True, display n_pass_all/n_total on bars
-        """
-
-        if filter_order is None:
-            filter_order = df_stat["FILTER"].unique()
-
-        n_filters = len(filter_order)
-
-        n_targets = df_stat["TARGET"].nunique()
-        fig_height = max(4, figsize_per_filter[1] * n_targets)
-
-        fig, axes = plt.subplots(
-            1,
-            n_filters,
-            figsize=(figsize_per_filter[0] * n_filters, fig_height),
-            sharey=True,
-        )
-
-        if n_filters == 1:
-            axes = [axes]
-
-        target_order = (
-            df_stat
-            .groupby("TARGET")["n_total"]
-            .sum()
-            .sort_values(ascending=False)
-            .index
-        )
-
-        for ax, filt in zip(axes, filter_order):
-            df_f = df_stat[df_stat["FILTER"] == filt].copy()
-
-            df_f = (
-                df_f
-                .set_index("TARGET")
-                .reindex(target_order)
-                .reset_index()
-            )
-
-            y = np.arange(len(df_f))
-
-            colors = [
-                target_color_map.get(t, "gray")
-                for t in df_f["TARGET"]
-            ]
-
-            bars = ax.barh(
-                y,
-                df_f["frac_pass_all"],
-                color=colors,
-                edgecolor="black",
-                alpha=0.9,
-            )
-
-            # -------------------------
-            # Optional annotation
-            # -------------------------
-            if annotate:
-                for i, (frac, n_pass, n_tot) in enumerate(
-                    zip(
-                        df_f["frac_pass_all"],
-                        df_f["n_pass_all"],
-                        df_f["n_total"],
-                    )
-                ):
-                    if pd.notna(frac) and pd.notna(n_pass) and pd.notna(n_tot):
-                        label = f"{int(n_pass)}/{int(n_tot)}"
-
-                        # Position slightly to the right of the bar
-                        x_pos = min(frac + 0.02, 0.98)
-
-                        ax.text(
-                            x_pos,
-                            i,
-                            label,
-                            va="center",
-                            fontsize=12,fontweight="bold"
-                        )
-
-            ax.set_title(filt)
-            ax.set_xlim(0, 1.0)
-            ax.grid(axis="x", alpha=0.3)
-            ax.grid(axis="y", alpha=0.8)
-
-            ax.set_yticks(y)
-            ax.set_yticklabels(df_f["TARGET"])
-
-            ax.set_xlabel("Selected fraction")
-            ax.invert_yaxis()
-
-        axes[0].set_ylabel("TARGET")
-
-        plt.tight_layout()
-        return fig, axes
-
-#-----------------
-    @staticmethod
-    def plot_target_param_cuts_one_filter(
-        df,
-        target,
-        cuts,
-        filter_value=None,
-        target_color=None,
-        ):
-        """
-        Barplot montrant la fraction de sélection pour chaque paramètre
-        pour une TARGET donnée.
-        df : dataframe original
-        target : str, nom du target
-        cuts : dict, structure cuts[param][filter] = {'min':..,'max':..}
-        filter_value : str ou None, si on veut filtrer un filtre spécifique
-        target_color : couleur pour la barre
-        """
-
-        df_t = df[df["TARGET"] == target].copy()
-        if filter_value is not None:
-            df_t = df_t[df_t["FILTER"] == filter_value]
-
-        params = [p for p in cuts.keys() if p in df_t.columns]
-        results = []
-
-        for p in params:
-            # applique la coupure pour ce paramètre
-            if filter_value is not None:
-                minv = cuts[p][filter_value].get("min")
-                maxv = cuts[p][filter_value].get("max")
-            else:
-                # appliquer un "or" sur tous les filtres ?
-                # ici on prend le min/max de la première occurrence
-                minv = list(cuts[p].values())[0].get("min")
-                maxv = list(cuts[p].values())[0].get("max")
-
-            mask = pd.Series(True, index=df_t.index)
-            if minv is not None:
-                mask &= df_t[p] >= minv
-            if maxv is not None:
-                mask &= df_t[p] <= maxv
-            n_pass = mask.sum()
-            n_total = len(df_t)
-            frac_pass = n_pass / n_total if n_total > 0 else 0
-            results.append((p, n_pass, n_total, frac_pass))
-
-        df_res = pd.DataFrame(results, columns=["param","n_pass","n_total","frac_pass"])
-
-        # plot
-        fig, ax = plt.subplots(figsize=(max(6, len(params)*0.6),4))
-        ax.bar(df_res["param"], df_res["frac_pass"], color=target_color or "steelblue", edgecolor="black")
-        ax.set_ylim(0,1)
-        ax.set_ylabel("Fraction sélectionnée")
-        ax.set_xlabel("Paramètre")
-        ax.set_title(f"Target: {target}" + (f" | Filter: {filter_value}" if filter_value else ""))
-        ax.set_xticklabels(df_res["param"], rotation=45, ha="right")
-        ax.grid(axis="y", alpha=0.3)
-        ax.grid(axis="x", alpha=0.8)
-
-        plt.tight_layout()
-        return fig, df_res
-#-----------------------------------------------------------
-    @staticmethod
-    def plot_target_param_cuts_multi_filters(
-        df,
-        target,
-        cuts,
-        filter_order=None,
-        target_color="steelblue",
-        figsize_per_subplot=(16,3)
-        ):
-        """
-        Plot vertical barplots of fraction of selection per parameter
-        for a given TARGET, one subplot per filter (aligned x-axis).
-
-        df : dataframe original
-        target : str
-        cuts : dict, cuts[param][filter] = {'min':..,'max':..}
-        filter_order : list of filters to show
-        target_color : color of bars
-        figsize_per_subplot : tuple(width,height) for each subplot
-        """
-
-        # dataframe du target
-        df_t = df[df["TARGET"] == target].copy()
-
-        # si filter_order non fourni, on prend tous les filtres présents
-        if filter_order is None:
-            filter_order = df_t["FILTER"].unique()
-
-        n_filters = len(filter_order)
-        params = [p for p in cuts.keys() if p in df_t.columns]
-
-        fig, axes = plt.subplots(
-            n_filters,
-            1,
-            figsize=(figsize_per_subplot[0], figsize_per_subplot[1]*n_filters),
-            sharex=True
-        )
-
-        if n_filters == 1:
-            axes = [axes]
-
-        for ax, filt in zip(axes, filter_order):
-            df_f = df_t[df_t["FILTER"] == filt].copy()
-
-            results = []
-            for p in params:
-                if filt in cuts[p]:
-                    minv = cuts[p][filt].get("min")
-                    maxv = cuts[p][filt].get("max")
-                else:
-                    minv = None
-                    maxv = None
-
-                mask = pd.Series(True, index=df_f.index)
-                if minv is not None:
-                    mask &= df_f[p] >= minv
-                if maxv is not None:
-                    mask &= df_f[p] <= maxv
-
-                n_pass = mask.sum()
-                n_total = len(df_f)
-                frac_pass = n_pass / n_total if n_total > 0 else 0
-                results.append(frac_pass)
-
-            ax.bar(params, results, color=target_color, edgecolor="black")
-            ax.set_ylim(0,1)
-            ax.set_ylabel(f"{filt}")
-            ax.grid(axis="y", alpha=0.5)
-            ax.grid(axis="x", alpha=0.5)
-
-        axes[-1].set_xticklabels(params, rotation=45, ha="right")
-        axes[-1].set_xlabel("Parameter")
-        axes[0].set_title(f"Target: {target} : fraction of selected events", fontsize=14)
-
-        #fig.suptitle(f"Target: {target} : fraction of selected events", fontsize=14)
-        #plt.tight_layout(rect=[0,0,1,0.96])
-
-        return fig
 #------------------------------------------------------
 # Classes pour gérer les cuts : écriture, lecture, application, statistiques, plots
 #-----------------------------------------------------
