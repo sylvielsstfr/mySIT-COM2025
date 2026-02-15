@@ -393,3 +393,121 @@ def compute_atmparam_stats_per_filter(
 
     return df_stats.T
 
+#----
+def compute_all_performances_on_diffpwv_pwvrepinterp_pwvrepdiff(df):
+    """_summary_
+
+    Args:
+        df (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # statistics on PWV_ram-PWV_rum
+    df_pwvdiff = compute_atmparam_stats_per_filter(
+        df,
+        filter_col="FILTER",
+        param_col = "diff_PWV")
+
+    ## With PWV repeatability with time interpolation
+    ### Calculate Repeatability with time interpolation for Spectrogram
+    df = pwv_deviation_from_linear_interp_datetime(
+        df,
+        night_col="nightObs",
+        filter_col="FILTER",
+        target_col="TARGET",
+        time_col="Time",
+        pwv_col="PWV [mm]_ram",
+        suffix="repeatinterp_ram",
+        time_unit="min",
+    )
+    ### Calculate Repeatability with time interpolation for Spectrum
+    df = pwv_deviation_from_linear_interp_datetime(
+        df,
+        night_col="nightObs",
+        filter_col="FILTER",
+        target_col="TARGET",
+        time_col="Time",
+        pwv_col="PWV [mm]_rum",
+        suffix="repeatinterp_rum",
+        time_unit="min",
+    )
+    #### Process some columns format
+    df["dt_repeatinterp_ram"] = pd.to_timedelta(df["dt_repeatinterp_ram"])
+    df["dt_repeatinterp_rum"] = pd.to_timedelta(df["dt_repeatinterp_rum"])
+
+    df_pwv_repeatinterp_ram = compute_atmparam_stats_per_filter(
+        df,
+        filter_col="FILTER",
+        param_col = "PWV [mm]_ram_repeatinterp_ram")
+
+    df_pwv_repeatinterp_rum = compute_atmparam_stats_per_filter(
+        df,
+        filter_col="FILTER",
+        param_col = "PWV [mm]_rum_repeatinterp_rum")
+
+    df = df.dropna(subset=["PWV [mm]_ram_repeatinterp_ram"])
+    df = df.dropna(subset=["PWV [mm]_rum_repeatinterp_rum"])
+
+    ### PWV repeatability with PWV difference next-previous
+    #### Calculate PWV repeatability with PWV difference next-previous in Spectrogram
+    df = pwv_next_prev_difference_datetime(
+        df,
+        night_col="nightObs",
+        filter_col="FILTER",
+        target_col="TARGET",
+        time_col="Time",
+        pwv_col="PWV [mm]_ram",
+        suffix="repeatdiff_ram",
+        time_unit="min",
+    )
+
+    #### Calculate PWV repeatability with PWV difference next-previous  in Spectrum
+    df = pwv_next_prev_difference_datetime(
+        df,
+        night_col="nightObs",
+        filter_col="FILTER",
+        target_col="TARGET",
+        time_col="Time",
+        pwv_col="PWV [mm]_rum",
+        suffix="repeatdiff_rum",
+        time_unit="min",
+    )
+
+    ##### Process some columns format
+    df["dt_repeatdiff_ram"] = pd.to_timedelta(df["dt_repeatdiff_ram"])
+    df["dt_repeatdiff_rum"] = pd.to_timedelta(df["dt_repeatdiff_rum"])
+    df["dt_repeatdiff_ram_min"] = df["dt_repeatdiff_ram"].dt.total_seconds() / 60
+    df["dt_repeatdiff_rum_min"] = df["dt_repeatdiff_rum"].dt.total_seconds() / 60
+
+
+    df_pwv_repeatdiff_ram = compute_atmparam_stats_per_filter(
+        df,
+        filter_col="FILTER",
+        param_col = "PWV [mm]_ram_repeatdiff_ram")
+    df_pwv_repeatdiff_rum = compute_atmparam_stats_per_filter(
+        df,
+        filter_col="FILTER",
+        param_col = "PWV [mm]_rum_repeatdiff_rum")
+
+    ### Combine statistics of histograms
+    # 1. define suffixes order and name
+    suffixes = ['_diff', '_repinterp_ram', '_repinterp_rum', '_repdiff_ram', '_repdiff_rum']
+
+    # 2. combine the stat dataframe un the same order as the suffixes
+    all_df_stats = [ df_pwvdiff, df_pwv_repeatinterp_ram , df_pwv_repeatinterp_rum, df_pwv_repeatdiff_ram,df_pwv_repeatdiff_rum]
+
+    # 3. Dictionnary suffix -> dataframe
+    df_dict = dict(zip(suffixes, all_df_stats))
+
+    # 4.  concatenate horizontally
+    df_final = pd.concat(df_dict.values(), axis=1)
+
+    # 5. Rename columns by adding suffixes
+    # On boucle sur le dictionnaire pour construire les nouveaux noms
+    new_columns = []
+    for suffix, df in df_dict.items():
+        new_columns.extend([f"{col}{suffix}" for col in df.columns])
+
+    df_final.columns = new_columns
+    return df_final.T, df

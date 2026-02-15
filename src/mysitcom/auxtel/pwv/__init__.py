@@ -32,6 +32,7 @@ from .libPlotsPWV import (
            summarize_dccd_chi2,
 )
 from .libProcessDataPWV import (
+           compute_all_performances_on_diffpwv_pwvrepinterp_pwvrepdiff,
            compute_atmparam_stats_per_filter,
            normalize_column_data_bytarget_byfilter,
            normalize_column_data_bytarget_byfilter_bymethod,
@@ -79,5 +80,6 @@ __all__ = ["get_astronomical_midnight",
            "plot_atmparam_vs_time_byfilter_bytarget",
            "plot_atmparam_hist_stacked_bytarget",
            "plot_atmparam_hist_bytargetsedtype",
-           "plot_atmparam_vs_time_byfilter_bytargetsedtype"
+           "plot_atmparam_vs_time_byfilter_bytargetsedtype",
+           "compute_all_performances_on_diffpwv_pwvrepinterp_pwvrepdiff"
           ]
