@@ -189,7 +189,7 @@ SIGMA_PWV_REPEAT = 0.10
 FACTORERR_PWV_REPEAT = 10.
 
 # FGCM file
-fimename_fgcm = "../../2025-12-04-FGCM/data_FGCM04_ReadMergeAtmParams/fgcm_rdp2_prep_cLSSTCam_runs_DRP_20250417-20251214_DM-53545andDM-53697.csv"
+filename_fgcm = "../../2025-12-04-FGCM/data_FGCM04_ReadMergeAtmParams/fgcm_rdp2_prep_cLSSTCam_runs_DRP_20250417-20251214_DM-53545andDM-53697.csv"
 
 # Merra2 pathname
 
