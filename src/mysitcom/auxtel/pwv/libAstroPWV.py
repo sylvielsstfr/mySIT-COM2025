@@ -1,10 +1,11 @@
 """ Tools for astro """
-from astropy.time import Time
 from datetime import datetime
-from astropy.coordinates import EarthLocation, AltAz, get_sun
-import numpy as np
+
 import astropy.units as u
+import numpy as np
 import pandas as pd
+from astropy.coordinates import AltAz, EarthLocation, get_sun
+from astropy.time import Time
 
 # Observation site
 site_lsst = EarthLocation.of_site("Cerro Pachon")
@@ -13,7 +14,7 @@ site_lsst = EarthLocation.of_site("Cerro Pachon")
 def get_astronomical_midnight(location: EarthLocation, date, n_grid=1000):
     """
     Transit inférieur du Soleil (min altitude) pour date & site avec astropy pur.
-    
+
     Parameters
     ----------
     location : EarthLocation
@@ -22,7 +23,7 @@ def get_astronomical_midnight(location: EarthLocation, date, n_grid=1000):
         Date de référence (ex: "2025-09-23")
     n_grid : int
         Nombre de points sur 24h à évaluer pour estimer le minimum
-    
+
     Returns
     -------
     Time
@@ -38,23 +39,23 @@ def get_astronomical_midnight(location: EarthLocation, date, n_grid=1000):
         t = Time(date, scale="utc")
     else:
         t = date
-    
+
     date = t + 1 * u.day
-    
+
     # Définir intervalle de ~24h autour de la date
     t0 = date - 12  * u.hour
     t1 = date + 12  * u.hour
-    
+
     # Grille de temps
     times = Time(np.linspace(t0.jd, t1.jd, n_grid), format='jd', scale='utc')
-    
+
     # Position du Soleil
     sun = get_sun(times)
-    
+
     # AltAz
     aa = AltAz(obstime=times, location=location)
     sun_altaz = sun.transform_to(aa)
-    
+
     # Trouver index du min
     idx_min = np.argmin(sun_altaz.alt)
     t_min = times[idx_min]
@@ -69,7 +70,7 @@ def GetNightMidnightsDict(df,nightobs_col = "nightObs"):
     output:
       the dict of midnights
     """
-    
+
     Dt = pd.Timedelta(minutes=30)
     d = {}
     list_of_nightobs = df[nightobs_col].unique()
@@ -77,26 +78,26 @@ def GetNightMidnightsDict(df,nightobs_col = "nightObs"):
         nightstr = datetime.strptime(str(nightobs), "%Y%m%d")
         midnight = get_astronomical_midnight(site_lsst, nightstr.date())
         d[nightobs] = midnight
-        
+
     return d
 
 
-#----------------------------------------------------------------
-def GetNightBoundariesDict(df,nightobs_col = "nightObs"):
-    """
-    input:
-      df the dataframe for spectroscopy summary results
-    output:
-      the dict of night boudaries
-    """
-    
+
+def GetNightBoundariesDict(df, nightobs_col="nightObs"):
     Dt = pd.Timedelta(minutes=30)
-    d = {}
-    list_of_nightobs = df[nightobs_col].unique()
-    for nightobs in list_of_nightobs:
-        sel_flag = df[nightobs_col]== nightobs
-        df_night = df[sel_flag]
-        tmin = df_night["Time"].min()-Dt
-        tmax = df_night["Time"].max()+Dt
-        d[nightobs] = (tmin,tmax)
-    return d
+
+    grouped = df.groupby(nightobs_col)["Time"].agg(["min", "max"])
+
+    # Optionnel : alerte si span > 2 jours
+    span = grouped["max"] - grouped["min"]
+    bad = span > pd.Timedelta(days=2)
+    if bad.any():
+        print("⚠️ Detected problem for :", grouped[bad].index.tolist())
+
+    grouped["min"] -= Dt
+    grouped["max"] += Dt
+
+    return {
+        night: (row["min"], row["max"])
+        for night, row in grouped.iterrows()
+    }

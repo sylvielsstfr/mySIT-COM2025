@@ -29,8 +29,8 @@ import astropy.units as u
 # Select run version tag to be used in EXTR_viewSpectractor notebooks 
 #version_run = "run_v7"
 #version_run = "run_v11" # before v12
-#version_run = "run2026_v01" # data 2025 # from Jeremy
-version_run = "run2026_v02a_cr" # data 2025 from Corentin
+version_run = "run2026_v01" # data 2025 # from Jeremy
+#version_run = "run2026_v02a_cr" # data 2025 from Corentin
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
