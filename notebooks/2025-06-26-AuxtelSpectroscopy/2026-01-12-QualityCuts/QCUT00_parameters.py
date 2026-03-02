@@ -3,7 +3,7 @@
 # affiliation : IJCLab/IN2P3/CNRS
 # Creation date : 2026-01-12
 # last update : 2026-01-12 : run2026_v01
-# last update : 2026-02-20 : Corentin files file
+# last update : 2026-02-20 : Corentin files
 
 # Runs from Corentin Ravoux added 2026-02-19
 #"run2026_v02a_cr : 'auxtel_atmosphere_feb26_gaiaspec_calspectarget_calspecthroughput.npy'
@@ -93,7 +93,7 @@ extractedfilesdict = {
 
 
 # path of output files Spectractor parameters Extracted from Butler and merged with exposure list
-mergedextractedfilesdict = {
+mergedextractedfilesdict_bad = {
     # /repo/main
     "run2026_v01":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_202311_v3.2.1_fixA2fixA1_RobustFit_newThroughputs_merged.parquet.gz",
     "run2026_v02a_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_calspectarget_calspecthroughput_merged.npy",
@@ -104,6 +104,23 @@ mergedextractedfilesdict = {
     "run2026_v02f_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr_merged.npy",
     "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr_merged.npy"
 }
+
+
+mergedextractedfilesdict = {
+    "run2026_v01":"../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_202311_v3.2.1_fixA2fixA1_RobustFit_newThroughputs_merged.parquet.gz",
+    "run2026_v02a_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_calspectarget_calspecthroughput.npy",
+    "run2026_v02b_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23.npy",
+    "run2026_v02c_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_calspecgaiatarget_calspecthroughput.npy",
+    "run2026_v02d_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput.npy",
+    "run2026_v02e_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr.npy",
+    "run2026_v02f_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr.npy",
+    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy"
+}
+
+
+
+
+
 
 
 atmfilename = mergedextractedfilesdict[version_run]

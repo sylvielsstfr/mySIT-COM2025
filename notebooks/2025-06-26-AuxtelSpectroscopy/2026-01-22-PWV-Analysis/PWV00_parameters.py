@@ -4,7 +4,7 @@
 # Creation date : 2026-01-22
 # last update : 2026-01-22 : run2026_v01
 # last update : 2026-02-07 : add FGCM file
-# last update : 2026-02-19 : Corentin files file
+# last update : 2026-02-19 : Corentin files 
 
 # Runs from Corentin Ravoux added 2026-02-19
 #"run2026_v02a_cr : 'auxtel_atmosphere_feb26_gaiaspec_calspectarget_calspecthroughput.npy'
