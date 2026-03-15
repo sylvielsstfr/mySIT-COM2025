@@ -4,6 +4,7 @@
 # Creation date : 2026-01-12
 # last update : 2026-01-12 : run2026_v01
 # last update : 2026-02-20 : Corentin files
+# last update : 2026-03-15 : Corentin files cancatenated 
 
 # Runs from Corentin Ravoux added 2026-02-19
 #"run2026_v02a_cr : 'auxtel_atmosphere_feb26_gaiaspec_calspectarget_calspecthroughput.npy'
@@ -32,11 +33,15 @@ import astropy.units as u
 #version_run = "run2026_v01" # data 2025 # from Jeremy
 #version_run = "run2026_v02a_cr" # data 2025 from Corentin
 #version_run = "run2026_v02b_cr" # data 2025 from Corentin
-version_run = "run2026_v02c_cr" # data 2025 from Corentin
+#version_run = "run2026_v02c_cr" # data 2025 from Corentin
 #version_run = "run2026_v02d_cr" # data 2025 from Corentin
 #version_run = "run2026_v02e_cr" # data 2025 from Corentin
 #version_run = "run2026_v02f_cr" # data 2025 from Corentin
 #version_run = "run2026_v02g_cr" # data 2025 from Corentin
+#version_run = "run2026_v02a_cr" # data 2025 from Corentin
+#version_run = "run2026_v02b_cr_run2026_v02d_cr"
+version_run = "run2026_v02d_cr"
+
 # Configuration for the butler repo associated to the version_run
 
 map_run_butler_embargo = { 
@@ -48,6 +53,8 @@ map_run_butler_embargo = {
                             "run2026_v02e_cr": False,
                             "run2026_v02f_cr": False,
                             "run2026_v02g_cr": False,
+                            "run2026_v02b_cr_run2026_v02c_cr" : False,
+                            "run2026_v02b_cr_run2026_v02d_cr" : False
                          }
 
 FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
@@ -67,7 +74,9 @@ legendtag = {"run2026_v01" : "v3.2.1 (/repo/main, w_2026_01,ptc)",
               "run2026_v02d_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput",
               "run2026_v02e_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr",
               "run2026_v02f_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr",
-              "run2026_v02g_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr"
+              "run2026_v02g_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr",
+              "run2026_v02b_cr_run2026_v02c_cr" : "concat(cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23,cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput)",
+"run2026_v02b_cr_run2026_v02d_cr" : "concat(cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23,cr_feb26_gaiaspec_gaiatarget_calspecthroughput)"            
             }
 
 # List of user collection in butler  where the results of spectractor run are
@@ -80,7 +89,9 @@ butlerusercollectiondict = {
     "run2026_v02d_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput",
     "run2026_v02e_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr",
     "run2026_v02f_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr",
-    "run2026_v02g_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr"   
+    "run2026_v02g_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr",
+    "run2026_v02b_cr_run2026_v02c_cr": "cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23-cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput",
+    "run2026_v02b_cr_run2026_v02d_cr" : "cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23-cr_feb26_gaiaspec_gaiatarget_calspecthroughput"
 }
 
 
@@ -94,7 +105,9 @@ extractedfilesdict = {
     "run2026_v02d_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput.npy",
     "run2026_v02e_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr.npy",
     "run2026_v02f_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr.npy",
-    "run2026_v02g_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy"
+    "run2026_v02g_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy",
+    "run2026_v02b_cr_run2026_v02c_cr": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02c_cr.npy",
+    "run2026_v02b_cr_run2026_v02d_cr": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02d_cr.npy"
 }
 
 
@@ -120,8 +133,11 @@ mergedextractedfilesdict = {
     "run2026_v02d_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput.npy",
     "run2026_v02e_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr.npy",
     "run2026_v02f_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr.npy",
-    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy"
+    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy",
+    "run2026_v02b_cr_run2026_v02c_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02c_cr_merged.npy",
+    "run2026_v02b_cr_run2026_v02d_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02d_cr_merged.npy"	   
 }
+
 
 
 
