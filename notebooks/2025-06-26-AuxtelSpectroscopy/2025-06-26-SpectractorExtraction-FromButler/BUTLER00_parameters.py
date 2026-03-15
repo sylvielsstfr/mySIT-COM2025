@@ -130,6 +130,8 @@ extractedfilesdict = {
     "run2026_v02g_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy"
 }
 
+
+
 # path of output files Spectractor parameters Extracted from Butler and merged with exposure list from butler registry
 mergedextractedfilesdict = {
     # /repo/main
@@ -156,8 +158,9 @@ mergedextractedfilesdict = {
     "run2026_v02d_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_merged.npy",
     "run2026_v02e_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr_merged.npy",
     "run2026_v02f_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr_merged.npy",
-    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr_merged.npy"
-    
+    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr_merged.npy",
+ "run2026_v02b_cr_run2026_v02c_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02c_cr_merged.npy",
+ "run2026_v02b_cr_run2026_v02d_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02d_cr_merged.npy"	   
 }
 
 mergedtofindmissings = {
@@ -172,6 +175,13 @@ mergedtofindmissings = {
     "run_v11": "None",
     "run_v12": "None",
     "run2026_v01" : "None",
+    "run2026_v02a_cr" : "None",
+    "run2026_v02b_cr" : "None",
+    "run2026_v02c_cr" : "None",
+    "run2026_v02d_cr" : "None",
+    "run2026_v02e_cr" : "None",
+    "run2026_v02f_cr" : "None",
+    "run2026_v02g_cr" : "None"
 }
 
 def DumpConfig():
