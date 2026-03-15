@@ -16,9 +16,9 @@ from pandas.api.types import is_datetime64_any_dtype
 
 FILTER_COLORS = {
     "empty"       : "tab:gray",
-    "BG40_65mm_1" : "darkblue",
-    "OG550_65mm_1": "darkred",
-    "FELH0600"    : "darkpurple",
+    "BG40_65mm_1" : "blue",
+    "OG550_65mm_1": "red",
+    "FELH0600"    : "orange",
 }
 
 DEFAULT_FILTER_COLOR = "purple"
