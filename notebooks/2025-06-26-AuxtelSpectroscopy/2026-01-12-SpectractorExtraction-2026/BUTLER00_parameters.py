@@ -41,8 +41,6 @@ map_run_butler_embargo = {
                             "run2026_v02e_cr": False,
                             "run2026_v02f_cr": False,
                             "run2026_v02g_cr": False,
-                            "run2026_v02b_cr_run2026_v02c_cr" : False,
-                            "run2026_v02b_cr_run2026_v02d_cr" : False
                          }
 
 FLAG_REPO_EMBARGO = map_run_butler_embargo[version_run]
@@ -59,9 +57,7 @@ legendtag = {"run_v1" : "v3.1.0 (/repo/main, w_2025_25,empty,gain)","run_v2":"v3
 "run2026_v02d_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput",
 "run2026_v02e_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr",
 "run2026_v02f_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr",
-"run2026_v02g_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr",
-"run2026_v02b_cr_run2026_v02c_cr" : "concat(cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23,cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput)",
-"run2026_v02b_cr_run2026_v02d_cr" : "concat(cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23,cr_feb26_gaiaspec_gaiatarget_calspecthroughput)",            
+"run2026_v02g_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr"
 }
 
 
@@ -97,9 +93,7 @@ butlerusercollectiondict = {
     "run2026_v02d_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput",
     "run2026_v02e_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr",
     "run2026_v02f_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr",
-    "run2026_v02g_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr",
-    "run2026_v02b_cr_run2026_v02c_cr": "cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23-cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput",
-     "run2026_v02b_cr_run2026_v02d_cr" : "cr_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23-cr_feb26_gaiaspec_gaiatarget_calspecthroughput"
+    "run2026_v02g_cr" : "cr_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr"   
 }
 
 
@@ -126,14 +120,6 @@ extractedfilesdict = {
     # run v12 : Dec 12 2025
     "run_v12" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro/auxtel_run_u_dagoret_auxtel_run_20251210_w_2025_49_spectractorv321testccdgains_all_main_2025data_ptc_holoallfilt_a_v1.npy",
     # /repo/main
-    #"run2026_v01": "../../../../../fromjeremy/holo_202601/auxtel_atmosphere_202311_v3.2.1_fixA2fixA1_RobustFit_newThroughputs.parquet.gz",
-    #"run2026_v02a_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_calspectarget_calspecthroughput.npy",
-    #"run2026_v02b_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23.npy",
-    #"run2026_v02c_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_calspecgaiatarget_calspecthroughput.npy",
-    #"run2026_v02d_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput.npy",
-    #"run2026_v02e_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr.npy",
-    #"run2026_v02f_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr.npy",
-    #"run2026_v02g_cr" : "../../../../../fromcorentin/holo_202602/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy"
     "run2026_v01": "../../../../../fromjeremy/holo_202601/auxtel_atmosphere_202311_v3.2.1_fixA2fixA1_RobustFit_newThroughputs.parquet.gz",
     "run2026_v02a_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_calspectarget_calspecthroughput.npy",
     "run2026_v02b_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_calspecgaiatarget_calspecthroughput_preoct23.npy",
@@ -141,9 +127,7 @@ extractedfilesdict = {
     "run2026_v02d_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput.npy",
     "run2026_v02e_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr.npy",
     "run2026_v02f_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr.npy",
-    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy",
-    "run2026_v02b_cr_run2026_v02c_cr": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02c_cr.npy",
-    "run2026_v02b_cr_run2026_v02d_cr": "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02d_cr.npy"
+    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_from_corentin/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr.npy"
 }
 
 
@@ -174,9 +158,8 @@ mergedextractedfilesdict = {
     "run2026_v02d_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_merged.npy",
     "run2026_v02e_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m1corr_merged.npy",
     "run2026_v02f_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m2corr_merged.npy",
-    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr_merged.npy",
- "run2026_v02b_cr_run2026_v02c_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02c_cr_merged.npy",
- "run2026_v02b_cr_run2026_v02d_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02d_cr_merged.npy"	   
+    "run2026_v02g_cr" : "../2025-06-26-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_gaiatarget_calspecthroughput_m3corr_merged.npy"
+    
 }
 
 mergedtofindmissings = {
