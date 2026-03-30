@@ -1,8 +1,10 @@
-# 2026-03-19 — PWV Seasonal Analysis of AuxTel/Spectractor Data
+# 2PWV Seasonal variation Analysis of AuxTel/Spectractor Data
 
 **Author :** Sylvie Dagoret-Campagne — IJCLab/IN2P3/CNRS  
 **Run version :** `run2026_v02b_cr_run2026_v02d_cr`  
-**Kernel :** `conda_py313`
+**Kernel :** `conda_py313`  
+**Creation date:** 2026-03-19
+**Last updated :** 2026-03-30
 
 ---
 
@@ -10,15 +12,16 @@
 
 This directory contains a series of Jupyter notebooks that analyse the
 **Precipitable Water Vapour (PWV)** measured by the AuxTel telescope at
-Cerro Pachon using the
-[Spectractor](https://github.com/LSSTDESC/Spectractor) pipeline.  The
-analysis covers the full multi-year dataset from 2021 to early 2026,
+Cerro Pachón using the
+[Spectractor](https://github.com/LSSTDESC/Spectractor) pipeline.
+The analysis covers the full multi-year dataset from 2021 to early 2026,
 with a focus on:
 
 - seasonal and annual variability of PWV,
 - quality-cut selection efficiency as a function of filter and epoch,
-- temporal coherence of PWV fluctuations on intra-night timescales,
-- cross-validation of AuxTel PWV against MERRA-2 reanalysis data.
+- temporal coherence of PWV fluctuations from intra-night to multi-year timescales,
+- cross-validation of AuxTel PWV against MERRA-2 reanalysis data,
+- simulation of the resulting atmospheric transparency spectrum as a function of season.
 
 The notebooks share a common configuration file (`PWV00_parameters.py`)
 and rely on quality-cut JSON files stored in `data_PWV01seas/`.
@@ -29,21 +32,40 @@ and rely on quality-cut JSON files stored in `data_PWV01seas/`.
 
 ```
 .
-├── PWV00_parameters.py                    # Shared configuration (run version, file paths, cut parameters)
-├── PWV00_SpectraCountTable.ipynb          # Spectra count & selection efficiency table
-├── PWV01seasons_allfilters-withSelectionCuts.ipynb   # PWV time series & seasonal overview
-├── PWV02seasons_SineFit_PublicationFigures.ipynb     # Sinusoidal fit & publication figures
-├── PWV02_section12_seasonal_stats.py      # Helper script: seasonal statistics (to be pasted into PWV02)
-├── PWV03_TwoPoint_TemporalCorrelation_separateFilters.ipynb  # Two-point temporal correlation
-├── PWV04compMerra2_allfilters-withSelectionCuts.ipynb        # AuxTel vs MERRA-2 cross-validation
-├── data_PWV01seas/                        # Quality-cut JSON files and output tables
-│   ├── cuts_finaldecision.json            # Standard quality cuts
-│   ├── cuts_loose_finaldecision.json      # Loose quality cuts
-│   └── cuts_tight_finaldecision.json      # Tight quality cuts
-├── figs_PWV01seas/                        # Figures produced by PWV01
-├── figs_PWV02seas/                        # Figures produced by PWV02
-├── figs_PWV03corr/                        # Figures produced by PWV03
-└── figs_PWV04merra/                       # Figures produced by PWV04
+├── PWV00_parameters.py                                          # Shared configuration
+├── PWV00_SpectraCountTable.ipynb                                # Spectra count & selection efficiency
+│
+├── PWV01seasons_allfilters-withSelectionCuts.ipynb              # PWV time series & seasonal overview
+│
+├── PWV02_section12_seasonal_stats.py                            # Helper script: seasonal statistics
+├── PWV02seasons_SineFit_PublicationFigures.ipynb                # Sinusoidal seasonal fit
+├── PWV02seasons_GPFit_PublicationFigures.ipynb                  # Gaussian Process seasonal fit
+│
+├── PWV03_TwoPoint_TemporalCorrelation_separateFilters.ipynb     # Intra-night DCF (binned estimator)
+├── PWV03_TwoPoint_longscale.ipynb                               # Multi-day DCF (binned estimator)
+├── PWV03b_TwoPoint_StructureFunction_separateFilters.ipynb      # DCF with noise-floor correction
+├── PWV03c_TwoPoint_TemporalCorrelation_separateFilters_pyzdcf.ipynb  # Intra-night DCF (pyzdcf)
+├── PWV03c_TwoPoint_longscale_pyzdcf.ipynb                       # Multi-day DCF (pyzdcf)
+├── PWV03d_TwoPoint_TemporalCorrelation_separateFilters_sylvie.ipynb  # Intra-night DCF (Sylvie's estimator)
+├── PWV03d_TwoPoint_longscale_sylvie.ipynb                       # Multi-day DCF (Sylvie's estimator)
+│
+├── PWV04compMerra2_allfilters-withSelectionCuts.ipynb           # AuxTel vs MERRA-2 cross-validation
+│
+├── PWV05simulateSeasonalTransparency_PublicationFigures.ipynb   # Seasonal transparency simulation
+│
+├── data_PWV01seas/          # Quality-cut JSON files and output tables
+│   ├── cuts_finaldecision.json
+│   ├── cuts_loose_finaldecision.json
+│   └── cuts_tight_finaldecision.json
+├── data_pyzdcf/             # pyzdcf intermediate output files
+├── figs_PWV01seas/          # Figures from PWV01
+├── figs_PWV02gp/            # Figures from PWV02 GP
+├── figs_PWV02seas/          # Figures from PWV02 sine
+├── figs_PWV03corr/          # Figures from PWV03 (intra-night)
+├── figs_PWV03dcorr/         # Figures from PWV03b (structure function)
+├── figs_PWV03longscale/     # Figures from PWV03 long-scale variants
+├── figs_PWV04merra/         # Figures from PWV04
+└── figs_PWV05seas/          # Figures from PWV05
 ```
 
 ---
@@ -57,9 +79,9 @@ Central configuration module imported by all notebooks.  It defines:
 | `version_run` | Active run tag (currently `run2026_v02b_cr_run2026_v02d_cr`) |
 | `extractedfilesdict` | Map from run tag to the `.npy` / `.parquet.gz` data file |
 | `mergedextractedfilesdict` | Map to merged (butler + exposure list) data files |
-| `PWV_FILTER_LIST` | Filters used for PWV analysis: `empty`, `OG550_65mm_1`, `SDSSr`, `FELH0600` |
+| `PWV_FILTER_LIST` | Filters used for PWV analysis: `empty`, `OG550_65mm_1`, `FELH0600` |
 | `DATETIME_COLLIMATOR` | Collimator installation date (2023-09-30); used to split epochs |
-| `getSelectionCutforPWV()` | Legacy function for basic chi²/D2CCD/EXPTIME cuts |
+| `getSelectionCutforPWV()` | Legacy function for basic χ²/D2CCD/EXPTIME cuts |
 
 ---
 
@@ -68,119 +90,142 @@ Central configuration module imported by all notebooks.  It defines:
 ### `PWV00_SpectraCountTable.ipynb` — Spectra count & selection efficiency
 
 Produces a comprehensive **selection efficiency table** for the full
-AuxTel/Spectractor dataset.  For every combination of:
+AuxTel/Spectractor dataset.  For every combination of epoch (full /
+post-collimator), filter subset, and cut level (none / loose / standard /
+tight), the notebook computes N_total, N_selected, and
+ε = N_selected / N_total (%).
 
-- **Epoch** : full dataset vs. post-collimator only (after 2023-09-30),
-- **Filter subset** : all PWV filters / `empty` only / `OG550_65mm_1` only,
-- **Cut level** : no cuts / loose / standard / tight,
-
-the notebook computes the number of spectra before cuts (*N*_total),
-the number surviving the cuts (*N*_selected), and the selection efficiency
-ε = *N*_selected / *N*_total (%).
-
-**Outputs:**
-- Styled pandas DataFrame with colour-coded efficiency (green / yellow / red),
-- Pivot efficiency matrix with `RdYlGn` gradient,
-- LaTeX `longtable` saved to `data_PWV01seas/table_spectra_selection_efficiency_<run>.tex`.
+**Outputs:** styled DataFrame, pivot matrix with `RdYlGn` gradient, LaTeX
+`longtable` → `data_PWV01seas/table_spectra_selection_efficiency_<run>.tex`.
 
 ---
 
 ### `PWV01seasons_allfilters-withSelectionCuts.ipynb` — PWV time series & seasonal overview
 
-Exploratory notebook providing a broad overview of the PWV dataset.  It loads
-the Spectractor output, applies the quality cuts (selectable via flags), and
-produces:
-
-- PWV vs. time scatter plots (all filters, colour-coded),
-- nightly bar charts of spectra counts,
-- D2CCD and χ² diagnostic plots vs. time and by filter/target,
-- histograms of PWV, diffPWV, D2CCD and χ² before and after cuts,
-- comparison of PWV distributions with and without the collimator epoch split.
-
-The notebook saves intermediate cut-flag DataFrames to `data_PWV01seas/` for
-reuse by downstream notebooks (PWV02–PWV04).
+Exploratory notebook providing a broad overview of the PWV dataset after
+quality cuts.  It produces PWV vs. time scatter plots, nightly counts,
+D2CCD / χ² diagnostics, histograms, and saves intermediate cut-flag
+DataFrames to `data_PWV01seas/` for reuse by PWV02–PWV05.
 
 **Figures saved to:** `figs_PWV01seas/`
 
 ---
 
-### `PWV02seasons_SineFit_PublicationFigures.ipynb` — Sinusoidal fit & publication figures
+### `PWV02seasons_SineFit_PublicationFigures.ipynb` — Sinusoidal seasonal fit
 
-Focuses on the **annual PWV cycle** at Cerro Pachon.  After applying quality
-cuts (standard or tight), the notebook:
-
-1. Fits a sinusoidal model with a free period close to one year to the PWV time
-   series on the MJD axis:
-   PWV(t) = A · sin(2π t / T + φ) + C.
-2. Produces a **full timeline** panel (all years, with fit overlay) and a
-   **year-folded (phase) panel** (Jan → Dec, one colour per year).
-3. Computes a **Lomb–Scargle periodogram** to provide independent statistical
-   evidence for the dominant annual period.
-4. Generates a **seasonal statistics table** (Summer DJF / Autumn MAM /
-   Winter JJA / Spring SON) including N, mean, median, std, weighted mean and
-   weighted std for each Southern-Hemisphere season.  The table is exported as
-   LaTeX.
-
-All figures are publication-quality (serif fonts, 150 dpi, GridSpec layout)
-and saved as PDF.
+Fits a **pure sinusoidal model** (A sin(2π t / T + φ) + C, period free near
+one year) to the full PWV time series and produces publication-quality figures:
+full timeline with fit overlay, year-folded phase plot, Lomb–Scargle
+periodogram, and a LaTeX seasonal statistics table (N, mean, median, std,
+weighted mean and weighted std for Summer / Autumn / Winter / Spring in the
+Southern-Hemisphere convention).
 
 **Figures saved to:** `figs_PWV02seas/`
 
 ---
 
-### `PWV02_section12_seasonal_stats.py` — Helper: seasonal statistics
+### `PWV02seasons_GPFit_PublicationFigures.ipynb` — Gaussian Process seasonal fit
 
-Standalone Python script (not a notebook) intended to be **pasted as two
-Jupyter cells** at the end of `PWV02`.  It computes per-season summary
-statistics (N, mean, median, std, weighted mean and weighted std) using the
-Southern-Hemisphere season convention (DJF = Summer, MAM = Autumn, JJA =
-Winter, SON = Spring) and exports the result as a LaTeX table.
+Fits a **Gaussian Process regression** to the PWV time series using a
+composite kernel (RBF + periodic + white noise), providing a non-parametric
+characterisation of the annual cycle.  Produces the same set of publication
+figures as the sine-fit notebook (full timeline, year-folded plot, GP
+uncertainty envelope) together with a comparison of the GP posterior against
+the sinusoidal fit.  In the final version the purely sinusoidal model is
+preferred; the GP fit serves as a consistency check.
+
+**Figures saved to:** `figs_PWV02gp/`
 
 ---
 
-### `PWV03_TwoPoint_TemporalCorrelation_separateFilters.ipynb` — Two-point temporal correlation
+### `PWV02_section12_seasonal_stats.py` — Helper: seasonal statistics
 
-Quantifies the **temporal coherence** of intra-night PWV fluctuations on
-timescales from ~1 minute to ~10 hours, for each filter separately.
+Standalone Python script (not a notebook) intended to be pasted as Jupyter
+cells at the end of any PWV02 notebook.  It computes per-season summary
+statistics (Southern-Hemisphere convention: DJF = Summer, MAM = Autumn,
+JJA = Winter, SON = Spring) and exports the result as a LaTeX table.
 
-The analysis is based on the **two-point temporal correlation function**:
+---
 
-C(Δt) = ⟨δPWV(t) δPWV(t+Δt)⟩ / ⟨δPWV²⟩
+### Two-point temporal correlation — family of PWV03 notebooks
 
-where δPWV(t) is the nightly-mean-subtracted PWV.  Pairs of observations
-within the same night are formed, binned in logarithmically-spaced lag bins,
-and averaged.  An exponential model C(Δt) = A exp(−Δt/τ) is fitted to
-extract the **decorrelation timescale τ** for each filter.
+This family of seven notebooks measures the **two-point temporal correlation
+function (DCF)** of PWV fluctuations at Cerro Pachón.  Three independent
+estimators are implemented, each in an *intra-night* variant (lags up to ~10 h,
+with per-night mean subtraction) and a *long-timescale* variant (lags from 1 min
+to ~500 days, without mean subtraction):
 
-This timescale is a key input for photometric calibration strategies: it
-sets the window over which a single PWV measurement can be considered
-representative of the atmospheric conditions for a nearby exposure.
+| Notebook | Timescale | Estimator |
+|----------|-----------|-----------|
+| `PWV03_TwoPoint_TemporalCorrelation_separateFilters` | intra-night | direct binned pairs |
+| `PWV03_TwoPoint_longscale` | multi-day | direct binned pairs |
+| `PWV03b_TwoPoint_StructureFunction_separateFilters` | intra-night | binned + noise-floor correction |
+| `PWV03c_TwoPoint_TemporalCorrelation_separateFilters_pyzdcf` | intra-night | pyzdcf library |
+| `PWV03c_TwoPoint_longscale_pyzdcf` | multi-day | pyzdcf library |
+| `PWV03d_TwoPoint_TemporalCorrelation_separateFilters_sylvie` | intra-night | Sylvie's pair-based DCF |
+| `PWV03d_TwoPoint_longscale_sylvie` | multi-day | Sylvie's pair-based DCF |
 
-**Figures saved to:** `figs_PWV03corr/`
+#### Common methodology
+
+All notebooks compute C(Δt) = ⟨δPWV(t) δPWV(t+Δt)⟩ / σ², where δPWV is the
+mean-subtracted PWV and σ² is computed at zero lag including the instrumental
+repeatability term σ_rep ≈ 0.12–0.15 mm.  Pairs are binned in
+logarithmically-spaced lag intervals and results are fitted with an exponential
+model C(Δt) = A exp(−Δt/τ) to extract the decorrelation timescale τ.
+
+#### Key variants
+
+- **PWV03** (direct binned): reference implementation; C(0) < 1 because
+  instrumental noise is not accounted for in the denominator.
+- **PWV03b** (noise-floor correction): fixes C(Δt→0) → 1 by subtracting
+  σ²_stat + σ²_rep from the zero-lag variance before normalising.
+- **PWV03c** (pyzdcf): uses the `pyzdcf` library (Ziv Ben-Yaacov Discrete
+  Correlation Function), which handles uneven sampling and returns bootstrap
+  error bars on C(Δt).
+- **PWV03d** (Sylvie's estimator): custom pair-based DCF originally developed
+  in the OLD_ exploratory notebooks; provides an independent cross-check.
+
+**Figures saved to:** `figs_PWV03corr/`, `figs_PWV03dcorr/`, `figs_PWV03longscale/`
 
 ---
 
 ### `PWV04compMerra2_allfilters-withSelectionCuts.ipynb` — AuxTel vs MERRA-2 cross-validation
 
-Cross-validates the AuxTel/Spectractor PWV measurements against the
-**MERRA-2** reanalysis product (`inst1_2d_asm_Nx`, TQV field), available at
-1-hour cadence at the Cerro Pachon grid point.
-
-The notebook:
-
-1. Matches each AuxTel observation to its nearest MERRA-2 timestamp via
-   `pandas.merge_asof` (direction = nearest), and records the signed time
-   offset Δt_match.
-2. Computes Pearson and Spearman correlation coefficients, plots scatter
-   diagrams and correlation ellipses, and fits a linear regression
-   PWV_AuxTel = a · TQV_MERRA2 + b.
-3. Splits the matched dataset by **Southern-Hemisphere season** (dry Winter
-   JJA vs. wet Summer DJF) and compares regression slopes and correlation
-   ellipses per season.
-4. Optionally restricts the analysis to the post-collimator epoch
-   (`FLAG_WITHCOLLIMATOR = True`).
+Cross-validates AuxTel/Spectractor PWV against **MERRA-2** reanalysis
+(TQV field, 1-hour cadence at the Cerro Pachón grid point) via
+`pandas.merge_asof`.  Produces scatter diagrams, Pearson/Spearman
+correlations, linear regression fits, and per-season (DJF/JJA) ellipses.
+Optionally restricted to the post-collimator epoch.
 
 **Figures saved to:** `figs_PWV04merra/`
+
+---
+
+### `PWV05simulateSeasonalTransparency_PublicationFigures.ipynb` — Seasonal transparency simulation
+
+Uses the **`getObsAtmo` atmospheric emulator** (ObsAtmo class, LSST site) to
+simulate the full atmospheric transparency spectrum T(λ) at zenith (airmass = 1)
+for each observation in the dataset, injecting the measured PWV, ozone column,
+and VAOD parameters.  Restricted to the `empty` filter (white-light spectra) and
+clear-sky observations (VAOD < 0.1, ozone > 20 db).
+
+The notebook produces three families of publication-quality figures:
+
+1. **Raw seasonal overlay** — all T(λ) curves colour-coded by season.
+2. **Seasonal envelopes** — pixel-wise median ± 16th–84th percentile band per
+   season (one panel per season in a 2×2 grid).
+3. **Density-coloured bundles (2×2 grid)** — each curve is coloured by its
+   intra-season PWV percentile rank using the season's sequential colormap
+   (Reds / Oranges / Blues / Greens); the most saturated colour marks the
+   median-PWV curves; a KDE density field is rendered as a grey background.
+4. **GridSpec 5×1 summary figure** — top panel: full-year distribution of
+   T(λ) coloured by annual PWV percentile (YlOrRd palette) with the annual
+   median in dashed black.  Four lower panels: ratio T_season / T_annual_median
+   for each season (same per-season colormaps as in the 2×2 figure), with a
+   dashed reference line at ratio = 1.  Saved as
+   `figs_PWV05seas/PWV05_annual_and_seasonal_ratios.pdf`.
+
+**Figures saved to:** `figs_PWV05seas/`
 
 ---
 
@@ -205,22 +250,59 @@ of Spectractor parameters:
 | `PSF_REG` | PSF regularisation |
 | `P [hPa]` | Atmospheric pressure |
 
-| Cut file | Strictness | Typical efficiency |
-|----------|------------|--------------------|
-| `cuts_loose_finaldecision.json` | Loose | high |
-| `cuts_finaldecision.json` | Standard | medium |
-| `cuts_tight_finaldecision.json` | Tight | low |
+| Cut file | Strictness | Typical usage |
+|----------|------------|---------------|
+| `cuts_loose_finaldecision.json` | Loose | PWV05 transparency simulation |
+| `cuts_finaldecision.json` | Standard | general exploration |
+| `cuts_tight_finaldecision.json` | Tight | publication figures |
+
+The `FLAG_LOOSE_CUTS` / `FLAG_TIGHT_CUTS` boolean flags at the top of each
+notebook select which cut file is loaded.
+
+---
+
+## Instrumental repeatability
+
+An important constant used throughout the correlation notebooks is the
+**instrumental repeatability** of the PWV measurement:
+
+> σ_rep ≈ 0.12 – 0.15 mm
+
+This term arises from systematic effects in Spectractor (PSF model
+imperfections, flat-field residuals, etc.) that are not captured by the
+per-exposure statistical error `PWV_err`.  It must be included in the
+noise-floor of the correlation function normalisation to obtain C(Δt→0) = 1.
+
+---
+
+## Southern-Hemisphere season convention
+
+All notebooks use the **Southern-Hemisphere** astronomical season definition
+appropriate for Cerro Pachón (Chile):
+
+| Season | Months | Typical PWV |
+|--------|--------|-------------|
+| Summer (DJF) | December, January, February | high |
+| Autumn (MAM) | March, April, May | intermediate |
+| Winter (JJA) | June, July, August | low (dry) |
+| Spring (SON) | September, October, November | intermediate |
+
+The mapping is encoded in the `SEASON_MAP` dictionary and `SEASON_ORDER` /
+`SEASON_COLORS` lists defined in each notebook (and reproduced in the shared
+parameters file).
 
 ---
 
 ## Dependencies
 
-- Python ≥ 3.10 (tested with 3.13)
+- Python ≥ 3.10 (tested with 3.13.3)
 - `numpy`, `scipy`, `pandas`, `matplotlib`, `seaborn`
 - `astropy`
+- `sklearn` (for `NearestNeighbors`, `KDTree`)
+- `pyzdcf` (for PWV03c notebooks)
+- `getObsAtmo` (for PWV05 transparency simulation)
 - `mysitcom` (local package — install with `pip install --user -e .` at the repo root)
 - `getCalspec` (local or installed package)
-- `sklearn` (for `NearestNeighbors`, `KDTree`)
 
 ---
 
