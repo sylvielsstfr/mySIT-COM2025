@@ -33,8 +33,8 @@ import astropy.units as u
 #version_run = "run_v10" # before v12
 #version_run = "run2026_v01" # data 2025 from Jeremy
 #version_run = "run2026_v02a_cr" # data 2025 from Corentin
-version_run = "run2026_v02b_cr_run2026_v02d_cr"
-#version_run = "run2026_v02d_cr"
+#version_run = "run2026_v02b_cr_run2026_v02d_cr"
+version_run = "run2026_v02d_cr"
 #version_run = "run_v12"
 # Configuration for the butler repo associated to the version_run
 
