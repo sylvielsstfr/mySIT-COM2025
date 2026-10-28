@@ -1,6 +1,7 @@
 
 [project]
 name = "mysitcom"
+version = "0.1.0"  
 license = "MIT"
 license-files = ["LICENSE"]
 readme = "README.md"
@@ -14,7 +15,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
 ]
-dynamic = ["version"]
+#dynamic = ["version"]
 requires-python = ">=3.10"
 dependencies = [
 ]
@@ -33,15 +34,17 @@ dev = [
     "ruff", # Used for static linting of files
 ]
 
-[build-system]
-requires = [
-    "setuptools>=62", # Used to build and package the Python project
-    "setuptools_scm>=6.2", # Gets release version from git. Makes it available programmatically
-]
-build-backend = "setuptools.build_meta"
+#[build-system]
+#requires = [
+#    "setuptools>=62", # Used to build and package the Python project
+#    "setuptools_scm>=6.2",
+#]
+#build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
-write_to = "src/mysitcom/_version.py"
+#[tool.setuptools_scm]
+#write_to = "src/mysitcom/_version.py"
+#fallback_version = "0.0"
+#git_describe_command = "git describe --tags --dirty --always"
 
 [tool.pytest.ini_options]
 testpaths = [
