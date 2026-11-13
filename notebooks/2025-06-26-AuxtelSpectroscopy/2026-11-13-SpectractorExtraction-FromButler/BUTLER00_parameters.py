@@ -117,8 +117,8 @@ merge_composition = {
 # path of output files Spectractor parameters Extracted from Butler and merged with exposure list from butler registry
 mergedextractedfilesdict = {
 "run2026_v02b_cr_run2026_v02d_cr" : "../2026-11-13-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_feb26_gaiaspec_run2026_v02b_cr_run2026_v02d_cr_merged.npy", 
- "run2026_JanToJul_cr" :  "2026-11-13-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_calspecgaiatarget_run2026_JanToJul_cr_merged.npy", 
- "run2023-2026_JanToJul_cr" :  "2026-11-13-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_calspecgaiatarget_run2023-2026_JanToJul_cr_merged.npy", 
+ "run2026_JanToJul_cr" :  "../2026-11-13-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_calspecgaiatarget_run2026_JanToJul_cr_merged.npy", 
+ "run2023-2026_JanToJul_cr" :  "../2026-11-13-SpectractorExtraction-FromButler/data/spectro_merged/auxtel_atmosphere_calspecgaiatarget_run2023-2026_JanToJul_cr_merged.npy", 
 }
 
 def DumpConfig():
