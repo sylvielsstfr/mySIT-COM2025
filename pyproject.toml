@@ -17,7 +17,18 @@ classifiers = [
 ]
 #dynamic = ["version"]
 requires-python = ">=3.10"
+# Core dependencies needed by the analysis notebooks (e.g. 2026-11-13-PWV-Analysis)
 dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "astropy",
+    "h5py",
+    "tables", # pandas HDF5 I/O (PyTables)
+    "scikit-learn",
+    "tqdm",
+    "ipykernel",
 ]
 
 [project.urls]
@@ -33,13 +44,25 @@ dev = [
     "pytest-cov", # Used to report total code coverage
     "ruff", # Used for static linting of files
 ]
+# Extra packages for the PWV time-series analysis (Gaussian process fits, correlation functions, ...)
+# Install with `pip install -e '.[pwv]'`
+pwv = [
+    "celerite2",
+    "george",
+    "emcee",
+    "seaborn",
+    "statsmodels",
+]
 
-#[build-system]
-#requires = [
-#    "setuptools>=62", # Used to build and package the Python project
-#    "setuptools_scm>=6.2",
-#]
-#build-backend = "setuptools.build_meta"
+[build-system]
+requires = [
+    "setuptools>=62", # Used to build and package the Python project
+]
+build-backend = "setuptools.build_meta"
+
+# src layout : the package lives in src/mysitcom (editable install : `pip install -e .`)
+[tool.setuptools.packages.find]
+where = ["src"]
 
 #[tool.setuptools_scm]
 #write_to = "src/mysitcom/_version.py"
