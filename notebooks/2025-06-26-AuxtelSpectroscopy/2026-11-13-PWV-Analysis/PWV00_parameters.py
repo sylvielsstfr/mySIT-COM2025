@@ -148,6 +148,33 @@ def getSelectionCutWithPolar(df_spec, chi2max=CHI2CUT, pwvmin=PWVMINCUT, pwvmax=
 
 
 # ---------------------------------------------------------------------------
+# PWV selection requiring valid PWV for both fit methods (used by the PWV03-PWV07 notebooks)
+# ---------------------------------------------------------------------------
+PWV_COL_RAM = "PWV [mm]_ram"          # fit of the spectrogram (2D CCD image)
+PWV_ERR_COL_RAM = "PWV [mm]_err_ram"
+PWV_COL_RUM = "PWV [mm]_rum"          # fit of the 1D spectrum
+PWV_ERR_COL_RUM = "PWV [mm]_err_rum"
+
+
+def getSelectionCutforPWV(df,
+                          pwv_ram_col=PWV_COL_RAM,
+                          pwv_rum_col=PWV_COL_RUM,
+                          chi2_col=CHI2_COL,
+                          d2ccd_col=D2CCD_COL,
+                          exptime_col=EXPTIME_COL,
+                          chi2max=CHI2CUT,
+                          pwvmin=PWVMINCUT,
+                          pwvmax=PWVMAXCUT):
+    """Standard quality selection requiring a valid PWV for both methods. Returns the selected DataFrame."""
+    cut = ((df[chi2_col] < chi2max)
+           & (df[pwv_ram_col] > pwvmin) & (df[pwv_ram_col] < pwvmax)
+           & (df[pwv_rum_col] > pwvmin) & (df[pwv_rum_col] < pwvmax)
+           & (df[d2ccd_col] > DCCDMINCUT) & (df[d2ccd_col] < DCCDMAXCUT)
+           & (df[exptime_col] > EXPTIMECUT))
+    return df[cut]
+
+
+# ---------------------------------------------------------------------------
 # Photometric repeatability
 # ---------------------------------------------------------------------------
 FLAG_CORRECTFOR_PWV_REPEAT = True
@@ -156,6 +183,12 @@ FLAG_CORRECTFOR_PWV_REPEAT_RATIO = False
 #SIGMA_PWV_REPEAT = 0.25
 SIGMA_PWV_REPEAT = 0.10      # TO BE RE-ESTIMATED with the 2026 data (see PWV02 repeatability notebooks)
 FACTORERR_PWV_REPEAT = 10.
+
+
+# ---------------------------------------------------------------------------
+# FGCM file
+# ---------------------------------------------------------------------------
+filename_fgcm = "../../2025-12-04-FGCM/data_FGCM04_ReadMergeAtmParams/fgcm_rdp2_prep_cLSSTCam_runs_DRP_20250417-20251214_DM-53545andDM-53697.csv"
 
 
 # ---------------------------------------------------------------------------
